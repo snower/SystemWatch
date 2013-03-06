@@ -1,5 +1,0 @@
-D:\vs2010\SystemWatch\ConsoleApplication1\bin\Release\ConsoleApplication1.exe
-D:\vs2010\SystemWatch\ConsoleApplication1\bin\Release\ConsoleApplication1.pdb
-D:\vs2010\SystemWatch\ConsoleApplication1\obj\x86\Release\ResolveAssemblyReference.cache
-D:\vs2010\SystemWatch\ConsoleApplication1\obj\x86\Release\ConsoleApplication1.exe
-D:\vs2010\SystemWatch\ConsoleApplication1\obj\x86\Release\ConsoleApplication1.pdb
