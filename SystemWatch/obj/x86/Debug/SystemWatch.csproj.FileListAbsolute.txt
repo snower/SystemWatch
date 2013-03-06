@@ -1,0 +1,14 @@
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.Properties.Resources.resources
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\vs2010\SystemWatch\SystemWatch\bin\Debug\SystemWatch.exe
+D:\vs2010\SystemWatch\SystemWatch\bin\Debug\SystemWatch.pdb
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.exe
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.pdb
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.Window.resources
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.Canvas.resources
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.MainWindow.resources
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.CpuMemoryLoader.resources
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.LogicalDiakLoader.resources
+D:\vs2010\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.NetworkInterfaceLoader.resources
