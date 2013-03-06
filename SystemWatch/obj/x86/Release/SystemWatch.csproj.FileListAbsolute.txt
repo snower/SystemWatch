@@ -12,3 +12,15 @@ D:\vs2010\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.MainWindow.resourc
 D:\vs2010\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.CpuMemoryLoader.resources
 D:\vs2010\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.LogicalDiakLoader.resources
 D:\vs2010\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.NetworkInterfaceLoader.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.exe
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.pdb
+D:\vs2010\WinDesktopTools\SystemWatch\bin\Release\SystemWatch.exe
+D:\vs2010\WinDesktopTools\SystemWatch\bin\Release\SystemWatch.pdb
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.Canvas.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.CpuMemoryLoader.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.LogicalDiakLoader.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.MainWindow.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.NetworkInterfaceLoader.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.Properties.Resources.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.Window.resources
+D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Release\SystemWatch.csproj.GenerateResource.Cache

@@ -1,9 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemWatch", "SystemWatch\SystemWatch.csproj", "{375587A4-E3EF-40C3-87DB-577B5CB5A6C6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{2AE469DD-ECD0-4E4C-8E37-87AE9B7127F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +13,6 @@ Global
 		{375587A4-E3EF-40C3-87DB-577B5CB5A6C6}.Debug|x86.Build.0 = Debug|x86
 		{375587A4-E3EF-40C3-87DB-577B5CB5A6C6}.Release|x86.ActiveCfg = Release|x86
 		{375587A4-E3EF-40C3-87DB-577B5CB5A6C6}.Release|x86.Build.0 = Release|x86
-		{2AE469DD-ECD0-4E4C-8E37-87AE9B7127F9}.Debug|x86.ActiveCfg = Debug|x86
-		{2AE469DD-ECD0-4E4C-8E37-87AE9B7127F9}.Debug|x86.Build.0 = Debug|x86
-		{2AE469DD-ECD0-4E4C-8E37-87AE9B7127F9}.Release|x86.ActiveCfg = Release|x86
-		{2AE469DD-ECD0-4E4C-8E37-87AE9B7127F9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
