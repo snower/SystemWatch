@@ -16,7 +16,7 @@ namespace SystemWatch
             public Data[] LatestDatas{private set;get;}
 
             public CanvasRefreshLatestDataEventArgs(Data[] latestDatas){
-                this.LatestDatas=latestDatas;
+                this.LatestDatas = latestDatas;
             }
         };
 
@@ -60,7 +60,7 @@ namespace SystemWatch
             this.Init();
         }
 
-        public Canvas(Form parentWindow = null,int dataChannel=1, int dataCount = 120, int speed = 500)
+        public Canvas(Form parentWindow = null, int dataChannel = 1, int dataCount = 120, int speed = 500)
         {
             this.parentWindow = parentWindow;
             this.dataChannel = dataChannel;
@@ -110,6 +110,7 @@ namespace SystemWatch
             Graphics gc = Graphics.FromImage(this.cache);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.PaintBackGround(gc);
+
             Data[] latestData = new Data[this.dataChannel];
             object[][] dataArys = this.CalculateMaxTotal();
             for (int i = 0; i < this.dataChannel; i++)
@@ -170,7 +171,7 @@ namespace SystemWatch
             }
         }
 
-        private Data PaintData(Graphics g, int channel,Object[] dataAry)
+        private Data PaintData(Graphics g, int channel, Object[] dataAry)
         {
             Pen pen = new Pen(this.colorChannel[channel], 1.5F);
             Point[] points=new Point[this.cw];
@@ -215,7 +216,7 @@ namespace SystemWatch
             {
                 this.dataQueues[channel - 1].Dequeue();
             }
-            this.dataQueues[channel - 1].Enqueue(new Data(total,current,percent));
+            this.dataQueues[channel - 1].Enqueue(new Data(total, current, percent));
         }
 
         public void Close()

@@ -28,25 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnClose = new System.Windows.Forms.Button();
             this.titleLable = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // btnClose
-            // 
-            this.btnClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.btnClose.CausesValidation = false;
-            this.btnClose.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
-            this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClose.Location = new System.Drawing.Point(120, 0);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(20, 20);
-            this.btnClose.TabIndex = 1;
-            this.btnClose.Text = "X";
-            this.btnClose.UseVisualStyleBackColor = false;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // titleLable
             // 
@@ -69,7 +52,6 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Controls.Add(this.titleLable);
-            this.Controls.Add(this.btnClose);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Window";
@@ -87,7 +69,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label titleLable;
     }
 }

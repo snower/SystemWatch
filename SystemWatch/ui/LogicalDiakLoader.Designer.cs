@@ -1,4 +1,6 @@
-﻿namespace SystemWatch
+﻿using System.Drawing;
+
+namespace SystemWatch
 {
     partial class LogicalDiakLoader
     {
@@ -95,7 +97,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(146, 135);
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Location = new System.Drawing.Point(1200, 245);
+            Rectangle screenArea = System.Windows.Forms.Screen.GetBounds(this);
+            this.Location = new System.Drawing.Point(screenArea.Width - 180, 225);
             this.Controls.Add(this.diskLoadLable);
             this.Controls.Add(this.diskReadLoadLable);
             this.Controls.Add(this.diskWriteLoadLable);

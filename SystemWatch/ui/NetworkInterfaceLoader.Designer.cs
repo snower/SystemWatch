@@ -1,4 +1,6 @@
-﻿namespace SystemWatch
+﻿using System.Drawing;
+
+namespace SystemWatch
 {
     partial class NetworkInterfaceLoader
     {
@@ -96,7 +98,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(146, 135);
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Location = new System.Drawing.Point(1200, 390);
+            Rectangle screenArea = System.Windows.Forms.Screen.GetBounds(this);
+            this.Location = new System.Drawing.Point(screenArea.Width - 180, 370);
             this.Controls.Add(this.networkInterfaceLoad);
             this.Controls.Add(this.networkInterfaceReceivedLoad);
             this.Controls.Add(this.networkInterfaceSentLoad);

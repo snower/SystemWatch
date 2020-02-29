@@ -1,4 +1,6 @@
-﻿namespace SystemWatch
+﻿using System.Drawing;
+
+namespace SystemWatch
 {
     partial class CpuMemoryLoader
     {
@@ -31,9 +33,7 @@
 
             this.cpuLoadLable = new System.Windows.Forms.Label();
             this.memLoadLable = new System.Windows.Forms.Label();
-            this.cpuCoreOneLoadLable = new System.Windows.Forms.Label();
-            this.cpuCoreTwoLoadLable = new System.Windows.Forms.Label();
-            this.drawImage = new SystemWatch.Canvas(this, 4, 120, 1000);
+            this.drawImage = new SystemWatch.Canvas(this, 2, 120, 1000);
             this.SuspendLayout();
             // 
             // cpuLoadLable
@@ -50,27 +50,9 @@
             this.memLoadLable.AutoSize = true;
             this.memLoadLable.BackColor = System.Drawing.Color.Black;
             this.memLoadLable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.memLoadLable.Location = new System.Drawing.Point(45, 47);
+            this.memLoadLable.Location = new System.Drawing.Point(40, 50);
             this.memLoadLable.Name = "memLoadLable";
             this.memLoadLable.Font = new System.Drawing.Font("微软雅黑", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            // 
-            // cpuCoreOneLoadLable
-            // 
-            this.cpuCoreOneLoadLable.AutoSize = true;
-            this.cpuCoreOneLoadLable.BackColor = System.Drawing.Color.Black;
-            this.cpuCoreOneLoadLable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.cpuCoreOneLoadLable.Location = new System.Drawing.Point(10, 65);
-            this.cpuCoreOneLoadLable.Name = "cpuCoreOneLoadLable";
-            this.cpuCoreOneLoadLable.Font = new System.Drawing.Font("微软雅黑", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            // 
-            // cpuCoreTwoLoadLable
-            // 
-            this.cpuCoreTwoLoadLable.AutoSize = true;
-            this.cpuCoreTwoLoadLable.BackColor = System.Drawing.Color.Black;
-            this.cpuCoreTwoLoadLable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.cpuCoreTwoLoadLable.Location = new System.Drawing.Point(70, 65);
-            this.cpuCoreTwoLoadLable.Name = "memLoadLable";
-            this.cpuCoreTwoLoadLable.Font = new System.Drawing.Font("微软雅黑", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             // 
             // drawImage
             // 
@@ -86,11 +68,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(146, 135);
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Location = new System.Drawing.Point(1200, 100);
+            Rectangle screenArea = System.Windows.Forms.Screen.GetBounds(this);
+            this.Location = new System.Drawing.Point(screenArea.Width - 180, 80);
             this.Controls.Add(this.cpuLoadLable);
             this.Controls.Add(this.memLoadLable);
-            this.Controls.Add(this.cpuCoreOneLoadLable);
-            this.Controls.Add(this.cpuCoreTwoLoadLable);
             this.Controls.Add(this.drawImage);
             this.Name = "CpuMemoryLoader";
             this.Text = "CPU";
@@ -101,8 +82,6 @@
         private Canvas drawImage;
         private System.Windows.Forms.Label cpuLoadLable;
         private System.Windows.Forms.Label memLoadLable;
-        private System.Windows.Forms.Label cpuCoreOneLoadLable;
-        private System.Windows.Forms.Label cpuCoreTwoLoadLable;
 
         #endregion
 

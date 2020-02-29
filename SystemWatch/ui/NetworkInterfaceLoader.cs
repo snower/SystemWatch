@@ -18,9 +18,9 @@ namespace SystemWatch
         {
             InitializeComponent();
             this.drawImage.HeightAuto = true;
-            Program.GetInformation().SetDataToView(Information.DataType.NetworkInterfaceLoadPercent, this.drawImage, "Intel[R] WiFi 链接 5100 AGN", new object[] { 1 });
-            Program.GetInformation().SetDataToView(Information.DataType.NetworkInterfaceReceivedLoadPercent, this.drawImage, "Intel[R] WiFi 链接 5100 AGN", new object[] { 2 });
-            Program.GetInformation().SetDataToView(Information.DataType.NetworkInterfaceSentLoadPercent, this.drawImage, "Intel[R] WiFi 链接 5100 AGN", new object[] { 3 });
+            Program.GetInformation().SetDataToView(Information.DataType.NetworkInterfaceLoadPercent, this.drawImage, "", new object[] { 1 });
+            Program.GetInformation().SetDataToView(Information.DataType.NetworkInterfaceReceivedLoadPercent, this.drawImage, "", new object[] { 2 });
+            Program.GetInformation().SetDataToView(Information.DataType.NetworkInterfaceSentLoadPercent, this.drawImage, "", new object[] { 3 });
 
             this.networkInterfaceLoad.ForeColor = this.NormalColor[0];
             this.drawImage.colorChannel[0] = this.NormalColor[0];
