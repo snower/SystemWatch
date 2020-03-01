@@ -47,63 +47,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ui\Canvas.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ui\Canvas.Designer.cs">
-      <DependentUpon>Canvas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ui\CpuMemoryLoader.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ui\CpuMemoryLoader.Designer.cs">
-      <DependentUpon>CpuMemoryLoader.cs</DependentUpon>
-    </Compile>
+    <Compile Include="ui\Canvas.cs" />
+    <Compile Include="ui\CpuMemoryLoader.cs" />
     <Compile Include="info\Information.cs" />
     <Compile Include="IPushData.cs" />
-    <Compile Include="ui\LogicalDiakLoader.cs">
+    <Compile Include="ui\LoadWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ui\LogicalDiakLoader.Designer.cs">
-      <DependentUpon>LogicalDiakLoader.cs</DependentUpon>
+    <Compile Include="ui\LoadWindow.Designer.cs">
+      <DependentUpon>LoadWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="ui\LogicalDiakLoader.cs" />
     <Compile Include="ui\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ui\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\NetworkInterfaceLoader.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ui\NetworkInterfaceLoader.Designer.cs">
-      <DependentUpon>NetworkInterfaceLoader.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserGraphics.cs" />
-    <Compile Include="ui\Window.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ui\Window.Designer.cs">
-      <DependentUpon>Window.cs</DependentUpon>
-    </Compile>
+    <Compile Include="ui\NetworkInterfaceLoader.cs" />
+    <Compile Include="ui\Window.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowConfig.cs" />
     <Compile Include="WindowManager.cs" />
-    <EmbeddedResource Include="ui\Canvas.resx">
-      <DependentUpon>Canvas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\CpuMemoryLoader.resx">
-      <DependentUpon>CpuMemoryLoader.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\LogicalDiakLoader.resx">
-      <DependentUpon>LogicalDiakLoader.cs</DependentUpon>
+    <EmbeddedResource Include="ui\LoadWindow.resx">
+      <DependentUpon>LoadWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\NetworkInterfaceLoader.resx">
-      <DependentUpon>NetworkInterfaceLoader.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -115,9 +87,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ui\Window.resx">
-      <DependentUpon>Window.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -133,6 +102,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ico.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

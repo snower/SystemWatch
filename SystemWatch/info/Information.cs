@@ -93,8 +93,8 @@ namespace SystemWatch
         };
 
         private Timer timer;
-        private Dictionary<IPushData,List<ViewType>> views;
-        private Dictionary<string,PerformanceCounterData> performanceCounters;
+        private Dictionary<IPushData, List<ViewType>> views;
+        private Dictionary<string, PerformanceCounterData> performanceCounters;
         private SystemInfo systemInfo;
 
         public Information(){
@@ -111,13 +111,13 @@ namespace SystemWatch
 
         private void TimerEvent(object o, ElapsedEventArgs e)
         {
-            foreach (PerformanceCounterData pcd in this.performanceCounters.Values)
+            foreach (KeyValuePair<string, PerformanceCounterData> pcd in this.performanceCounters)
             {
-                 pcd.DoCountHandle();
+                 pcd.Value.DoCountHandle();
             }
 
-            foreach(List<ViewType> lvt in this.views.Values){
-                foreach (ViewType vt in lvt)
+            foreach(KeyValuePair<IPushData, List<ViewType>> lvt in this.views){
+                foreach (ViewType vt in lvt.Value)
                 {
                     vt.view.PushData(vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
                 }
@@ -130,7 +130,14 @@ namespace SystemWatch
             double available = 0;
             foreach (PerformanceCounter pc in pcd.performanceCounters)
             {
-                available += pcd.performanceCounters[0].NextValue();
+                try
+                {
+                    available += pc.NextValue();
+                }
+                catch(Exception exception)
+                {
+                    Console.WriteLine(exception.ToString());
+                }
             }
             pcd.available = available;
             pcd.total = Convert.ToDouble(pcd.param[0]);
@@ -144,11 +151,18 @@ namespace SystemWatch
             double percent = 0;
             foreach (PerformanceCounter pc in pcd.performanceCounters)
             {
-                percent += pcd.performanceCounters[0].NextValue();
+                try
+                {
+                    percent += pc.NextValue();
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.ToString());
+                }
             }
             pcd.percent = percent;
             pcd.total = Convert.ToDouble(pcd.param[0]);
-            pcd.load = pcd.total * pcd.percent;
+            pcd.load = pcd.percent;
             pcd.available = pcd.total - pcd.load;
         }
 
@@ -158,9 +172,16 @@ namespace SystemWatch
             double total = 0;
             foreach (PerformanceCounter pc in pcd.performanceCounters)
             {
-                total += pcd.performanceCounters[0].NextValue();
+                try
+                {
+                    total += pc.NextValue();
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.ToString());
+                }
             }
-            pcd.percent = 100;
+            pcd.percent = Convert.ToDouble(pcd.param[0]);
             pcd.total = total;
             pcd.load = pcd.total;
             pcd.available = 0;
@@ -178,6 +199,9 @@ namespace SystemWatch
                 }
             }
 
+            PerformanceCounterCategory pcc = new PerformanceCounterCategory("Network Interface");
+            string[] pcs = pcc.GetInstanceNames();
+
             NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             this.systemInfo.NetworkAdapters = new ArrayList();
             foreach(NetworkInterface ni in networkInterfaces)
@@ -186,7 +210,11 @@ namespace SystemWatch
                 {
                     if(ni.OperationalStatus == OperationalStatus.Up)
                     {
-                        this.systemInfo.NetworkAdapters.Add(ni.Description);
+                        string networkInterface = ni.Description.Replace('(', '[').Replace(')', ']');
+                        if(Array.IndexOf(pcs, networkInterface) >= 0)
+                        {
+                            this.systemInfo.NetworkAdapters.Add(networkInterface);
+                        }
                     }
                 }
             }
@@ -248,7 +276,7 @@ namespace SystemWatch
                 case DataType.MemoryLoadPercent:
                     if (!this.performanceCounters.ContainsKey(key))
                     {
-                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[]{new PerformanceCounter("Memory", "Available KBytes")}, type,GetDataType.Available, instanceName, new object[]{this.systemInfo.PhysicalMemorySize});
+                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[]{new PerformanceCounter("Memory", "Available KBytes")}, type, GetDataType.Available, instanceName, new object[]{this.systemInfo.PhysicalMemorySize});
                         pcd.CountHandle += this.AvaiableCounterHandler;
                         this.performanceCounters.Add(key, pcd);
                         return pcd;

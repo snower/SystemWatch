@@ -27,14 +27,10 @@ D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.Window.resources
 D:\vs2010\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.csproj.GenerateResource.Cache
 D:\project\github\WinDesktopTools\SystemWatch\bin\Debug\SystemWatch.exe
 D:\project\github\WinDesktopTools\SystemWatch\bin\Debug\SystemWatch.pdb
-D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.Canvas.resources
-D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.CpuMemoryLoader.resources
-D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.LogicalDiakLoader.resources
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.MainWindow.resources
-D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.NetworkInterfaceLoader.resources
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.Properties.Resources.resources
-D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.Window.resources
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.csproj.GenerateResource.cache
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.exe
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.pdb
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.csprojAssemblyReference.cache
+D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.ui.LoadWindow.resources

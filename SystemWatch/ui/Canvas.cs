@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SystemWatch
 {
-    public partial class Canvas : UserControl,IPushData
+    public class Canvas : IPushData
     {
         public class CanvasRefreshLatestDataEventArgs : EventArgs
         {
@@ -34,49 +34,40 @@ namespace SystemWatch
             }
         };
 
-        private Form parentWindow;
-        private Timer timer;
-        private int dataCount,dataChannel,speed;
+        private Point location;
+        private Size clientSize;
+        private int dataChannel;
+        private int dataCount;
         private System.Collections.Queue[] dataQueues;
-        private Bitmap cache;
+        private Color[] colorChannels;
+        private bool[] autoHeightChannels;
+        private Data[] latestDatas;
+        private Point[] paintPoints;
+        private Pen[] paintPens;
 
         private int cx, cy, cw, ch;
         private float ix, iy;
         private double maxHeight;
 
-        public Color[] colorChannel;
-        public bool HeightAuto { set; get; }
-
         public event EventHandler<CanvasRefreshLatestDataEventArgs> RefreshLatestDataEvent;
 
-        public Canvas()
+        public Canvas(Point location, Size clientSize, int dataChannel, int dataCount, Color[] colorChannels, bool[] autoHeightChannels = null)
         {
-            this.parentWindow = null;
-            this.dataChannel = 1;
-            this.dataCount = 120;
-            this.speed = 500;
-
-            InitializeComponent();
-            this.Init();
-        }
-
-        public Canvas(Form parentWindow = null, int dataChannel = 1, int dataCount = 120, int speed = 500)
-        {
-            this.parentWindow = parentWindow;
+            this.location = location;
+            this.clientSize = clientSize;
             this.dataChannel = dataChannel;
             this.dataCount = dataCount;
-            this.speed = speed;
+            this.colorChannels = colorChannels;
+            this.autoHeightChannels = autoHeightChannels;
 
-            InitializeComponent();
             this.Init();
         }
 
         private void Init()
         {
-            this.HeightAuto = false;
             this.dataQueues = new System.Collections.Queue[this.dataChannel];
-            this.colorChannel = new Color[this.dataChannel];
-            this.maxHeight = 100;
+            this.latestDatas = new Data[this.dataChannel];
+            this.maxHeight = 0;
 
             for (int i = 0; i < this.dataChannel; i++)
             {
@@ -85,150 +76,125 @@ namespace SystemWatch
                 
                     this.dataQueues[i].Enqueue(new Data(0,0,0));
                 }
+                this.latestDatas[i] = new Data(0, 0, 0);
             }
 
-            this.timer = new Timer();
-            this.timer.Interval = this.speed;
-            this.timer.Tick += new EventHandler(this.TimerEvent);
-            this.timer.Start();
-
-            this.cx = 1;
-            this.cy = 1;
-            this.cw = this.Width - 2;
-            this.ch = this.Height - 2;
-            this.ix = this.cw / this.dataCount;
-            this.iy = (float)this.ch / 100F;
-
-            this.cache = new Bitmap(this.cw, this.ch);
-        }
-
-        private void TimerEvent(Object o, EventArgs e)
-        {
-            Graphics g = this.CreateGraphics();
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-            Graphics gc = Graphics.FromImage(this.cache);
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            this.PaintBackGround(gc);
-
-            Data[] latestData = new Data[this.dataChannel];
-            object[][] dataArys = this.CalculateMaxTotal();
-            for (int i = 0; i < this.dataChannel; i++)
-            {
-                latestData[i] = this.PaintData(gc, i, dataArys[i]);
-            }
-
-            g.DrawImage(this.cache,this.cx,this.cy);
-            this.SendRefreshLatestData(latestData);
-        }
-
-        private object[][] CalculateMaxTotal()
-        {
-            Object[][] dataArys = new object[this.dataChannel][];
-            this.maxHeight = 0;
-
-            for (int i = 0; i < this.dataChannel; i++)
-            {
-                dataArys[i] = this.dataQueues[i].ToArray();
-                if (!this.HeightAuto) continue;
-                for (int j = 0, count = dataArys[i].Length; j < count; j++)
-                {
-                    Data data=(Data)dataArys[i][j];
-                    if (this.maxHeight<data.total)
-                    {
-                        this.maxHeight = data.total;
-                    }
-                }
-            }
-            if (!this.HeightAuto) return dataArys;
-            for(int i=0;i<this.dataChannel;i++){
-                dataArys[i] = this.CalculatePercent(dataArys[i],this.maxHeight);
-            }
-            return dataArys;
-        }
-
-        private object[] CalculatePercent(Object[] dataAry,double maxTotal)
-        {
-            for (int i = 0, count = dataAry.Length; i < count; i++)
-            {
-                Data data = (Data)dataAry[i];
-                if (data.total != 0) data.percent = data.current / maxTotal * 100;
-                else data.percent = 0;
-            }
-            return dataAry;
-        }
-
-        private void PaintBackGround(Graphics g)
-        {
-            g.FillRectangle(new SolidBrush(Color.FromArgb(177, 177, 177)), 0, 0, this.cw, this.ch);
-            Pen pen=new Pen(Color.FromArgb(150,150,150),1F);
-            for(int i=1,count=this.cw/10;i<=count;i++){
-                g.DrawLine(pen, i*10, 0, i*10, this.ch);
-            }
-            for (int i = 1, count = this.ch / 10; i <=count; i++)
-            {
-                g.DrawLine(pen, 0, i * 10, this.cw ,i * 10);
-            }
-        }
-
-        private Data PaintData(Graphics g, int channel, Object[] dataAry)
-        {
-            Pen pen = new Pen(this.colorChannel[channel], 1.5F);
-            Point[] points=new Point[this.cw];
-            
-            for (int i = 0; i<this.cw ; i++)
-            {
-                points[i].X = this.cx+i;
-                points[i].Y = this.cy+this.ch-(int)(((Data)dataAry[(int)(i/this.ix)]).percent * this.iy);
-            }
-            g.DrawLines(pen,points);
-            return (Data)dataAry[dataAry.Length - 1];
-        }
-
-        private void SendRefreshLatestData(Data[] latestData)
-        {
-            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(latestData));
-        }
-
-        public Color SetChannelColor(int channel,Color color)
-        {
-            Color c=this.colorChannel[channel];
-            this.colorChannel[channel]=color;
-            return c;
-        }
-
-        private void Canvas_SizeChanged(object sender, EventArgs e)
-        {
-            this.cx = 1;
-            this.cy = 1;
-            this.cw = this.Width - 2;
-            this.ch = this.Height - 2;
+            this.cx = this.location.X + 1;
+            this.cy = this.location.Y + 1;
+            this.cw = this.clientSize.Width - 2;
+            this.ch = this.clientSize.Height - 2;
             this.ix = (float)this.cw / (float)this.dataCount;
             this.iy = (float)this.ch / 100F;
 
-            this.cache = new Bitmap(this.cw, this.ch);
+            this.paintPoints = new Point[this.cw];
+            this.paintPens = new Pen[this.colorChannels.Length];
+
+            for (int i = 0; i < this.cw; i++)
+            {
+
+                this.paintPoints[i] = new Point(0, 0);
+            }
+
+            for (int i = 0; i < this.colorChannels.Length; i++)
+            {
+                this.paintPens[i] = new Pen(this.colorChannels[i], 1.5F);
+            }
+        }
+
+        public void BackgroundPaint(Graphics g)
+        {
+            g.FillRectangle(new SolidBrush(Color.FromArgb(177, 177, 177)), this.cx -1, this.cy - 1, this.cw + 1, this.ch + 1);
+
+            Pen pen = new Pen(Color.FromArgb(150,150,150),1F);
+            for(int i=1, count = this.cw / 10; i <= count; i++){
+                g.DrawLine(pen, this.cx + i*10, this.cy, this.cx + i*10, this.cy + this.ch);
+            }
+
+            for (int i = 1, count = this.ch / 10; i <=count; i++)
+            {
+                g.DrawLine(pen, this.cx, this.cy + i * 10, this.cx + this.cw , this.cy + i * 10);
+            }
+        }
+
+        public void Paint(Graphics g)
+        {
+            for (int i = 0; i < this.dataChannel; i++)
+            {
+                this.PaintData(g, i);
+            }
+        }
+
+        private void PaintData(Graphics g, int channel)
+        {
+            bool autoHeight = (this.autoHeightChannels == null || this.autoHeightChannels[channel]);
+            object[] datas = this.dataQueues[channel].ToArray();
+            if(!autoHeight)
+            {
+                for (int i = 0; i < this.cw; i++)
+                {
+                    Data data = (Data)datas[(int)(i / this.ix)];
+                    this.paintPoints[i].X = this.cx + i;
+                    this.paintPoints[i].Y = data.total <= 0 ? this.cy + this.ch : this.cy + this.ch - (int)(this.ch * data.current / data.total);
+                }
+            }
+            else if (this.maxHeight <= 0)
+            {
+                for (int i = 0; i < this.cw; i++)
+                {
+                    Data data = (Data)datas[(int)(i / this.ix)];
+                    this.paintPoints[i].X = this.cx + i;
+                    this.paintPoints[i].Y = this.cy + this.ch;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < this.cw; i++)
+                {
+                    Data data = (Data)datas[(int)(i / this.ix)];
+                    this.paintPoints[i].X = this.cx + i;
+                    this.paintPoints[i].Y = this.cy + this.ch - (int)(this.ch * ((data.total / this.maxHeight * data.current) / this.maxHeight));
+                }
+            }
+            g.DrawLines(this.paintPens[channel % this.paintPens.Length], this.paintPoints);
         }
 
         public void PushData(double total,double current,double percent, object[] param)
         {
-            int channel = (int)param[0];
-            if (this.dataQueues[channel - 1].Count >= this.dataCount)
+            int channel = (int)param[0] - 1;
+            Data data = new Data(total, current, percent);
+
+            if (this.dataQueues[channel].Count >= this.dataCount)
             {
-                this.dataQueues[channel - 1].Dequeue();
+                Data odata = (Data)this.dataQueues[channel].Dequeue();
+                if((this.autoHeightChannels == null || this.autoHeightChannels[channel]) && odata.total >= this.maxHeight)
+                {
+                    double maxHeight = 0;
+                    foreach(System.Collections.Queue q in this.dataQueues)
+                    {
+                        foreach (Data d in q)
+                        {
+                            if (d.total > maxHeight)
+                            {
+                                maxHeight = d.total;
+                            }
+                        }
+                    }
+                    this.maxHeight = maxHeight;
+                }
             }
-            this.dataQueues[channel - 1].Enqueue(new Data(total, current, percent));
+            
+            if(((this.autoHeightChannels == null || this.autoHeightChannels[channel])) && data.total > this.maxHeight)
+            {
+                this.maxHeight = data.total;
+            }
+            this.dataQueues[channel].Enqueue(data);
+            this.latestDatas[channel] = data;
+
+            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas));
         }
 
         public void Close()
         {
-            this.timer.Stop();
-        }
-
-        private void Canvas_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            g.DrawImage(this.cache, this.cx, this.cy);
         }
     }
 }

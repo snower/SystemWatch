@@ -25,7 +25,7 @@ namespace SystemWatch
 
             windowManager.Init();
             information.Start();
-            windowManager.ShowAllWindow();
+            windowManager.Show();
             Application.Run(mainWindow);
         }
 
