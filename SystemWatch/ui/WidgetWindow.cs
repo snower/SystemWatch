@@ -9,18 +9,13 @@ using System.Windows.Forms;
 
 namespace SystemWatch.ui
 {
-    public partial class LoadWindow : Form
+    public partial class WidgetWindow : Form
     {
-        public LoadWindow()
+        public WidgetWindow()
         {
             InitializeComponent();
 
             this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - 200, 80);
-        }
-
-        public Graphics GetGraphics()
-        {
-            return this.CreateGraphics();
         }
     }
 }

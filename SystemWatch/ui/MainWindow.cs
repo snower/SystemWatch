@@ -40,8 +40,8 @@ namespace SystemWatch
 
         private void notifyMenuExit_Click(object sender, EventArgs e)
         {
-            Program.GetInformation().Stop();
-            Program.GetWindowManager().Close();
+            Program.GetInformation().Close();
+            Program.GetWigetManager().Close();
             this.Close();
             Application.Exit();
         }

@@ -10,7 +10,7 @@ using SystemWatch.ui;
 
 namespace SystemWatch
 {
-    class WindowManager
+    class WidgetManager
     {
         [DllImport("user32.dll", EntryPoint = "GetDesktopWindow", CharSet = CharSet.Auto, SetLastError = true)]
         static extern IntPtr GetDesktopWindow();
@@ -18,39 +18,36 @@ namespace SystemWatch
         [DllImport("User32.dll", EntryPoint = "FindWindowEx")]
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpClassName, string lpWindowName);
 
-        [DllImport("user32.dll", EntryPoint = "SetParent")]
-        public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
         [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, ulong dwNewLong);
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        private MainWindow mainWindow;
-        private LoadWindow loadWindow;
-        private List<Window> windows;
         private System.Timers.Timer timer;
+        private MainWindow mainWindow;
+        private WidgetWindow widgetWindow;
+        private List<Widget> windows;
         private IntPtr descktopPtr;
         private IntPtr shellViewPtr;
 
-        public WindowManager(MainWindow mainWindow)
+        public WidgetManager(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
-            this.windows = new List<Window>();
+            this.windows = new List<Widget>();
         }
 
         public void Init()
         {
-            this.loadWindow = new LoadWindow();
+            this.widgetWindow = new WidgetWindow();
 
-            CpuMemoryLoader cpuMemoryLoader= new CpuMemoryLoader(new Point(6, 1), new Size(146, 135));
+            CpuMemoryWidget cpuMemoryLoader= new CpuMemoryWidget(new Point(6, 1), new Size(146, 135));
             this.windows.Add(cpuMemoryLoader);
 
-            LogicalDiakLoader logicalDiakLoader = new LogicalDiakLoader(new Point(6, 146), new Size(146, 135));
+            LogicalDiakWidget logicalDiakLoader = new LogicalDiakWidget(new Point(6, 146), new Size(146, 135));
             this.windows.Add(logicalDiakLoader);
 
-            NetworkInterfaceLoader networkInterfaceLoader = new NetworkInterfaceLoader(new Point(6, 291), new Size(146, 135));
+            NetworkInterfaceWidget networkInterfaceLoader = new NetworkInterfaceWidget(new Point(6, 291), new Size(146, 135));
             this.windows.Add(networkInterfaceLoader);
 
 
@@ -71,14 +68,11 @@ namespace SystemWatch
                     break;
                 }
             } while (true);
-            SetWindowLong(this.loadWindow.Handle, -8, (ulong)this.shellViewPtr.ToInt64());
-            //SetParent(this.loadWindow.Handle, this.shellViewPtr);
+            SetWindowLong(this.widgetWindow.Handle, -8, (ulong)this.shellViewPtr.ToInt64());
 
-
-            this.timer = new System.Timers.Timer(1000);
-            this.timer.Interval = 1000;
-            this.timer.Enabled = false;
-            this.timer.Elapsed += new ElapsedEventHandler(this.TimerEvent);
+            timer = new System.Timers.Timer(1000);
+            timer.Enabled = false;
+            timer.Elapsed += new ElapsedEventHandler(TimerEvent);
         }
 
         public void Show()
@@ -87,8 +81,8 @@ namespace SystemWatch
             {
                 this.windows[i].BackgroundUpdate();
             }
+            this.widgetWindow.Show();
             this.timer.Start();
-            this.loadWindow.Show();
         }
 
         private void TimerEvent(object o, ElapsedEventArgs e)
@@ -105,18 +99,27 @@ namespace SystemWatch
                 
             }
 
-            using (Graphics g = this.loadWindow.CreateGraphics())
+            Graphics g = this.widgetWindow.CreateGraphics();
+            for (int i = 0, count = this.windows.Count; i < count; i++)
             {
-                for (int i = 0, count = this.windows.Count; i < count; i++)
-                {
-                    this.windows[i].Show(g);
-                }
+                this.windows[i].Show(g);
             }
+        }
+
+        public void Resume()
+        {
+            this.timer.Start();
+        }
+
+        public void Suspend()
+        {
+            this.timer.Stop();
         }
 
         public void Close()
         {
             this.timer.Stop();
+            this.timer.Close();
             for (int i = 0, count = this.windows.Count; i < count; i++)
             {
                 this.windows[i].Close();

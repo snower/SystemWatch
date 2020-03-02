@@ -33,4 +33,4 @@ D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.csproj.G
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.exe
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.pdb
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.csprojAssemblyReference.cache
-D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.ui.LoadWindow.resources
+D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.ui.WidgetWindow.resources

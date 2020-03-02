@@ -32,13 +32,21 @@ namespace SystemWatch
                 this.current = current;
                 this.percent = percent;
             }
+
+            public void Update(double total, double current, double percent)
+            {
+                this.total = total;
+                this.current = current;
+                this.percent = percent;
+            }
         };
 
         private Point location;
         private Size clientSize;
         private int dataChannel;
         private int dataCount;
-        private System.Collections.Queue[] dataQueues;
+        private Data[][] dataQueues;
+        private int[] dataIndexs;
         private Color[] colorChannels;
         private bool[] autoHeightChannels;
         private Data[] latestDatas;
@@ -65,18 +73,20 @@ namespace SystemWatch
 
         private void Init()
         {
-            this.dataQueues = new System.Collections.Queue[this.dataChannel];
+            this.dataQueues = new Data[this.dataChannel][];
+            this.dataIndexs = new int[this.dataChannel];
             this.latestDatas = new Data[this.dataChannel];
             this.maxHeight = 0;
 
             for (int i = 0; i < this.dataChannel; i++)
             {
-                this.dataQueues[i] = new System.Collections.Queue(this.dataCount);
+                this.dataQueues[i] = new Data[this.dataCount];
+                this.dataIndexs[i] = 0;
                 for (int j = 0; j < this.dataCount; j++){
                 
-                    this.dataQueues[i].Enqueue(new Data(0,0,0));
+                    this.dataQueues[i][j] = new Data(0,0,0);
                 }
-                this.latestDatas[i] = new Data(0, 0, 0);
+                this.latestDatas[i] = this.dataQueues[i][0];
             }
 
             this.cx = this.location.X + 1;
@@ -126,13 +136,14 @@ namespace SystemWatch
 
         private void PaintData(Graphics g, int channel)
         {
-            bool autoHeight = (this.autoHeightChannels == null || this.autoHeightChannels[channel]);
-            object[] datas = this.dataQueues[channel].ToArray();
-            if(!autoHeight)
+            Data[] datas = this.dataQueues[channel];
+            int index = this.dataIndexs[channel];
+
+            if(!(this.autoHeightChannels == null || this.autoHeightChannels[channel]))
             {
                 for (int i = 0; i < this.cw; i++)
                 {
-                    Data data = (Data)datas[(int)(i / this.ix)];
+                    Data data = datas[(index + (int)(i / this.ix)) % this.dataCount];
                     this.paintPoints[i].X = this.cx + i;
                     this.paintPoints[i].Y = data.total <= 0 ? this.cy + this.ch : this.cy + this.ch - (int)(this.ch * data.current / data.total);
                 }
@@ -141,7 +152,6 @@ namespace SystemWatch
             {
                 for (int i = 0; i < this.cw; i++)
                 {
-                    Data data = (Data)datas[(int)(i / this.ix)];
                     this.paintPoints[i].X = this.cx + i;
                     this.paintPoints[i].Y = this.cy + this.ch;
                 }
@@ -150,7 +160,7 @@ namespace SystemWatch
             {
                 for (int i = 0; i < this.cw; i++)
                 {
-                    Data data = (Data)datas[(int)(i / this.ix)];
+                    Data data = datas[(index + (int)(i / this.ix)) % this.dataCount];
                     this.paintPoints[i].X = this.cx + i;
                     this.paintPoints[i].Y = this.cy + this.ch - (int)(this.ch * ((data.total / this.maxHeight * data.current) / this.maxHeight));
                 }
@@ -158,21 +168,25 @@ namespace SystemWatch
             g.DrawLines(this.paintPens[channel % this.paintPens.Length], this.paintPoints);
         }
 
-        public void PushData(double total,double current,double percent, object[] param)
+        public void PushData(double total, double current, double percent, object[] param)
         {
             int channel = (int)param[0] - 1;
-            Data data = new Data(total, current, percent);
+            Data data = this.dataQueues[channel][this.dataIndexs[channel]];
 
-            if (this.dataQueues[channel].Count >= this.dataCount)
+            if(this.autoHeightChannels == null || this.autoHeightChannels[channel])
             {
-                Data odata = (Data)this.dataQueues[channel].Dequeue();
-                if((this.autoHeightChannels == null || this.autoHeightChannels[channel]) && odata.total >= this.maxHeight)
+                if(data.total >= this.maxHeight)
                 {
                     double maxHeight = 0;
-                    foreach(System.Collections.Queue q in this.dataQueues)
+                    foreach (Data[] q in this.dataQueues)
                     {
                         foreach (Data d in q)
                         {
+                            if(d == data)
+                            {
+                                continue;
+                            }
+
                             if (d.total > maxHeight)
                             {
                                 maxHeight = d.total;
@@ -181,14 +195,20 @@ namespace SystemWatch
                     }
                     this.maxHeight = maxHeight;
                 }
+
+                if (total > this.maxHeight)
+                {
+                    this.maxHeight = total;
+                }
             }
-            
-            if(((this.autoHeightChannels == null || this.autoHeightChannels[channel])) && data.total > this.maxHeight)
-            {
-                this.maxHeight = data.total;
-            }
-            this.dataQueues[channel].Enqueue(data);
+           
+            data.Update(total, current, percent);
             this.latestDatas[channel] = data;
+            this.dataIndexs[channel]++;
+            if(this.dataIndexs[channel] >= this.dataCount)
+            {
+                this.dataIndexs[channel] = 0;
+            }
 
             this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas));
         }

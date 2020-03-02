@@ -50,7 +50,7 @@
             // notifyMenuWindow
             // 
             this.notifyMenuWindow.Index = 0;
-            this.notifyMenuWindow.Text = "&Window";
+            this.notifyMenuWindow.Text = "&Config";
             // 
             // notifyMenuExit
             // 

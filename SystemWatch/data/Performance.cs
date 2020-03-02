@@ -8,7 +8,7 @@ using System.Management;
 
 namespace SystemWatch
 {
-    class Information
+    class Performance
     {
         public enum DataType
         {
@@ -88,39 +88,67 @@ namespace SystemWatch
 
             public void UpdatePerformanceCounters(PerformanceCounter[] performanceCounters)
             {
+                foreach (PerformanceCounter pc in this.performanceCounters)
+                {
+                    pc.Close();
+                }
                 this.performanceCounters = performanceCounters;
+            }
+
+            public void Close()
+            {
+                foreach(PerformanceCounter pc in this.performanceCounters)
+                {
+                    pc.Close();
+                }
+                this.performanceCounters = new PerformanceCounter[0];
             }
         };
 
         private Timer timer;
+        private bool updating;
         private Dictionary<IPushData, List<ViewType>> views;
         private Dictionary<string, PerformanceCounterData> performanceCounters;
         private SystemInfo systemInfo;
 
-        public Information(){
-            this.timer = new Timer(1000);
-            this.timer.Interval = 1000;
-            this.timer.Enabled = false;
-            this.timer.Elapsed += new ElapsedEventHandler(this.TimerEvent);
-
+        public Performance(){
+            this.updating = false;
             this.views = new Dictionary<IPushData, List<ViewType>>();
             this.performanceCounters = new Dictionary<string, PerformanceCounterData>();
             this.systemInfo = new SystemInfo();
             this.GetSystemInfo();
+
+            timer = new System.Timers.Timer(1000);
+            timer.Enabled = false;
+            timer.Elapsed += new ElapsedEventHandler(TimerEvent);
         }
 
         private void TimerEvent(object o, ElapsedEventArgs e)
         {
-            foreach (KeyValuePair<string, PerformanceCounterData> pcd in this.performanceCounters)
+            if (this.updating)
             {
-                 pcd.Value.DoCountHandle();
+                return;
             }
+            this.updating = true;
 
-            foreach(KeyValuePair<IPushData, List<ViewType>> lvt in this.views){
-                foreach (ViewType vt in lvt.Value)
+            try
+            {
+                foreach (KeyValuePair<string, PerformanceCounterData> pcd in this.performanceCounters)
                 {
-                    vt.view.PushData(vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
+                    pcd.Value.DoCountHandle();
                 }
+
+                foreach (KeyValuePair<IPushData, List<ViewType>> lvt in this.views)
+                {
+                    foreach (ViewType vt in lvt.Value)
+                    {
+                        vt.view.PushData(vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
+                    }
+                }
+            }
+            finally
+            {
+                this.updating = false;
             }
         }
 
@@ -376,12 +404,21 @@ namespace SystemWatch
 
         public void Start()
         {
-            this.timer.Enabled = true;
+            this.timer.Start();
         }
 
         public void Stop()
         {
-            this.timer.Enabled = false;
+            this.timer.Stop();
+        }
+
+        public void Close()
+        {
+            this.timer.Stop();
+            foreach (KeyValuePair<string, PerformanceCounterData> pcd in this.performanceCounters)
+            {
+                pcd.Value.Close();
+            }
         }
 
         public void SetDataToView(DataType type, IPushData view, string instanceName="_Total", object[] viewParams=null)

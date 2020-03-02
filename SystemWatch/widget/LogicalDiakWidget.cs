@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SystemWatch
 {
-    public class LogicalDiakLoader : Window
+    public class LogicalDiakWidget : Widget
     {
         private double logicalDiskReadTotal;
         private double logicalDiskWriteTotal;
@@ -34,7 +34,7 @@ namespace SystemWatch
         private Point totalReadLocation;
         private Point totalWriteLocation;
 
-        public LogicalDiakLoader(Point location, Size clientSize) : base(location, clientSize)
+        public LogicalDiakWidget(Point location, Size clientSize) : base(location, clientSize)
         {
             this.rwFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.totalRwFont = new Font("微软雅黑", 6.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
@@ -49,12 +49,12 @@ namespace SystemWatch
             this.totalReadLocation = new Point(75, 65);
             this.totalWriteLocation = new Point(10, 65);
 
-            this.canvasView = new Canvas(new Point(10, 85), new Size(126, 40), 3, 126, new Color[] { this.NormalColor[0], this.NormalColor[1], this.NormalColor[1] });
+            this.canvasView = new Canvas(new Point(10, 85), new Size(126, 40), 3, 123, new Color[] { this.NormalColor[0], this.NormalColor[1], this.NormalColor[1] });
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
-            Program.GetInformation().SetDataToView(Information.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 1 });
-            Program.GetInformation().SetDataToView(Information.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 2 });
-            Program.GetInformation().SetDataToView(Information.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 3 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 1 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 2 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 3 });
         }
 
         protected override void BackgroundPaint(Graphics g)
@@ -87,21 +87,21 @@ namespace SystemWatch
             Canvas.Data[] data = e.LatestDatas;
             if (data[0] != null)
             {
-                this.writeReadText = "T:" + this.FormatByteSize(5, data[0].current) + "/s";
+                this.writeReadText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
             }
 
             if (data[1] != null)
             {
-                this.readText = "R:" + this.FormatByteSize(5, data[1].current) + "/s";
+                this.readText = "R: " + this.FormatByteSize(5, data[1].current) + "/s";
                 this.logicalDiskReadTotal += data[1].current;
-                this.totalReadText = "RT:" + this.FormatByteSize(5, this.logicalDiskReadTotal);
+                this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
             }
 
             if (data[2] != null)
             {
-                this.writeText = "W:" + this.FormatByteSize(5, data[2].current) + "/s";
+                this.writeText = "W: " + this.FormatByteSize(5, data[2].current) + "/s";
                 this.logicalDiskWriteTotal += data[2].current;
-                this.totalWriteText = "WT:" + this.FormatByteSize(5, this.logicalDiskWriteTotal);
+                this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
             }
         }
     }

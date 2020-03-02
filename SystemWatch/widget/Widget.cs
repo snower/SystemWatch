@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace SystemWatch
 {
-    public class Window
+    public class Widget
     {
         private Bitmap backgroudView;
         private Bitmap view;
@@ -18,7 +18,7 @@ namespace SystemWatch
             Color.FromArgb(192,255,255)
         };
 
-        public Window(Point location, Size clientSize)
+        public Widget(Point location, Size clientSize)
         {
             this.location = location;
             this.clientSize = clientSize;
@@ -31,8 +31,6 @@ namespace SystemWatch
         {
             this.FillArcRadius(g, new SolidBrush(Color.Black), 0, 21, this.clientSize.Width-1, this.clientSize.Height-22, 5);
             this.DrawArcRadius(g, new Pen(Color.Gray, 2), 2, 23, this.clientSize.Width - 6, this.clientSize.Height - 27, 5);
-
-            
         }
 
         protected virtual void Paint(Graphics g)
@@ -108,7 +106,7 @@ namespace SystemWatch
 
         protected String FormatByteSize(int len, double value, int type=0)
         {
-            string[] units=new String[]{"B","K","M","G"};
+            string[] units=new String[]{"B","K","M","G", "T", "P", "E"};
             for (int i = type, count = units.Length; i < count; i++)
             {
                 if (value < 1024)

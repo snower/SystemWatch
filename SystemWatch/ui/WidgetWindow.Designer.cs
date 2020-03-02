@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace SystemWatch.ui
 {
-    partial class LoadWindow
+    partial class WidgetWindow
     {
         /// <summary>
         /// Required designer variable.

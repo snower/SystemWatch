@@ -1,42 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Win32;
+using System;
 using System.Windows.Forms;
 
 namespace SystemWatch
 {
     static class Program
     {
-        private static Information information;
-        private static WindowManager windowManager;
+        private static Performance information;
+        private static WidgetManager widgetManager;
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>
         [STAThread]
         static void Main()
         {
-            information = new Information();
+            information = new Performance();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             MainWindow mainWindow = new MainWindow();
-            windowManager = new WindowManager(mainWindow);
+            widgetManager = new WidgetManager(mainWindow);
 
-            windowManager.Init();
+            widgetManager.Init();
+            SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(PowerModeChanged);
+
             information.Start();
-            windowManager.Show();
+            widgetManager.Show();
+
             Application.Run(mainWindow);
         }
 
-        public static Information GetInformation()
+        public static Performance GetInformation()
         {
-            return information;        
+            return information;
         }
 
-        public static WindowManager GetWindowManager()
+        public static WidgetManager GetWigetManager()
         {
-            return windowManager;
+            return widgetManager;
+        }
+        private static void PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            switch (e.Mode)
+            {
+                case PowerModes.Resume:
+                    information.Start();
+                    widgetManager.Resume();
+                    break;
+                case PowerModes.Suspend:
+                    information.Stop();
+                    widgetManager.Suspend();
+                    break;
+            }
         }
     }
 }
