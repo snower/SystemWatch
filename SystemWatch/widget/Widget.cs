@@ -69,6 +69,11 @@ namespace SystemWatch
 
         }
 
+        public virtual string GetShortNoticce()
+        {
+            return "";
+        }
+
         protected void DrawArcRadius(Graphics g, Pen pen, Int32 x, Int32 y, Int32 w, Int32 h, Int32 radius)
         {
             g.DrawLine(pen, x + radius, y, x + w - radius, y);

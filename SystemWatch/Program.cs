@@ -8,6 +8,7 @@ namespace SystemWatch
     {
         private static Performance information;
         private static WidgetManager widgetManager;
+        private static NotifyMenuManager notifyMenuManager;
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>
@@ -19,16 +20,17 @@ namespace SystemWatch
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            MainWindow mainWindow = new MainWindow();
-            widgetManager = new WidgetManager(mainWindow);
+            widgetManager = new WidgetManager();
+            notifyMenuManager = new NotifyMenuManager();
 
             widgetManager.Init();
             SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(PowerModeChanged);
 
             information.Start();
             widgetManager.Show();
+            notifyMenuManager.Show();
 
-            Application.Run(mainWindow);
+            Application.Run();
         }
 
         public static Performance GetInformation()

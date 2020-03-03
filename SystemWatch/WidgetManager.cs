@@ -25,16 +25,14 @@ namespace SystemWatch
         static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
         private System.Timers.Timer timer;
-        private MainWindow mainWindow;
         private WidgetWindow widgetWindow;
-        private List<Widget> windows;
+        private List<Widget> widgets;
         private IntPtr descktopPtr;
         private IntPtr shellViewPtr;
 
-        public WidgetManager(MainWindow mainWindow)
+        public WidgetManager()
         {
-            this.mainWindow = mainWindow;
-            this.windows = new List<Widget>();
+            this.widgets = new List<Widget>();
         }
 
         public void Init()
@@ -42,24 +40,54 @@ namespace SystemWatch
             this.widgetWindow = new WidgetWindow();
 
             CpuMemoryWidget cpuMemoryLoader= new CpuMemoryWidget(new Point(6, 1), new Size(146, 135));
-            this.windows.Add(cpuMemoryLoader);
+            this.widgets.Add(cpuMemoryLoader);
 
             LogicalDiakWidget logicalDiakLoader = new LogicalDiakWidget(new Point(6, 146), new Size(146, 135));
-            this.windows.Add(logicalDiakLoader);
+            this.widgets.Add(logicalDiakLoader);
 
             NetworkInterfaceWidget networkInterfaceLoader = new NetworkInterfaceWidget(new Point(6, 291), new Size(146, 135));
-            this.windows.Add(networkInterfaceLoader);
+            this.widgets.Add(networkInterfaceLoader);
 
+            this.FindDescktopWindow();
+            if(this.shellViewPtr.ToInt64() != 0)
+            {
+                SetWindowLong(this.widgetWindow.Handle, -8, (ulong)this.shellViewPtr.ToInt64());
+            }
 
+            timer = new System.Timers.Timer(1000);
+            timer.Enabled = false;
+            timer.Elapsed += new ElapsedEventHandler(TimerEvent);
+        }
+
+        private void FindDescktopWindow()
+        {
             this.descktopPtr = GetDesktopWindow();
             this.shellViewPtr = new IntPtr(0);
+
+            IntPtr progmanPtr = FindWindowEx(this.descktopPtr, new IntPtr(0), "Progman", null);
+            do
+            {
+                this.shellViewPtr = FindWindowEx(progmanPtr, new IntPtr(0), "SHELLDLL_DefView", null);
+                if (this.shellViewPtr.ToInt64() != 0)
+                {
+                    return;
+                }
+
+                progmanPtr = FindWindowEx(this.descktopPtr, progmanPtr, "WorkerW", null);
+                if (progmanPtr.ToInt64() == 0)
+                {
+                    break;
+                }
+
+            } while (true);
+
             IntPtr workerWPtr = FindWindowEx(this.descktopPtr, new IntPtr(0), "WorkerW", null);
             do
             {
                 this.shellViewPtr = FindWindowEx(workerWPtr, new IntPtr(0), "SHELLDLL_DefView", null);
-                if(this.shellViewPtr.ToInt64() != 0)
+                if (this.shellViewPtr.ToInt64() != 0)
                 {
-                    break;
+                    return;
                 }
 
                 workerWPtr = FindWindowEx(this.descktopPtr, workerWPtr, "WorkerW", null);
@@ -68,18 +96,13 @@ namespace SystemWatch
                     break;
                 }
             } while (true);
-            SetWindowLong(this.widgetWindow.Handle, -8, (ulong)this.shellViewPtr.ToInt64());
-
-            timer = new System.Timers.Timer(1000);
-            timer.Enabled = false;
-            timer.Elapsed += new ElapsedEventHandler(TimerEvent);
         }
 
         public void Show()
         {
-            for (int i = 0, count = this.windows.Count; i < count; i++)
+            for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
-                this.windows[i].BackgroundUpdate();
+                this.widgets[i].BackgroundUpdate();
             }
             this.widgetWindow.Show();
             this.timer.Start();
@@ -87,11 +110,11 @@ namespace SystemWatch
 
         private void TimerEvent(object o, ElapsedEventArgs e)
         {
-            for (int i = 0, count = this.windows.Count; i < count; i++)
+            for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
                 try
                 {
-                    this.windows[i].Update();
+                    this.widgets[i].Update();
                 } catch(Exception execption)
                 {
                     Console.WriteLine(execption.ToString());
@@ -100,9 +123,9 @@ namespace SystemWatch
             }
 
             Graphics g = this.widgetWindow.CreateGraphics();
-            for (int i = 0, count = this.windows.Count; i < count; i++)
+            for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
-                this.windows[i].Show(g);
+                this.widgets[i].Show(g);
             }
         }
 
@@ -120,10 +143,20 @@ namespace SystemWatch
         {
             this.timer.Stop();
             this.timer.Close();
-            for (int i = 0, count = this.windows.Count; i < count; i++)
+            for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
-                this.windows[i].Close();
+                this.widgets[i].Close();
             }
+        }
+
+        public string GetShortNotice()
+        {
+            string notice = "";
+            foreach(Widget widget in this.widgets)
+            {
+                notice += widget.GetShortNoticce() + " ";
+            }
+            return notice.Substring(0, notice.Length - 1);
         }
     }
 }

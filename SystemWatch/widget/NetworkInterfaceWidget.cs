@@ -34,8 +34,54 @@ namespace SystemWatch
         private Point totalReceivedLocation;
         private Point totalSentLocation;
 
+        public string SentReceivedText
+        {
+            get
+            {
+                return this.sentReceivedText;
+            }
+        }
+
+        public string ReceivedText
+        {
+            get
+            {
+                return this.receivedText;
+            }
+        }
+
+        public string SentText
+        {
+            get
+            {
+                return this.sentText;
+            }
+        }
+
+        public string TotalReceivedText
+        {
+            get
+            {
+                return this.totalReceivedText;
+            }
+        }
+
+        public string TotalSentText
+        {
+            get
+            {
+                return this.totalSentText;
+            }
+        }
+
         public NetworkInterfaceWidget(Point location, Size clientSize) : base(location, clientSize)
         {
+            this.sentReceivedText = "T: 0B/s";
+            this.receivedText = "R: 0B/s";
+            this.sentText = "S: 0B/s";
+            this.totalReceivedText = "TR: 0B/s";
+            this.totalSentText = "TS: 0B/s";
+
             this.netFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.totalNetFont = new Font("微软雅黑", 6.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
 
@@ -80,6 +126,11 @@ namespace SystemWatch
         {
             base.Close();
             this.canvasView.Close();
+        }
+
+        public override string GetShortNoticce()
+        {
+            return "Net:" + this.sentReceivedText.Substring(3);
         }
 
         private void UpdateLatestDatas(object sender, Canvas.CanvasRefreshLatestDataEventArgs e)

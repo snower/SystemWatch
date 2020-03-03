@@ -26,10 +26,37 @@ namespace SystemWatch
         private Point memLocation;
         private Point totalMemLocation;
 
+        public string CpuText
+        {
+            get
+            {
+                return this.cpuText;
+            }
+        }
+
+        public string MemText
+        {
+            get
+            {
+                return this.memText;
+            }
+        }
+
+        public string TotalMemText
+        {
+            get
+            {
+                return this.totalMemText;
+            }
+        }
+
         public CpuMemoryWidget(Point location, Size clientSize) : base(location, clientSize)
         {
-            this.cpuFont = new Font("微软雅黑", 9.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.cpuText = "C: 0%";
+            this.memText = "U: 0B";
+            this.totalMemText = "T: 0B";
 
+            this.cpuFont = new Font("微软雅黑", 9.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.memFont = new Font("微软雅黑", 8F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
 
             this.cpuBrush = new SolidBrush(this.NormalColor[0]);
@@ -68,6 +95,11 @@ namespace SystemWatch
         {
             base.Close();
             this.canvasView.Close();
+        }
+
+        public override string GetShortNoticce()
+        {
+            return "Cpu:" + this.cpuText.Substring(3) + " Mem:" + this.MemText.Substring(3);
         }
 
         private void UpdateLatestDatas(object sender, Canvas.CanvasRefreshLatestDataEventArgs e)

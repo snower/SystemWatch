@@ -34,8 +34,54 @@ namespace SystemWatch
         private Point totalReadLocation;
         private Point totalWriteLocation;
 
+        public string WriteReadText
+        {
+            get
+            {
+                return this.writeReadText;
+            }
+        }
+
+        public string ReadText
+        {
+            get
+            {
+                return this.readText;
+            }
+        }
+
+        public string WriteText
+        {
+            get
+            {
+                return this.writeText;
+            }
+        }
+
+        public string TotalReadText
+        {
+            get
+            {
+                return this.totalReadText;
+            }
+        }
+
+        public string TotalWriteText
+        {
+            get
+            {
+                return this.totalWriteText;
+            }
+        }
+
         public LogicalDiakWidget(Point location, Size clientSize) : base(location, clientSize)
         {
+            this.writeReadText = "T: 0B/s";
+            this.writeText = "W: 0B/s";
+            this.readText = "R: 0B/s";
+            this.totalWriteText = "TW: 0B/s";
+            this.totalReadText = "TR: 0B/s";
+
             this.rwFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.totalRwFont = new Font("微软雅黑", 6.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
 
@@ -80,6 +126,11 @@ namespace SystemWatch
         {
             base.Close();
             this.canvasView.Close();
+        }
+
+        public override string GetShortNoticce()
+        {
+            return "Disk:" + this.writeReadText.Substring(3);
         }
 
         private void UpdateLatestDatas(object sender, Canvas.CanvasRefreshLatestDataEventArgs e)
