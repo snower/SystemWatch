@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Timers;
 using System.Windows.Forms;
 using SystemWatch.ui;
 
@@ -24,7 +23,7 @@ namespace SystemWatch
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        private System.Timers.Timer timer;
+        private Timer timer;
         private WidgetWindow widgetWindow;
         private List<Widget> widgets;
         private IntPtr descktopPtr;
@@ -54,9 +53,10 @@ namespace SystemWatch
                 SetWindowLong(this.widgetWindow.Handle, -8, (ulong)this.shellViewPtr.ToInt64());
             }
 
-            timer = new System.Timers.Timer(1000);
-            timer.Enabled = false;
-            timer.Elapsed += new ElapsedEventHandler(TimerEvent);
+            this.timer = new Timer();
+            this.timer.Interval = 1000;
+            this.timer.Enabled = false;
+            this.timer.Tick += new EventHandler(TimerEvent);
         }
 
         private void FindDescktopWindow()
@@ -108,7 +108,7 @@ namespace SystemWatch
             this.timer.Start();
         }
 
-        private void TimerEvent(object o, ElapsedEventArgs e)
+        private void TimerEvent(object o, EventArgs e)
         {
             for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
@@ -142,7 +142,7 @@ namespace SystemWatch
         public void Close()
         {
             this.timer.Stop();
-            this.timer.Close();
+            this.timer.Dispose();
             for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
                 this.widgets[i].Close();

@@ -106,15 +106,15 @@ namespace SystemWatch
         {
             Canvas.Data[] data = e.LatestDatas;
 
-            if (data[0] != null)
+            switch (e.Channel)
             {
-                this.cpuText = "C: " + String.Format("{0:0.0}", data[0].percent) + "%";
-            }
-
-            if (data[1] != null)
-            {
-                this.memText = "U: " + this.FormatByteSize(5, data[1].current * 1024) + "B";
-                this.totalMemText = "T: " + this.FormatByteSize(5, data[1].total * 1024) +"B";
+                case 1:
+                    this.cpuText = "C: " + String.Format("{0:0.0}", data[0].percent) + "%";
+                    break;
+                case 2:
+                    this.memText = "U: " + this.FormatByteSize(5, data[1].current * 1024) + "B";
+                    this.totalMemText = "T: " + this.FormatByteSize(5, data[1].total * 1024) + "B";
+                    break;
             }
         }
     }

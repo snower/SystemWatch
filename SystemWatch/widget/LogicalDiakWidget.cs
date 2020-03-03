@@ -136,23 +136,21 @@ namespace SystemWatch
         private void UpdateLatestDatas(object sender, Canvas.CanvasRefreshLatestDataEventArgs e)
         {
             Canvas.Data[] data = e.LatestDatas;
-            if (data[0] != null)
+            switch (e.Channel)
             {
-                this.writeReadText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
-            }
-
-            if (data[1] != null)
-            {
-                this.readText = "R: " + this.FormatByteSize(5, data[1].current) + "/s";
-                this.logicalDiskReadTotal += data[1].current;
-                this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
-            }
-
-            if (data[2] != null)
-            {
-                this.writeText = "W: " + this.FormatByteSize(5, data[2].current) + "/s";
-                this.logicalDiskWriteTotal += data[2].current;
-                this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
+                case 1:
+                    this.writeReadText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
+                    break;
+                case 2:
+                    this.readText = "R: " + this.FormatByteSize(5, data[1].current) + "/s";
+                    this.logicalDiskReadTotal += data[1].current;
+                    this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
+                    break;
+                case 3:
+                    this.writeText = "W: " + this.FormatByteSize(5, data[2].current) + "/s";
+                    this.logicalDiskWriteTotal += data[2].current;
+                    this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
+                    break;
             }
         }
     }

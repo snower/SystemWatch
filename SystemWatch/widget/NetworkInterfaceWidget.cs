@@ -136,23 +136,21 @@ namespace SystemWatch
         private void UpdateLatestDatas(object sender, Canvas.CanvasRefreshLatestDataEventArgs e)
         {
             Canvas.Data[] data = e.LatestDatas;
-            if (data[0] != null)
+            switch (e.Channel)
             {
-                this.sentReceivedText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
-            }
-
-            if (data[1] != null)
-            {
-                this.receivedText = "R: " + this.FormatByteSize(5, data[1].current) + "/s";
-                this.receivedTotalBytes += data[1].current;
-                this.totalReceivedText = "RT: " + this.FormatByteSize(5, this.receivedTotalBytes) + "B";
-            }
-
-            if (data[2] != null)
-            {
-                this.sentText = "S: " + this.FormatByteSize(5, data[2].current) + "/s";
-                this.sentTotalBytes += data[2].current;
-                this.totalSentText = "ST: " + this.FormatByteSize(5, this.sentTotalBytes) + "B";
+                case 1:
+                    this.sentReceivedText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
+                    break;
+                case 2:
+                    this.receivedText = "R: " + this.FormatByteSize(5, data[1].current) + "/s";
+                    this.receivedTotalBytes += data[1].current;
+                    this.totalReceivedText = "RT: " + this.FormatByteSize(5, this.receivedTotalBytes) + "B";
+                    break;
+                case 3:
+                    this.sentText = "S: " + this.FormatByteSize(5, data[2].current) + "/s";
+                    this.sentTotalBytes += data[2].current;
+                    this.totalSentText = "ST: " + this.FormatByteSize(5, this.sentTotalBytes) + "B";
+                    break;
             }
         }
     }

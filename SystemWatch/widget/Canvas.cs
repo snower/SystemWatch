@@ -13,10 +13,12 @@ namespace SystemWatch
     {
         public class CanvasRefreshLatestDataEventArgs : EventArgs
         {
-            public Data[] LatestDatas{private set;get;}
+            public Data[] LatestDatas{ private set; get;}
+            public int Channel { private set; get; }
 
-            public CanvasRefreshLatestDataEventArgs(Data[] latestDatas){
+            public CanvasRefreshLatestDataEventArgs(Data[] latestDatas, int channel){
                 this.LatestDatas = latestDatas;
+                this.Channel = channel;
             }
         };
 
@@ -210,7 +212,7 @@ namespace SystemWatch
                 this.dataIndexs[channel] = 0;
             }
 
-            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas));
+            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas, channel + 1));
         }
 
         public void Close()
