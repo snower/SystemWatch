@@ -35,3 +35,13 @@ D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.csprojAs
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.ui.WidgetWindow.resources
 D:\project\github\WinDesktopTools\SystemWatch\obj\x86\Debug\SystemWatch.ui.ConfigWindow.resources
 D:\project\github\WinDesktopTools\SystemWatch\bin\Debug\SystemWatch.exe.config
+D:\project\github\SystemWatch\SystemWatch\bin\Debug\SystemWatch.exe.config
+D:\project\github\SystemWatch\SystemWatch\bin\Debug\SystemWatch.exe
+D:\project\github\SystemWatch\SystemWatch\bin\Debug\SystemWatch.pdb
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.csprojAssemblyReference.cache
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.ui.ConfigWindow.resources
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.ui.WidgetWindow.resources
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.Properties.Resources.resources
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.csproj.GenerateResource.cache
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.exe
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.pdb

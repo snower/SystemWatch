@@ -25,9 +25,13 @@ namespace SystemWatch
 
         private Timer timer;
         private WidgetWindow widgetWindow;
+        private Graphics widgetGraphics;
         private List<Widget> widgets;
         private IntPtr descktopPtr;
         private IntPtr shellViewPtr;
+
+        public int WidgetWidth { private set; get; }
+        public int WidgetHeight { private set; get; }
 
         public WidgetManager()
         {
@@ -36,15 +40,20 @@ namespace SystemWatch
 
         public void Init()
         {
-            this.widgetWindow = new WidgetWindow();
+            this.WidgetWidth = 146;
+            this.WidgetHeight = 120;
 
-            CpuMemoryWidget cpuMemoryLoader= new CpuMemoryWidget(new Point(6, 1), new Size(146, 135));
+            this.widgetWindow = new WidgetWindow();
+            this.widgetWindow.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - 200, 100);
+            this.widgetWindow.ClientSize = new System.Drawing.Size(this.WidgetWidth + 10, this.WidgetHeight * 3 + 110);
+
+            CpuMemoryWidget cpuMemoryLoader= new CpuMemoryWidget(new Point(5, 5), new Size(this.WidgetWidth, this.WidgetHeight));
             this.widgets.Add(cpuMemoryLoader);
 
-            LogicalDiakWidget logicalDiakLoader = new LogicalDiakWidget(new Point(6, 146), new Size(146, 135));
+            LogicalDiakWidget logicalDiakLoader = new LogicalDiakWidget(new Point(5, this.WidgetHeight + 55), new Size(this.WidgetWidth, this.WidgetHeight));
             this.widgets.Add(logicalDiakLoader);
 
-            NetworkInterfaceWidget networkInterfaceLoader = new NetworkInterfaceWidget(new Point(6, 291), new Size(146, 135));
+            NetworkInterfaceWidget networkInterfaceLoader = new NetworkInterfaceWidget(new Point(6, this.WidgetHeight * 2 + 105), new Size(this.WidgetWidth, this.WidgetHeight));
             this.widgets.Add(networkInterfaceLoader);
 
             this.FindDescktopWindow();
@@ -105,6 +114,7 @@ namespace SystemWatch
                 this.widgets[i].BackgroundUpdate();
             }
             this.widgetWindow.Show();
+            this.widgetGraphics = this.widgetWindow.CreateGraphics();
             this.timer.Start();
         }
 
@@ -122,10 +132,9 @@ namespace SystemWatch
                 
             }
 
-            Graphics g = this.widgetWindow.CreateGraphics();
             for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
-                this.widgets[i].Show(g);
+                this.widgets[i].Show(this.widgetGraphics);
             }
         }
 

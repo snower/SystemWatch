@@ -14,8 +14,6 @@ namespace SystemWatch.ui
         public WidgetWindow()
         {
             InitializeComponent();
-
-            this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - 200, 80);
         }
     }
 }

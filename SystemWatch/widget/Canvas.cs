@@ -118,11 +118,11 @@ namespace SystemWatch
             g.FillRectangle(new SolidBrush(Color.FromArgb(177, 177, 177)), this.cx -1, this.cy - 1, this.cw + 1, this.ch + 1);
 
             Pen pen = new Pen(Color.FromArgb(150,150,150),1F);
-            for(int i=1, count = this.cw / 10; i <= count; i++){
-                g.DrawLine(pen, this.cx + i*10, this.cy, this.cx + i*10, this.cy + this.ch);
+            for(int i=1, count = this.cw / 10; i < count; i++){
+                g.DrawLine(pen, this.cx + i * 10, this.cy, this.cx + i * 10, this.cy + this.ch);
             }
 
-            for (int i = 1, count = this.ch / 10; i <=count; i++)
+            for (int i = 1, count = this.ch / 10; i < count; i++)
             {
                 g.DrawLine(pen, this.cx, this.cy + i * 10, this.cx + this.cw , this.cy + i * 10);
             }
@@ -177,7 +177,11 @@ namespace SystemWatch
 
             if(this.autoHeightChannels == null || this.autoHeightChannels[channel])
             {
-                if(data.total >= this.maxHeight)
+                if (total >= this.maxHeight)
+                {
+                    this.maxHeight = total;
+                }
+                else if (data.total >= this.maxHeight)
                 {
                     double maxHeight = 0;
                     foreach (Data[] q in this.dataQueues)
@@ -197,11 +201,6 @@ namespace SystemWatch
                     }
                     this.maxHeight = maxHeight;
                 }
-
-                if (total > this.maxHeight)
-                {
-                    this.maxHeight = total;
-                }
             }
            
             data.Update(total, current, percent);
@@ -212,7 +211,7 @@ namespace SystemWatch
                 this.dataIndexs[channel] = 0;
             }
 
-            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas, channel + 1));
+            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas, (int)param[0]));
         }
 
         public void Close()

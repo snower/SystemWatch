@@ -60,14 +60,13 @@ namespace SystemWatch
             this.memFont = new Font("微软雅黑", 8F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
 
             this.cpuBrush = new SolidBrush(this.NormalColor[0]);
-
             this.memBrush = new SolidBrush(this.NormalColor[1]);
 
-            this.cpuLocation = new Point(75, 27);
-            this.memLocation = new Point(10, 53);
-            this.totalMemLocation = new Point(75, 53);
+            this.cpuLocation = new Point(clientSize.Width / 2, 6);
+            this.memLocation = new Point(12, 34);
+            this.totalMemLocation = new Point(clientSize.Width / 2 + 2, 34);
 
-            this.canvasView = new Canvas(new Point(10, 85), new Size(126, 40), 2, 123, new Color[] { this.NormalColor[0], this.NormalColor[1]}, new bool[2] { false, true});
+            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 2, 120, new Color[] { this.NormalColor[0], this.NormalColor[1]}, new bool[2] { false, true});
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.ProcessorLoadPercent, this.canvasView, "_Total", new object[] { 1 });
@@ -112,8 +111,8 @@ namespace SystemWatch
                     this.cpuText = "C: " + String.Format("{0:0.0}", data[0].percent) + "%";
                     break;
                 case 2:
-                    this.memText = "U: " + this.FormatByteSize(5, data[1].current * 1024) + "B";
-                    this.totalMemText = "T: " + this.FormatByteSize(5, data[1].total * 1024) + "B";
+                    this.memText = "U: " + this.FormatByteSize(5, data[1].current * 1024);
+                    this.totalMemText = "T: " + this.FormatByteSize(5, data[1].total * 1024);
                     break;
             }
         }

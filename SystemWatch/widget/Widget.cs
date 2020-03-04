@@ -8,6 +8,7 @@ namespace SystemWatch
     {
         private Bitmap backgroudView;
         private Bitmap view;
+        private Graphics viewGraphics;
         private Point location;
         private Size clientSize;
 
@@ -25,12 +26,14 @@ namespace SystemWatch
 
             this.backgroudView = new Bitmap(clientSize.Width, clientSize.Height);
             this.view = new Bitmap(clientSize.Width, clientSize.Height);
+            this.viewGraphics = Graphics.FromImage(this.view);
+            this.viewGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         }
 
         protected virtual void BackgroundPaint(Graphics g)
         {
-            this.FillArcRadius(g, new SolidBrush(Color.Black), 0, 21, this.clientSize.Width-1, this.clientSize.Height-22, 5);
-            this.DrawArcRadius(g, new Pen(Color.Gray, 2), 2, 23, this.clientSize.Width - 6, this.clientSize.Height - 27, 5);
+            this.FillArcRadius(g, new SolidBrush(Color.Black), 0, 0, this.clientSize.Width - 2, this.clientSize.Height - 1, 5);
+            this.DrawArcRadius(g, new Pen(Color.Gray, 2), 2, 2, this.clientSize.Width - 6, this.clientSize.Height - 5, 5);
         }
 
         protected virtual void Paint(Graphics g)
@@ -53,10 +56,9 @@ namespace SystemWatch
 
         public virtual void Update()
         {
-            Graphics g = Graphics.FromImage(this.view);
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            g.DrawImage(this.backgroudView, new Point(0, 0));
-            this.Paint(g);
+
+            this.viewGraphics.DrawImage(this.backgroudView, new Point(0, 0));
+            this.Paint(this.viewGraphics);
         }
 
         public virtual void Show(Graphics g)
@@ -106,7 +108,7 @@ namespace SystemWatch
         {
             Font font = new Font("微软雅黑", 9.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             Color color = Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            g.DrawString(title, font, new SolidBrush(color), new Point(10, 27));
+            g.DrawString(title, font, new SolidBrush(color), new Point(12, 6));
         }
 
         protected String FormatByteSize(int len, double value, int type=0)

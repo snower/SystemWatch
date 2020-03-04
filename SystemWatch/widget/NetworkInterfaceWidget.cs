@@ -21,7 +21,8 @@ namespace SystemWatch
         private string totalReceivedText;
         private string totalSentText;
 
-        private Font netFont;
+        private Font sentReceivedFont;
+        private Font sentOrReceivedFont;
         private Font totalNetFont;
 
         private Brush sentReceivedBrush;
@@ -82,20 +83,21 @@ namespace SystemWatch
             this.totalReceivedText = "TR: 0B/s";
             this.totalSentText = "TS: 0B/s";
 
-            this.netFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
-            this.totalNetFont = new Font("微软雅黑", 6.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.sentReceivedFont = new Font("微软雅黑", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.sentOrReceivedFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.totalNetFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
 
             this.sentReceivedBrush = new SolidBrush(this.NormalColor[0]);
             this.sentBrush = new SolidBrush(this.NormalColor[1]);
             this.receivedBrush = new SolidBrush(this.NormalColor[2]);
 
-            this.sentReceivedLocation = new Point(80, 30);
-            this.receivedLocation = new Point(75, 47);
-            this.sentLoction = new Point(10, 47);
-            this.totalReceivedLocation = new Point(75, 65);
-            this.totalSentLocation = new Point(10, 65);
+            this.sentReceivedLocation = new Point(clientSize.Width / 2 - 8, 7);
+            this.receivedLocation = new Point(clientSize.Width / 2 + 6, 28);
+            this.sentLoction = new Point(17, 28);
+            this.totalReceivedLocation = new Point(clientSize.Width / 2 + 6, 45);
+            this.totalSentLocation = new Point(17, 45);
 
-            this.canvasView = new Canvas(new Point(10, 85), new Size(126, 40), 3, 123, new Color[] { this.NormalColor[0], this.NormalColor[1], this.NormalColor[1]});
+            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 3, 120, new Color[] { this.NormalColor[0], this.NormalColor[1], this.NormalColor[1]});
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.NetworkInterfaceLoadPercent, this.canvasView, "", new object[] { 1 });
@@ -106,7 +108,7 @@ namespace SystemWatch
         protected override void BackgroundPaint(Graphics g)
         {
             base.BackgroundPaint(g);
-            this.PaintTitle(g, "Network");
+            this.PaintTitle(g, "Net");
             this.canvasView.BackgroundPaint(g);
         }
 
@@ -114,9 +116,9 @@ namespace SystemWatch
         {
             base.Paint(g);
 
-            g.DrawString(this.sentReceivedText, this.netFont, this.sentReceivedBrush, this.sentReceivedLocation);
-            g.DrawString(this.receivedText, this.netFont, this.receivedBrush, this.receivedLocation);
-            g.DrawString(this.sentText, this.netFont, this.sentBrush, this.sentLoction);
+            g.DrawString(this.sentReceivedText, this.sentReceivedFont, this.sentReceivedBrush, this.sentReceivedLocation);
+            g.DrawString(this.receivedText, this.sentOrReceivedFont, this.receivedBrush, this.receivedLocation);
+            g.DrawString(this.sentText, this.sentOrReceivedFont, this.sentBrush, this.sentLoction);
             g.DrawString(this.totalReceivedText, this.totalNetFont, this.receivedBrush, this.totalReceivedLocation);
             g.DrawString(this.totalSentText, this.totalNetFont, this.sentBrush, this.totalSentLocation);
             this.canvasView.Paint(g);
@@ -144,12 +146,12 @@ namespace SystemWatch
                 case 2:
                     this.receivedText = "R: " + this.FormatByteSize(5, data[1].current) + "/s";
                     this.receivedTotalBytes += data[1].current;
-                    this.totalReceivedText = "RT: " + this.FormatByteSize(5, this.receivedTotalBytes) + "B";
+                    this.totalReceivedText = "RT: " + this.FormatByteSize(5, this.receivedTotalBytes);
                     break;
                 case 3:
                     this.sentText = "S: " + this.FormatByteSize(5, data[2].current) + "/s";
                     this.sentTotalBytes += data[2].current;
-                    this.totalSentText = "ST: " + this.FormatByteSize(5, this.sentTotalBytes) + "B";
+                    this.totalSentText = "ST: " + this.FormatByteSize(5, this.sentTotalBytes);
                     break;
             }
         }

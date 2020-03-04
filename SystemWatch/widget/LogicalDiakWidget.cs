@@ -21,7 +21,8 @@ namespace SystemWatch
         private string totalReadText;
         private string totalWriteText;
 
-        private Font rwFont;
+        private Font writeReadFont;
+        private Font writeOrReadFont;
         private Font totalRwFont;
 
         private Brush writeReadBrush;
@@ -82,20 +83,21 @@ namespace SystemWatch
             this.totalWriteText = "TW: 0B/s";
             this.totalReadText = "TR: 0B/s";
 
-            this.rwFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
-            this.totalRwFont = new Font("微软雅黑", 6.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.writeReadFont = new Font("微软雅黑", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.writeOrReadFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.totalRwFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
 
             this.writeReadBrush = new SolidBrush(this.NormalColor[0]);
             this.writeBrush = new SolidBrush(this.NormalColor[1]);
             this.readBrush = new SolidBrush(this.NormalColor[2]);
 
-            this.writeReadLocation = new Point(80, 30);
-            this.readLocation = new Point(75, 47);
-            this.writeLoction = new Point(10, 47);
-            this.totalReadLocation = new Point(75, 65);
-            this.totalWriteLocation = new Point(10, 65);
+            this.writeReadLocation = new Point(clientSize.Width / 2 - 8, 7);
+            this.readLocation = new Point(clientSize.Width / 2 + 6, 28);
+            this.writeLoction = new Point(17, 28);
+            this.totalReadLocation = new Point(clientSize.Width / 2 + 6, 45);
+            this.totalWriteLocation = new Point(17, 45);
 
-            this.canvasView = new Canvas(new Point(10, 85), new Size(126, 40), 3, 123, new Color[] { this.NormalColor[0], this.NormalColor[1], this.NormalColor[1] });
+            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 3, 120, new Color[] { this.NormalColor[0], this.NormalColor[1], this.NormalColor[1] });
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 1 });
@@ -114,9 +116,9 @@ namespace SystemWatch
         {
             base.Paint(g);
 
-            g.DrawString(this.writeReadText, this.rwFont, this.writeReadBrush, this.writeReadLocation);
-            g.DrawString(this.readText, this.rwFont, this.readBrush, this.readLocation);
-            g.DrawString(this.writeText, this.rwFont, this.writeBrush, this.writeLoction);
+            g.DrawString(this.writeReadText, this.writeReadFont, this.writeReadBrush, this.writeReadLocation);
+            g.DrawString(this.readText, this.writeOrReadFont, this.readBrush, this.readLocation);
+            g.DrawString(this.writeText, this.writeOrReadFont, this.writeBrush, this.writeLoction);
             g.DrawString(this.totalReadText, this.totalRwFont, this.readBrush, this.totalReadLocation);
             g.DrawString(this.totalWriteText, this.totalRwFont, this.writeBrush, this.totalWriteLocation);
             this.canvasView.Paint(g);
