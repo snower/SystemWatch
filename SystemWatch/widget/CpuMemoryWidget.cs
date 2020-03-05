@@ -111,8 +111,8 @@ namespace SystemWatch
                     this.cpuText = "C: " + String.Format("{0:0.0}", data[0].percent) + "%";
                     break;
                 case 2:
-                    this.memText = "U: " + this.FormatByteSize(5, data[1].current * 1024);
-                    this.totalMemText = "T: " + this.FormatByteSize(5, data[1].total * 1024);
+                    this.memText = "U: " + this.FormatByteSize(5, data[1].current);
+                    this.totalMemText = "T: " + this.FormatByteSize(5, data[1].total);
                     break;
             }
         }

@@ -52,7 +52,7 @@ namespace SystemWatch
         private Color[] colorChannels;
         private bool[] autoHeightChannels;
         private Data[] latestDatas;
-        private Point[] paintPoints;
+        private PointF[] paintPoints;
         private Pen[] paintPens;
 
         private int cx, cy, cw, ch;
@@ -98,13 +98,13 @@ namespace SystemWatch
             this.ix = (float)this.cw / (float)this.dataCount;
             this.iy = (float)this.ch / 100F;
 
-            this.paintPoints = new Point[this.cw];
+            this.paintPoints = new PointF[this.cw];
             this.paintPens = new Pen[this.colorChannels.Length];
 
             for (int i = 0; i < this.cw; i++)
             {
 
-                this.paintPoints[i] = new Point(0, 0);
+                this.paintPoints[i] = new PointF(0, 0);
             }
 
             for (int i = 0; i < this.colorChannels.Length; i++)
@@ -145,9 +145,10 @@ namespace SystemWatch
             {
                 for (int i = 0; i < this.cw; i++)
                 {
-                    Data data = datas[(index + (int)(i / this.ix)) % this.dataCount];
+                    //Data data = datas[(index + (int)Math.Round((float)i / this.ix, 0, MidpointRounding.AwayFromZero)) % this.dataCount];
+                    Data data = datas[(index + i) % this.dataCount];
                     this.paintPoints[i].X = this.cx + i;
-                    this.paintPoints[i].Y = data.total <= 0 ? this.cy + this.ch : this.cy + this.ch - (int)(this.ch * data.current / data.total);
+                    this.paintPoints[i].Y = data.total <= 0 ? this.cy + this.ch : (float)(this.cy + this.ch * (1D - data.current / data.total));
                 }
             }
             else if (this.maxHeight <= 0)
@@ -162,9 +163,10 @@ namespace SystemWatch
             {
                 for (int i = 0; i < this.cw; i++)
                 {
-                    Data data = datas[(index + (int)(i / this.ix)) % this.dataCount];
+                    //Data data = datas[(index + (int)Math.Round((float)i / this.ix, 0, MidpointRounding.AwayFromZero)) % this.dataCount];
+                    Data data = datas[(index + i) % this.dataCount];
                     this.paintPoints[i].X = this.cx + i;
-                    this.paintPoints[i].Y = this.cy + this.ch - (int)(this.ch * ((data.total / this.maxHeight * data.current) / this.maxHeight));
+                    this.paintPoints[i].Y = (float)(this.cy + this.ch * (1D - data.total / this.maxHeight * data.current / this.maxHeight));
                 }
             }
             g.DrawLines(this.paintPens[channel % this.paintPens.Length], this.paintPoints);

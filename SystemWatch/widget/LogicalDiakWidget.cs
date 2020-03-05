@@ -78,31 +78,32 @@ namespace SystemWatch
         public LogicalDiakWidget(Point location, Size clientSize) : base(location, clientSize)
         {
             this.writeReadText = "T: 0B/s";
-            this.writeText = "W: 0B/s";
             this.readText = "R: 0B/s";
-            this.totalWriteText = "TW: 0B/s";
+            this.writeText = "W: 0B/s";
             this.totalReadText = "TR: 0B/s";
+            this.totalWriteText = "TW: 0B/s";
 
             this.writeReadFont = new Font("微软雅黑", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.writeOrReadFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.totalRwFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
 
             this.writeReadBrush = new SolidBrush(this.NormalColor[0]);
-            this.writeBrush = new SolidBrush(this.NormalColor[1]);
-            this.readBrush = new SolidBrush(this.NormalColor[2]);
+            this.readBrush = new SolidBrush(this.NormalColor[1]);
+            this.writeBrush = new SolidBrush(this.NormalColor[2]);
 
             this.writeReadLocation = new Point(clientSize.Width / 2 - 8, 7);
-            this.readLocation = new Point(clientSize.Width / 2 + 6, 28);
-            this.writeLoction = new Point(17, 28);
-            this.totalReadLocation = new Point(clientSize.Width / 2 + 6, 45);
-            this.totalWriteLocation = new Point(17, 45);
+            this.readLocation = new Point(17, 28);
+            this.writeLoction = new Point(clientSize.Width / 2 + 6, 28); 
+            this.totalReadLocation = new Point(17, 45);
+            this.totalWriteLocation = new Point(clientSize.Width / 2 + 6, 45); 
 
-            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 3, 120, new Color[] { this.NormalColor[0], this.NormalColor[1], this.NormalColor[1] });
+            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 3, 120,
+                new Color[] { this.NormalColor[0], this.NormalColor[2], this.NormalColor[1] });
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 1 });
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 2 });
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 3 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 2 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 3 });
         }
 
         protected override void BackgroundPaint(Graphics g)
@@ -144,14 +145,14 @@ namespace SystemWatch
                     this.writeReadText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
                     break;
                 case 2:
-                    this.readText = "R: " + this.FormatByteSize(5, data[1].current) + "/s";
-                    this.logicalDiskReadTotal += data[1].current;
-                    this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
+                    this.writeText = "W: " + this.FormatByteSize(5, data[1].current) + "/s";
+                    this.logicalDiskWriteTotal += data[1].current;
+                    this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
                     break;
                 case 3:
-                    this.writeText = "W: " + this.FormatByteSize(5, data[2].current) + "/s";
-                    this.logicalDiskWriteTotal += data[2].current;
-                    this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
+                    this.readText = "R: " + this.FormatByteSize(5, data[2].current) + "/s";
+                    this.logicalDiskReadTotal += data[2].current;
+                    this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
                     break;
             }
         }

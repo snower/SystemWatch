@@ -167,7 +167,7 @@ namespace SystemWatch
                     Console.WriteLine(exception.ToString());
                 }
             }
-            pcd.available = available;
+            pcd.available = available * (double)pcd.param[1];
             pcd.total = Convert.ToDouble(pcd.param[0]);
             pcd.load = pcd.total - pcd.available;
             pcd.percent = pcd.load / pcd.total * 100;
@@ -222,7 +222,7 @@ namespace SystemWatch
             {
                 if (mo["TotalVisibleMemorySize"] != null)
                 {
-                    this.systemInfo.PhysicalMemorySize = (ulong)mo["TotalVisibleMemorySize"];
+                    this.systemInfo.PhysicalMemorySize = (ulong)mo["TotalVisibleMemorySize"] * 1024;
                     break;
                 }
             }
@@ -304,7 +304,7 @@ namespace SystemWatch
                 case DataType.MemoryLoadPercent:
                     if (!this.performanceCounters.ContainsKey(key))
                     {
-                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[]{new PerformanceCounter("Memory", "Available KBytes")}, type, GetDataType.Available, instanceName, new object[]{this.systemInfo.PhysicalMemorySize});
+                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[]{new PerformanceCounter("Memory", "Available KBytes")}, type, GetDataType.Available, instanceName, new object[]{this.systemInfo.PhysicalMemorySize, 1024D});
                         pcd.CountHandle += this.AvaiableCounterHandler;
                         this.performanceCounters.Add(key, pcd);
                         return pcd;
