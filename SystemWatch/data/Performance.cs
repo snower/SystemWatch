@@ -137,18 +137,18 @@ namespace SystemWatch
                 {
                     pcd.Value.DoCountHandle();
                 }
-
-                foreach (KeyValuePair<IPushData, List<ViewType>> lvt in this.views)
-                {
-                    foreach (ViewType vt in lvt.Value)
-                    {
-                        vt.view.PushData(vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
-                    }
-                }
             }
             finally
             {
                 this.updating = false;
+            }
+
+            foreach (KeyValuePair<IPushData, List<ViewType>> lvt in this.views)
+            {
+                foreach (ViewType vt in lvt.Value)
+                {
+                    vt.view.PushData(vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
+                }
             }
         }
 

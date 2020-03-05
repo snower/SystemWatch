@@ -146,13 +146,19 @@ namespace SystemWatch
                     break;
                 case 2:
                     this.sentText = "S: " + this.FormatByteSize(5, data[1].current) + "/s";
-                    this.sentTotalBytes += data[1].current;
-                    this.totalSentText = "ST: " + this.FormatByteSize(5, this.sentTotalBytes);
+                    if(data[1].current != 0)
+                    {
+                        this.sentTotalBytes += data[1].current;
+                        this.totalSentText = "ST: " + this.FormatByteSize(5, this.sentTotalBytes);
+                    }
                     break;
                 case 3:
                     this.receivedText = "R: " + this.FormatByteSize(5, data[2].current) + "/s";
-                    this.receivedTotalBytes += data[2].current;
-                    this.totalReceivedText = "RT: " + this.FormatByteSize(5, this.receivedTotalBytes);
+                    if(data[2].current != 0)
+                    {
+                        this.receivedTotalBytes += data[2].current;
+                        this.totalReceivedText = "RT: " + this.FormatByteSize(5, this.receivedTotalBytes);
+                    }
                     break;
             }
         }

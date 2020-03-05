@@ -12,6 +12,8 @@ namespace SystemWatch
         private Point location;
         private Size clientSize;
 
+        protected string[] ByteUnits = new String[] { "B", "K", "M", "G", "T", "P", "E" };
+
         protected Color[] NormalColor = new Color[]{
             Color.FromArgb(0,255,255),
             Color.FromArgb(0,255,0),
@@ -56,7 +58,6 @@ namespace SystemWatch
 
         public virtual void Update()
         {
-
             this.viewGraphics.DrawImage(this.backgroudView, new Point(0, 0));
             this.Paint(this.viewGraphics);
         }
@@ -111,16 +112,15 @@ namespace SystemWatch
             g.DrawString(title, font, new SolidBrush(color), new Point(12, 6));
         }
 
-        protected String FormatByteSize(int len, double value, int type=0)
+        protected String FormatByteSize(int len, double value, int type = 0)
         {
-            string[] units=new String[]{"B","K","M","G", "T", "P", "E"};
-            for (int i = type, count = units.Length; i < count; i++)
+            for (int i = type, count = this.ByteUnits.Length; i < count; i++)
             {
                 if (value < 1024)
                 {
                     string result = Convert.ToString(value);
                     len = len > result.Length ? result.Length : len;
-                    return result.Substring(0, len) + units[i];
+                    return result.Substring(0, len) + this.ByteUnits[i];
                 }
                 value /= 1024;
             }

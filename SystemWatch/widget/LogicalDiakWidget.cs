@@ -146,13 +146,19 @@ namespace SystemWatch
                     break;
                 case 2:
                     this.writeText = "W: " + this.FormatByteSize(5, data[1].current) + "/s";
-                    this.logicalDiskWriteTotal += data[1].current;
-                    this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
+                    if (data[1].current != 0)
+                    {
+                        this.logicalDiskWriteTotal += data[1].current;
+                        this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
+                    }
                     break;
                 case 3:
                     this.readText = "R: " + this.FormatByteSize(5, data[2].current) + "/s";
-                    this.logicalDiskReadTotal += data[2].current;
-                    this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
+                    if (data[2].current != 0)
+                    {
+                        this.logicalDiskReadTotal += data[2].current;
+                        this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
+                    }
                     break;
             }
         }

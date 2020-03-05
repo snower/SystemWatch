@@ -169,6 +169,7 @@ namespace SystemWatch
                     this.paintPoints[i].Y = (float)(this.cy + this.ch * (1D - data.total / this.maxHeight * data.current / this.maxHeight));
                 }
             }
+
             g.DrawLines(this.paintPens[channel % this.paintPens.Length], this.paintPoints);
         }
 
@@ -176,25 +177,22 @@ namespace SystemWatch
         {
             int channel = (int)param[0] - 1;
             Data data = this.dataQueues[channel][this.dataIndexs[channel]];
+            double ototal = data.total;
 
-            if(this.autoHeightChannels == null || this.autoHeightChannels[channel])
+            data.Update(total, current, percent);
+            if (this.autoHeightChannels == null || this.autoHeightChannels[channel])
             {
                 if (total >= this.maxHeight)
                 {
                     this.maxHeight = total;
                 }
-                else if (data.total >= this.maxHeight)
+                else if (ototal >= this.maxHeight)
                 {
                     double maxHeight = 0;
                     foreach (Data[] q in this.dataQueues)
                     {
                         foreach (Data d in q)
                         {
-                            if(d == data)
-                            {
-                                continue;
-                            }
-
                             if (d.total > maxHeight)
                             {
                                 maxHeight = d.total;
@@ -205,7 +203,6 @@ namespace SystemWatch
                 }
             }
            
-            data.Update(total, current, percent);
             this.latestDatas[channel] = data;
             this.dataIndexs[channel]++;
             if(this.dataIndexs[channel] >= this.dataCount)
