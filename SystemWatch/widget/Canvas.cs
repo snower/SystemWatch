@@ -166,7 +166,7 @@ namespace SystemWatch
                     //Data data = datas[(index + (int)Math.Round((float)i / this.ix, 0, MidpointRounding.AwayFromZero)) % this.dataCount];
                     Data data = datas[(index + i) % this.dataCount];
                     this.paintPoints[i].X = this.cx + i;
-                    this.paintPoints[i].Y = (float)(this.cy + this.ch * (1D - data.total / this.maxHeight * data.current / this.maxHeight));
+                    this.paintPoints[i].Y = (float)(this.cy + this.ch * (1D - data.current / this.maxHeight));
                 }
             }
 
@@ -175,7 +175,7 @@ namespace SystemWatch
 
         public void PushData(double total, double current, double percent, object[] param)
         {
-            int channel = (int)param[0] - 1;
+            int channel = (int)param[0];
             Data data = this.dataQueues[channel][this.dataIndexs[channel]];
             double ototal = data.total;
 
@@ -210,7 +210,7 @@ namespace SystemWatch
                 this.dataIndexs[channel] = 0;
             }
 
-            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas, (int)param[0]));
+            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas, channel));
         }
 
         public void Close()

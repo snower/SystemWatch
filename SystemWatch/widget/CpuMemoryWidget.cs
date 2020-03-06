@@ -11,6 +11,9 @@ namespace SystemWatch
 {
     public class CpuMemoryWidget : Widget
     {
+        private double usedMemoryByte;
+        private double totalMemoyByte;
+
         private Canvas canvasView;
         private string cpuText;
         private string memText;
@@ -69,8 +72,8 @@ namespace SystemWatch
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 2, 120, new Color[] { this.NormalColor[0], this.NormalColor[1]}, new bool[2] { false, true});
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
-            Program.GetInformation().SetDataToView(Performance.DataType.ProcessorLoadPercent, this.canvasView, "_Total", new object[] { 1 });
-            Program.GetInformation().SetDataToView(Performance.DataType.MemoryLoadPercent, this.canvasView, "", new object[] { 2 });
+            Program.GetInformation().SetDataToView(Performance.DataType.ProcessorLoadPercent, this.canvasView, "_Total", new object[] { 0 });
+            Program.GetInformation().SetDataToView(Performance.DataType.MemoryLoadPercent, this.canvasView, "", new object[] { 1 });
         }
 
         protected override void BackgroundPaint(Graphics g)
@@ -107,12 +110,21 @@ namespace SystemWatch
 
             switch (e.Channel)
             {
-                case 1:
+                case 0:
                     this.cpuText = "C: " + String.Format("{0:0.0}", data[0].percent) + "%";
                     break;
-                case 2:
-                    this.memText = "U: " + this.FormatByteSize(5, data[1].current);
-                    this.totalMemText = "T: " + this.FormatByteSize(5, data[1].total);
+                case 1:
+                    if (this.usedMemoryByte != data[1].current)
+                    {
+                        this.usedMemoryByte = data[1].current;
+                        this.memText = "U: " + this.FormatByteSize(5, this.usedMemoryByte);
+                    }
+
+                    if (this.totalMemoyByte != data[1].total)
+                    {
+                        this.totalMemoyByte = data[1].total;
+                        this.totalMemText = "T: " + this.FormatByteSize(5, this.totalMemoyByte);
+                    }
                     break;
             }
         }

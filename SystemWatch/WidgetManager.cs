@@ -43,10 +43,6 @@ namespace SystemWatch
             this.WidgetWidth = 146;
             this.WidgetHeight = 120;
 
-            this.widgetWindow = new WidgetWindow();
-            this.widgetWindow.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - 200, 100);
-            this.widgetWindow.ClientSize = new System.Drawing.Size(this.WidgetWidth + 10, this.WidgetHeight * 3 + 110);
-
             CpuMemoryWidget cpuMemoryLoader= new CpuMemoryWidget(new Point(5, 5), new Size(this.WidgetWidth, this.WidgetHeight));
             this.widgets.Add(cpuMemoryLoader);
 
@@ -55,6 +51,11 @@ namespace SystemWatch
 
             NetworkInterfaceWidget networkInterfaceLoader = new NetworkInterfaceWidget(new Point(6, this.WidgetHeight * 2 + 105), new Size(this.WidgetWidth, this.WidgetHeight));
             this.widgets.Add(networkInterfaceLoader);
+
+            this.widgetWindow = new WidgetWindow();
+            this.widgetWindow.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - 200, 100);
+            this.widgetWindow.ClientSize = new System.Drawing.Size(this.WidgetWidth + 10, this.WidgetHeight * 3 + 110);
+            this.widgetWindow.Paint += new PaintEventHandler(this.WindowPaintEvent);
 
             this.FindDescktopWindow();
             if(this.shellViewPtr.ToInt64() != 0)
@@ -135,6 +136,14 @@ namespace SystemWatch
             for (int i = 0, count = this.widgets.Count; i < count; i++)
             {
                 this.widgets[i].Show(this.widgetGraphics);
+            }
+        }
+
+        private void WindowPaintEvent(object o, PaintEventArgs e)
+        {
+            for (int i = 0, count = this.widgets.Count; i < count; i++)
+            {
+                this.widgets[i].Show(e.Graphics);
             }
         }
 

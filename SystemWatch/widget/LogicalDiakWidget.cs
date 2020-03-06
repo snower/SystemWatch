@@ -93,17 +93,17 @@ namespace SystemWatch
 
             this.writeReadLocation = new Point(clientSize.Width / 2 - 8, 7);
             this.readLocation = new Point(17, 28);
-            this.writeLoction = new Point(clientSize.Width / 2 + 6, 28); 
+            this.writeLoction = new Point(clientSize.Width / 2 + 4, 28); 
             this.totalReadLocation = new Point(17, 45);
-            this.totalWriteLocation = new Point(clientSize.Width / 2 + 6, 45); 
+            this.totalWriteLocation = new Point(clientSize.Width / 2 + 4, 45); 
 
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 3, 120,
                 new Color[] { this.NormalColor[0], this.NormalColor[2], this.NormalColor[1] });
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 1 });
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 2 });
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 3 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 0 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 1 });
+            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 2 });
         }
 
         protected override void BackgroundPaint(Graphics g)
@@ -141,10 +141,10 @@ namespace SystemWatch
             Canvas.Data[] data = e.LatestDatas;
             switch (e.Channel)
             {
-                case 1:
+                case 0:
                     this.writeReadText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
                     break;
-                case 2:
+                case 1:
                     this.writeText = "W: " + this.FormatByteSize(5, data[1].current) + "/s";
                     if (data[1].current != 0)
                     {
@@ -152,7 +152,7 @@ namespace SystemWatch
                         this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
                     }
                     break;
-                case 3:
+                case 2:
                     this.readText = "R: " + this.FormatByteSize(5, data[2].current) + "/s";
                     if (data[2].current != 0)
                     {
