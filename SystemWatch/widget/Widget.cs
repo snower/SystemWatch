@@ -17,7 +17,7 @@ namespace SystemWatch
         protected Color[] NormalColor = new Color[]{
             Color.FromArgb(0,255,255),
             Color.FromArgb(0,255,0),
-            Color.FromArgb(192,255,32),
+            Color.FromArgb(255,255,133),
             Color.FromArgb(192,255,255)
         };
 

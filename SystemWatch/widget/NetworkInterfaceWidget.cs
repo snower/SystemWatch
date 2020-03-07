@@ -97,8 +97,8 @@ namespace SystemWatch
             this.totalReceivedLocation = new Point(17, 45);
             this.totalSentLocation = new Point(clientSize.Width / 2 + 4, 45); 
 
-            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 3, 120, 
-                new Color[] { this.NormalColor[0], this.NormalColor[2], this.NormalColor[1]});
+            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] {
+                new Canvas.DataChannel(0, this.NormalColor[0]), new Canvas.DataChannel(1, this.NormalColor[2]), new Canvas.DataChannel(2, this.NormalColor[1]) });
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.NetworkInterfaceLoadPercent, this.canvasView, "", new object[] { 0 });

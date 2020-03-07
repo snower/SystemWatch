@@ -69,7 +69,8 @@ namespace SystemWatch
             this.memLocation = new Point(12, 34);
             this.totalMemLocation = new Point(clientSize.Width / 2 + 2, 34);
 
-            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 2, 120, new Color[] { this.NormalColor[0], this.NormalColor[1]}, new bool[2] { false, true});
+            this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] { 
+                new Canvas.DataChannel(0, this.NormalColor[0], false), new Canvas.DataChannel(1, this.NormalColor[1])});
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.ProcessorLoadPercent, this.canvasView, "_Total", new object[] { 0 });
