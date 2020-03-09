@@ -65,12 +65,12 @@ namespace SystemWatch
             this.cpuBrush = new SolidBrush(this.NormalColor[0]);
             this.memBrush = new SolidBrush(this.NormalColor[1]);
 
-            this.cpuLocation = new Point(clientSize.Width / 2, 6);
+            this.cpuLocation = new Point(clientSize.Width / 2 - 12, 6);
             this.memLocation = new Point(12, 34);
             this.totalMemLocation = new Point(clientSize.Width / 2 + 2, 34);
 
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] { 
-                new Canvas.DataChannel(0, this.NormalColor[0], false), new Canvas.DataChannel(1, this.NormalColor[1])});
+                new Canvas.DataChannel(0, this.NormalColor[0], false), new Canvas.DataChannel(1, this.NormalColor[1])}, this.NormalColor[0]);
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.ProcessorLoadPercent, this.canvasView, "_Total", new object[] { 0 });
@@ -112,7 +112,7 @@ namespace SystemWatch
             switch (e.Channel)
             {
                 case 0:
-                    this.cpuText = "C: " + String.Format("{0:0.0}", data[0].percent) + "%";
+                    this.cpuText = "C: " + String.Format("{0:0.00}", data[0].percent) + "%";
                     break;
                 case 1:
                     if (this.usedMemoryByte != data[1].current)

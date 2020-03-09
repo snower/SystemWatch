@@ -11,6 +11,7 @@ namespace SystemWatch
 {
     public class Canvas : IPushData
     {
+        protected string[] ByteUnits = new String[] { "B", "K", "M", "G", "T", "P", "E" };
         public class CanvasRefreshLatestDataEventArgs : EventArgs
         {
             public Data[] LatestDatas{ private set; get;}
@@ -83,15 +84,20 @@ namespace SystemWatch
         private int cx, cy, cw, ch;
         private float ix, iy;
         private double maxHeight;
+        private string maxHeightText;
+        private Font maxHeightFont;
+        private Color maxHeightColor;
+        private Brush maxHeightBrush;
 
         public event EventHandler<CanvasRefreshLatestDataEventArgs> RefreshLatestDataEvent;
 
-        public Canvas(Point location, Size clientSize, int dataCount, DataChannel[] channels)
+        public Canvas(Point location, Size clientSize, int dataCount, DataChannel[] channels, Color maxHeightColor)
         {
             this.location = location;
             this.clientSize = clientSize;
             this.dataCount = dataCount;
             this.channels = channels;
+            this.maxHeightColor = maxHeightColor;
 
             this.Init();
         }
@@ -101,7 +107,7 @@ namespace SystemWatch
             this.latestDatas = new Data[this.channels.Length];
             this.maxHeight = 0;
 
-            foreach(DataChannel channel in this.channels)
+            foreach (DataChannel channel in this.channels)
             {
                 channel.Init(this.dataCount);
                 this.latestDatas[channel.ChannelID] = channel.Datas[0];
@@ -121,6 +127,9 @@ namespace SystemWatch
 
                 this.paintPoints[i] = new Point(0, 0);
             }
+
+            this.maxHeightFont = new Font("微软雅黑", 5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.maxHeightBrush = new SolidBrush(this.maxHeightColor);
         }
 
         public void BackgroundPaint(Graphics g)
@@ -143,6 +152,11 @@ namespace SystemWatch
             foreach(DataChannel channel in this.channels)
             {
                 this.PaintData(g, channel);
+            }
+
+            if(this.maxHeight > 0)
+            {
+                g.DrawString(this.maxHeightText, this.maxHeightFont, this.maxHeightBrush, this.cx, this.cy);
             }
         }
 
@@ -199,7 +213,10 @@ namespace SystemWatch
             {
                 if (total >= this.maxHeight)
                 {
-                    this.maxHeight = total;
+                    if(total != this.maxHeight)
+                    {
+                        this.FormatMaxHeight(total);
+                    }
                 }
                 else if (ototal >= this.maxHeight)
                 {
@@ -214,7 +231,7 @@ namespace SystemWatch
                             }
                         }
                     }
-                    this.maxHeight = maxHeight;
+                    this.FormatMaxHeight(maxHeight);
                 }
             }
            
@@ -230,6 +247,21 @@ namespace SystemWatch
 
         public void Close()
         {
+        }
+
+        protected void FormatMaxHeight(double maxHeight)
+        {
+            this.maxHeight = maxHeight;
+            for (int i = 0, count = this.ByteUnits.Length; i < count; i++)
+            {
+                if (maxHeight < 100)
+                {
+                    this.maxHeightText = String.Format("{0:0.0}", maxHeight) + this.ByteUnits[i];
+                    return;
+                }
+                maxHeight /= 1024;
+            }
+            this.maxHeightText = "0B";
         }
     }
 }

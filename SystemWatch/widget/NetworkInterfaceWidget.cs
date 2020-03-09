@@ -91,14 +91,15 @@ namespace SystemWatch
             this.receivedBrush = new SolidBrush(this.NormalColor[1]);
             this.sentBrush = new SolidBrush(this.NormalColor[2]);
 
-            this.sentReceivedLocation = new Point(clientSize.Width / 2 - 8, 7);
+            this.sentReceivedLocation = new Point(clientSize.Width / 2 - 12, 7);
             this.receivedLocation = new Point(17, 28); 
             this.sentLoction = new Point(clientSize.Width / 2 + 4, 28);
             this.totalReceivedLocation = new Point(17, 45);
             this.totalSentLocation = new Point(clientSize.Width / 2 + 4, 45); 
 
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] {
-                new Canvas.DataChannel(0, this.NormalColor[0]), new Canvas.DataChannel(1, this.NormalColor[2]), new Canvas.DataChannel(2, this.NormalColor[1]) });
+                new Canvas.DataChannel(0, this.NormalColor[0]), new Canvas.DataChannel(1, this.NormalColor[2]), new Canvas.DataChannel(2, this.NormalColor[1]) },
+                this.NormalColor[0]);
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.NetworkInterfaceLoadPercent, this.canvasView, "", new object[] { 0 });
@@ -109,7 +110,7 @@ namespace SystemWatch
         protected override void BackgroundPaint(Graphics g)
         {
             base.BackgroundPaint(g);
-            this.PaintTitle(g, "Net");
+            this.PaintTitle(g, "NET");
             this.canvasView.BackgroundPaint(g);
         }
 

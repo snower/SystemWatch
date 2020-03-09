@@ -91,14 +91,15 @@ namespace SystemWatch
             this.readBrush = new SolidBrush(this.NormalColor[1]);
             this.writeBrush = new SolidBrush(this.NormalColor[2]);
 
-            this.writeReadLocation = new Point(clientSize.Width / 2 - 8, 7);
+            this.writeReadLocation = new Point(clientSize.Width / 2 - 12, 7);
             this.readLocation = new Point(17, 28);
             this.writeLoction = new Point(clientSize.Width / 2 + 4, 28); 
             this.totalReadLocation = new Point(17, 45);
             this.totalWriteLocation = new Point(clientSize.Width / 2 + 4, 45); 
 
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] {
-                new Canvas.DataChannel(0, this.NormalColor[0]), new Canvas.DataChannel(1, this.NormalColor[2]), new Canvas.DataChannel(2, this.NormalColor[1]) });
+                new Canvas.DataChannel(0, this.NormalColor[0]), new Canvas.DataChannel(1, this.NormalColor[2]), new Canvas.DataChannel(2, this.NormalColor[1]) },
+                this.NormalColor[0]);
             this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
 
             Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 0 });
