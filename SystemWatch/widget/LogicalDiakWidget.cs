@@ -93,9 +93,9 @@ namespace SystemWatch
 
             this.writeReadLocation = new Point(clientSize.Width / 2 - 12, 7);
             this.readLocation = new Point(17, 28);
-            this.writeLoction = new Point(clientSize.Width / 2 + 4, 28); 
+            this.writeLoction = new Point(clientSize.Width / 2 + 2, 28); 
             this.totalReadLocation = new Point(17, 45);
-            this.totalWriteLocation = new Point(clientSize.Width / 2 + 4, 45); 
+            this.totalWriteLocation = new Point(clientSize.Width / 2 + 2, 45); 
 
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] {
                 new Canvas.DataChannel(0, this.NormalColor[0]), new Canvas.DataChannel(1, this.NormalColor[2]), new Canvas.DataChannel(2, this.NormalColor[1]) },

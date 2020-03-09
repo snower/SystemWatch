@@ -134,9 +134,9 @@ namespace SystemWatch
 
         public void BackgroundPaint(Graphics g)
         {
-            g.FillRectangle(new SolidBrush(Color.FromArgb(177, 177, 177)), this.cx -1, this.cy - 1, this.cw + 1, this.ch + 1);
+            g.FillRectangle(new SolidBrush(Color.FromArgb(175, 175, 175)), this.cx -1, this.cy - 1, this.cw + 1, this.ch + 1);
 
-            Pen pen = new Pen(Color.FromArgb(150,150,150),1F);
+            Pen pen = new Pen(Color.FromArgb(155, 155, 155), 1F);
             for(int i=1, count = this.cw / 10; i < count; i++){
                 g.DrawLine(pen, this.cx + i * 10, this.cy, this.cx + i * 10, this.cy + this.ch);
             }
@@ -255,7 +255,11 @@ namespace SystemWatch
             for (int i = 0, count = this.ByteUnits.Length; i < count; i++)
             {
                 if (maxHeight < 100)
-                {
+                { 
+                    if((maxHeight * 10) % 1 >= 0.5)
+                    {
+                        maxHeight += 0.1;
+                    }
                     this.maxHeightText = String.Format("{0:0.0}", maxHeight) + this.ByteUnits[i];
                     return;
                 }
