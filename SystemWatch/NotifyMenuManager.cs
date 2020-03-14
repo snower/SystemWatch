@@ -48,17 +48,22 @@ namespace SystemWatch
         {
             this.menus = new ContextMenu();
 
+            MenuItem statisticsMenu = new MenuItem();
+            statisticsMenu.Index = 0;
+            statisticsMenu.Text = "&统计";
+            statisticsMenu.Click += new System.EventHandler(this.StatisticsMenuMenuClick);
+
             MenuItem configMenu = new MenuItem();
             configMenu.Index = 0;
-            configMenu.Text = "&Config";
+            configMenu.Text = "&设置";
             configMenu.Click += new System.EventHandler(this.ConfigMenuClick);
 
             MenuItem exitMenu = new MenuItem();
             exitMenu.Index = 1;
-            exitMenu.Text = "&Exit";
+            exitMenu.Text = "&退出";
             exitMenu.Click += new System.EventHandler(this.ExitMenuClick);
 
-            this.menus.MenuItems.AddRange(new MenuItem[] {configMenu, exitMenu});
+            this.menus.MenuItems.AddRange(new MenuItem[] { statisticsMenu, configMenu, exitMenu });
         }
 
         private void IconMenuMouseMove(object sender, MouseEventArgs e)
@@ -80,11 +85,23 @@ namespace SystemWatch
             configWindow.Show();
         }
 
+        private void StatisticsMenuMenuClick(object sender, EventArgs e)
+        {
+            if (this.windows.ContainsKey("statistics"))
+            {
+                this.windows["statistics"].Show();
+                return;
+            }
+
+            Form statisticsWindow = new StatisticsWindow();
+            statisticsWindow.FormClosed += new FormClosedEventHandler(this.StatisticsWindowClosedEvent);
+            this.windows["statistics"] = statisticsWindow;
+            statisticsWindow.Show();
+        }
+
         private void ExitMenuClick(object sender, EventArgs e)
         {
             this.Close();
-            Program.GetInformation().Close();
-            Program.GetWigetManager().Close();
             Application.Exit();
         }
 
@@ -93,6 +110,14 @@ namespace SystemWatch
             if (this.windows.ContainsKey("config"))
             {
                 this.windows.Remove("config");
+            }
+        }
+
+        private void StatisticsWindowClosedEvent(object sender, FormClosedEventArgs e)
+        {
+            if (this.windows.ContainsKey("statistics"))
+            {
+                this.windows.Remove("statistics");
             }
         }
     }

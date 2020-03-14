@@ -12,35 +12,36 @@ namespace SystemWatch
     public class Canvas : IPushData
     {
         protected string[] ByteUnits = new String[] { "B", "K", "M", "G", "T", "P", "E" };
-        public class CanvasRefreshLatestDataEventArgs : EventArgs
+        public class DataUpdateEventArgs : EventArgs
         {
-            public Data[] LatestDatas{ private set; get;}
-            public int Channel { private set; get; }
+            public DataChannel Channel { private set; get; }
 
-            public CanvasRefreshLatestDataEventArgs(Data[] latestDatas, int channel){
-                this.LatestDatas = latestDatas;
+            public DataUpdateEventArgs(DataChannel channel){
                 this.Channel = channel;
             }
         };
 
         public class Data
         {
-            public double total;
-            public double current;
-            public double percent;
+            public DateTime Time;
+            public double Total;
+            public double Current;
+            public double Percent;
 
-            public Data(double total, double current, double percent)
+            public Data(DateTime time, double total, double current, double percent)
             {
-                this.total = total;
-                this.current = current;
-                this.percent = percent;
+                this.Time = time;
+                this.Total = total;
+                this.Current = current;
+                this.Percent = percent;
             }
 
-            public void Update(double total, double current, double percent)
+            public void Update(DateTime time, double total, double current, double percent)
             {
-                this.total = total;
-                this.current = current;
-                this.percent = percent;
+                this.Time = time;
+                this.Total = total;
+                this.Current = current;
+                this.Percent = percent;
             }
         };
 
@@ -53,6 +54,9 @@ namespace SystemWatch
             public Color PaintColor;
             public Pen PaintPen;
             public bool CalcuMaxHeight;
+            public double DataSum;
+            public Data LatestDdata;
+            public DataUpdateEventArgs DataUpdateEventArgs;
 
             public DataChannel(int channelId, Color paintColor, bool calcuMaxHeight = true)
             {
@@ -63,14 +67,18 @@ namespace SystemWatch
 
             public void Init(int dataCount)
             {
+                DateTime now = DateTime.Now;
+                this.DataSum = 0;
                 this.DataCount = dataCount;
                 this.Datas = new Data[this.DataCount];
                 for(int i = 0; i < this.DataCount; i++)
                 {
-                    this.Datas[i] = new Data(0, 0, 0);
+                    this.Datas[i] = new Data(now, 0, 0, 0);
                 }
                 this.CurrentIndex = 0;
+                this.LatestDdata = this.Datas[0];
                 this.PaintPen = new Pen(this.PaintColor, 1.5F);
+                this.DataUpdateEventArgs = new DataUpdateEventArgs(this);
             }
         }
 
@@ -78,7 +86,6 @@ namespace SystemWatch
         private Size clientSize;
         private DataChannel[] channels;
         private int dataCount;
-        private Data[] latestDatas;
         private Point[] paintPoints;
 
         private int cx, cy, cw, ch;
@@ -89,7 +96,8 @@ namespace SystemWatch
         private Color maxHeightColor;
         private Brush maxHeightBrush;
 
-        public event EventHandler<CanvasRefreshLatestDataEventArgs> RefreshLatestDataEvent;
+        public event EventHandler<DataUpdateEventArgs> DataUpdateEvent;
+        public event EventHandler<DataUpdateEventArgs> ResetDataUpdateEvent;
 
         public Canvas(Point location, Size clientSize, int dataCount, DataChannel[] channels, Color maxHeightColor)
         {
@@ -104,13 +112,11 @@ namespace SystemWatch
 
         private void Init()
         {
-            this.latestDatas = new Data[this.channels.Length];
             this.maxHeight = 0;
 
             foreach (DataChannel channel in this.channels)
             {
                 channel.Init(this.dataCount);
-                this.latestDatas[channel.ChannelID] = channel.Datas[0];
             }
 
             this.cx = this.location.X + 1;
@@ -173,7 +179,7 @@ namespace SystemWatch
                     //Data data = datas[(index + (int)Math.Round((float)i / this.ix, 0, MidpointRounding.AwayFromZero)) % this.dataCount];
                     Data data = datas[(index + i) % this.dataCount];
                     this.paintPoints[i].X = this.cx + i;
-                    y = data.total <= 0 ? this.cy + this.ch : this.cy + this.ch * (1D - data.current / data.total);
+                    y = data.Total <= 0 ? this.cy + this.ch : this.cy + this.ch * (1D - data.Current / data.Total);
                     this.paintPoints[i].Y = y % 1 >= 0.5 ? (int)y + 1 : (int)y;
                 }
             }
@@ -193,7 +199,7 @@ namespace SystemWatch
                     //Data data = datas[(index + (int)Math.Round((float)i / this.ix, 0, MidpointRounding.AwayFromZero)) % this.dataCount];
                     Data data = datas[(index + i) % this.dataCount];
                     this.paintPoints[i].X = this.cx + i;
-                    y = this.cy + this.ch * (1D - data.current / this.maxHeight);
+                    y = this.cy + this.ch * (1D - data.Current / this.maxHeight);
                     this.paintPoints[i].Y = y % 1 >= 0.5 ? (int)y + 1 : (int)y;
                 }
             }
@@ -201,14 +207,16 @@ namespace SystemWatch
             g.DrawLines(channel.PaintPen, this.paintPoints);
         }
 
-        public void PushData(double total, double current, double percent, object[] param)
+        public void PushData(DateTime now, double total, double current, double percent, object[] param)
         {
             int channelId = (int)param[0];
             DataChannel channel = this.channels[channelId];
             Data data = channel.Datas[channel.CurrentIndex];
-            double ototal = data.total;
+            double ototal = data.Total;
 
-            data.Update(total, current, percent);
+            data.Update(now, total, current, percent);
+            channel.DataSum += total - ototal;
+            channel.LatestDdata = data;
             if (channel.CalcuMaxHeight)
             {
                 if (total >= this.maxHeight)
@@ -225,9 +233,9 @@ namespace SystemWatch
                     {
                         foreach (Data d in c.Datas)
                         {
-                            if (d.total > maxHeight)
+                            if (d.Total > maxHeight)
                             {
-                                maxHeight = d.total;
+                                maxHeight = d.Total;
                             }
                         }
                     }
@@ -235,14 +243,16 @@ namespace SystemWatch
                 }
             }
            
-            this.latestDatas[channelId] = data;
             channel.CurrentIndex++;
             if(channel.CurrentIndex >= this.dataCount)
             {
                 channel.CurrentIndex = 0;
+                this.DataUpdateEvent(this, channel.DataUpdateEventArgs);
+                this.ResetDataUpdateEvent(this, channel.DataUpdateEventArgs);
+            } else
+            {
+                this.DataUpdateEvent(this, channel.DataUpdateEventArgs);
             }
-
-            this.RefreshLatestDataEvent(this, new CanvasRefreshLatestDataEventArgs(this.latestDatas, channelId));
         }
 
         public void Close()

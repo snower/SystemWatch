@@ -100,11 +100,12 @@ namespace SystemWatch
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] {
                 new Canvas.DataChannel(0, this.NormalColor[0]), new Canvas.DataChannel(1, this.NormalColor[2]), new Canvas.DataChannel(2, this.NormalColor[1]) },
                 this.NormalColor[0]);
-            this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
+            this.canvasView.DataUpdateEvent += this.UpdateLatestDatas;
+            this.canvasView.ResetDataUpdateEvent += Program.GetStatistics().DiskWidgetDataUpdateEvent;
 
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 0 });
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 1 });
-            Program.GetInformation().SetDataToView(Performance.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 2 });
+            Program.GetPerformance().SetDataToView(Performance.DataType.LogicalDiskLoadPercent, this.canvasView, "_Total", new object[] { 0 });
+            Program.GetPerformance().SetDataToView(Performance.DataType.LogicalDiskWriteLoadPercent, this.canvasView, "_Total", new object[] { 1 });
+            Program.GetPerformance().SetDataToView(Performance.DataType.LogicalDiskReadLoadPercent, this.canvasView, "_Total", new object[] { 2 });
         }
 
         protected override void BackgroundPaint(Graphics g)
@@ -137,27 +138,27 @@ namespace SystemWatch
             return "Disk:" + this.writeReadText.Substring(3);
         }
 
-        private void UpdateLatestDatas(object sender, Canvas.CanvasRefreshLatestDataEventArgs e)
+        private void UpdateLatestDatas(object sender, Canvas.DataUpdateEventArgs e)
         {
-            Canvas.Data[] data = e.LatestDatas;
-            switch (e.Channel)
+            Canvas.Data data = e.Channel.LatestDdata;
+            switch (e.Channel.ChannelID)
             {
                 case 0:
-                    this.writeReadText = "T: " + this.FormatByteSize(5, data[0].current) + "/s";
+                    this.writeReadText = "T: " + this.FormatByteSize(5, data.Current) + "/s";
                     break;
                 case 1:
-                    this.writeText = "W: " + this.FormatByteSize(5, data[1].current) + "/s";
-                    if (data[1].current != 0)
+                    this.writeText = "W: " + this.FormatByteSize(5, data.Current) + "/s";
+                    if (data.Current != 0)
                     {
-                        this.logicalDiskWriteTotal += data[1].current;
+                        this.logicalDiskWriteTotal += data.Current;
                         this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
                     }
                     break;
                 case 2:
-                    this.readText = "R: " + this.FormatByteSize(5, data[2].current) + "/s";
-                    if (data[2].current != 0)
+                    this.readText = "R: " + this.FormatByteSize(5, data.Current) + "/s";
+                    if (data.Current != 0)
                     {
-                        this.logicalDiskReadTotal += data[2].current;
+                        this.logicalDiskReadTotal += data.Current;
                         this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
                     }
                     break;

@@ -44,3 +44,4 @@ D:\project\github\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.Properties
 D:\project\github\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.csproj.GenerateResource.cache
 D:\project\github\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.exe
 D:\project\github\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.pdb
+D:\project\github\SystemWatch\SystemWatch\obj\x86\Release\SystemWatch.ui.StatisticsWindow.resources

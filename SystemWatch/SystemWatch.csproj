@@ -58,6 +58,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,12 +69,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="data\Statistics.cs" />
     <Compile Include="NotifyMenuManager.cs" />
     <Compile Include="ui\ConfigWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ui\ConfigWindow.Designer.cs">
       <DependentUpon>ConfigWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\StatisticsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\StatisticsWindow.Designer.cs">
+      <DependentUpon>StatisticsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="widget\Canvas.cs" />
     <Compile Include="widget\CpuMemoryWidget.cs" />
@@ -94,6 +102,9 @@
     <Compile Include="WidgetManager.cs" />
     <EmbeddedResource Include="ui\ConfigWindow.resx">
       <DependentUpon>ConfigWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\StatisticsWindow.resx">
+      <DependentUpon>StatisticsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\WidgetWindow.resx">
       <DependentUpon>WidgetWindow.cs</DependentUpon>

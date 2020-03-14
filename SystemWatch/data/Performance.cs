@@ -105,11 +105,20 @@ namespace SystemWatch
             }
         };
 
+        private DateTime now;
         private Timer timer;
         private bool updating;
         private Dictionary<IPushData, List<ViewType>> views;
         private Dictionary<string, PerformanceCounterData> performanceCounters;
         private SystemInfo systemInfo;
+
+        public DateTime Now
+        {
+            get
+            {
+                return this.now;
+            }
+        }
 
         public Performance(){
             this.updating = false;
@@ -130,6 +139,7 @@ namespace SystemWatch
                 return;
             }
             this.updating = true;
+            this.now = DateTime.Now;
 
             try
             {
@@ -147,7 +157,7 @@ namespace SystemWatch
             {
                 foreach (ViewType vt in lvt.Value)
                 {
-                    vt.view.PushData(vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
+                    vt.view.PushData(this.now, vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
                 }
             }
         }

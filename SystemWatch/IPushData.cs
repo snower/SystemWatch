@@ -7,6 +7,6 @@ namespace SystemWatch
 {
     interface IPushData
     {
-        void PushData(double total,double current,double percent, object[] param);
+        void PushData(DateTime now, double total,double current,double percent, object[] param);
     }
 }

@@ -6,7 +6,8 @@ namespace SystemWatch
 {
     static class Program
     {
-        private static Performance information;
+        private static Performance performance;
+        private static Statistics statistics;
         private static WidgetManager widgetManager;
         private static NotifyMenuManager notifyMenuManager;
         /// <summary>
@@ -15,7 +16,8 @@ namespace SystemWatch
         [STAThread]
         static void Main()
         {
-            information = new Performance();
+            performance = new Performance();
+            statistics = new Statistics();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -23,35 +25,53 @@ namespace SystemWatch
             widgetManager = new WidgetManager();
             notifyMenuManager = new NotifyMenuManager();
 
+            statistics.Init();
             widgetManager.Init();
             SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(PowerModeChanged);
 
-            information.Start();
+            statistics.Start();
+            performance.Start();
             widgetManager.Show();
             notifyMenuManager.Show();
 
+            Application.ApplicationExit += ApplicationExitEvent;
             Application.Run();
         }
 
-        public static Performance GetInformation()
+        private static void ApplicationExitEvent(object sender, EventArgs e)
         {
-            return information;
+            performance.Close();
+            widgetManager.Close();
+            statistics.Close();
+        }
+
+        public static Performance GetPerformance()
+        {
+            return performance;
         }
 
         public static WidgetManager GetWigetManager()
         {
             return widgetManager;
         }
+
+        public static Statistics GetStatistics()
+        {
+            return statistics;
+        }
+
         private static void PowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
             {
                 case PowerModes.Resume:
-                    information.Start();
+                    performance.Start();
+                    statistics.Start();
                     widgetManager.Resume();
                     break;
                 case PowerModes.Suspend:
-                    information.Stop();
+                    performance.Stop();
+                    statistics.Stop();
                     widgetManager.Suspend();
                     break;
             }

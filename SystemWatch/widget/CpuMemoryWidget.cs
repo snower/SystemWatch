@@ -71,10 +71,11 @@ namespace SystemWatch
 
             this.canvasView = new Canvas(new Point(12, 65), new Size(clientSize.Width - 24, clientSize.Height - 78), 120, new Canvas.DataChannel[] { 
                 new Canvas.DataChannel(0, this.NormalColor[0], false), new Canvas.DataChannel(1, this.NormalColor[1])}, this.NormalColor[0]);
-            this.canvasView.RefreshLatestDataEvent += this.UpdateLatestDatas;
+            this.canvasView.DataUpdateEvent += this.UpdateLatestDatas;
+            this.canvasView.ResetDataUpdateEvent += Program.GetStatistics().CpuWidgetDataUpdateEvent;
 
-            Program.GetInformation().SetDataToView(Performance.DataType.ProcessorLoadPercent, this.canvasView, "_Total", new object[] { 0 });
-            Program.GetInformation().SetDataToView(Performance.DataType.MemoryLoadPercent, this.canvasView, "", new object[] { 1 });
+            Program.GetPerformance().SetDataToView(Performance.DataType.ProcessorLoadPercent, this.canvasView, "_Total", new object[] { 0 });
+            Program.GetPerformance().SetDataToView(Performance.DataType.MemoryLoadPercent, this.canvasView, "", new object[] { 1 });
         }
 
         protected override void BackgroundPaint(Graphics g)
@@ -105,25 +106,24 @@ namespace SystemWatch
             return "Cpu:" + this.cpuText.Substring(3) + " Mem:" + this.MemText.Substring(3);
         }
 
-        private void UpdateLatestDatas(object sender, Canvas.CanvasRefreshLatestDataEventArgs e)
+        private void UpdateLatestDatas(object sender, Canvas.DataUpdateEventArgs e)
         {
-            Canvas.Data[] data = e.LatestDatas;
-
-            switch (e.Channel)
+            Canvas.Data data = e.Channel.LatestDdata;
+            switch (e.Channel.ChannelID)
             {
                 case 0:
-                    this.cpuText = "C: " + String.Format("{0:0.00}", data[0].percent) + "%";
+                    this.cpuText = "C: " + String.Format("{0:0.00}", data.Percent) + "%";
                     break;
                 case 1:
-                    if (this.usedMemoryByte != data[1].current)
+                    if (this.usedMemoryByte != data.Current)
                     {
-                        this.usedMemoryByte = data[1].current;
+                        this.usedMemoryByte = data.Current;
                         this.memText = "U: " + this.FormatByteSize(5, this.usedMemoryByte);
                     }
 
-                    if (this.totalMemoyByte != data[1].total)
+                    if (this.totalMemoyByte != data.Total)
                     {
-                        this.totalMemoyByte = data[1].total;
+                        this.totalMemoyByte = data.Total;
                         this.totalMemText = "T: " + this.FormatByteSize(5, this.totalMemoyByte);
                     }
                     break;
