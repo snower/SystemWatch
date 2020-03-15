@@ -127,7 +127,7 @@ namespace SystemWatch
             this.systemInfo = new SystemInfo();
             this.GetSystemInfo();
 
-            timer = new System.Timers.Timer(1000);
+            timer = new Timer(1000);
             timer.Enabled = false;
             timer.Elapsed += new ElapsedEventHandler(TimerEvent);
         }
@@ -139,7 +139,7 @@ namespace SystemWatch
                 return;
             }
             this.updating = true;
-            this.now = DateTime.Now;
+            DateTime now = this.now = DateTime.Now;
 
             try
             {
@@ -157,7 +157,7 @@ namespace SystemWatch
             {
                 foreach (ViewType vt in lvt.Value)
                 {
-                    vt.view.PushData(this.now, vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
+                    vt.view.PushData(now, vt.performanceCounterData.total, vt.performanceCounterData.load, vt.performanceCounterData.percent, vt.viewParams);
                 }
             }
         }
@@ -425,6 +425,7 @@ namespace SystemWatch
         public void Close()
         {
             this.timer.Stop();
+            this.timer.Close();
             foreach (KeyValuePair<string, PerformanceCounterData> pcd in this.performanceCounters)
             {
                 pcd.Value.Close();

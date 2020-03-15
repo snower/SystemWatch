@@ -67,13 +67,12 @@ namespace SystemWatch
 
             public void Init(int dataCount)
             {
-                DateTime now = DateTime.Now;
                 this.DataSum = 0;
                 this.DataCount = dataCount;
                 this.Datas = new Data[this.DataCount];
                 for(int i = 0; i < this.DataCount; i++)
                 {
-                    this.Datas[i] = new Data(now, 0, 0, 0);
+                    this.Datas[i] = new Data(new DateTime(0), 0, 0, 0);
                 }
                 this.CurrentIndex = 0;
                 this.LatestDdata = this.Datas[0];

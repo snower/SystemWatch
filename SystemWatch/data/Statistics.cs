@@ -55,12 +55,12 @@ namespace SystemWatch
 
                 for(int i = 0; i < 60; i++)
                 {
-                    this.MinuteDatas[i] = new Data(DateTime.Now, 0, 0);
+                    this.MinuteDatas[i] = new Data(new DateTime(0), 0, 0);
                 }
 
                 for (int i = 0; i < 24; i++)
                 {
-                    this.HourDatas[i] = new Data(DateTime.Now, 0, 0);
+                    this.HourDatas[i] = new Data(new DateTime(0), 0, 0);
                 }
             }
 
@@ -68,109 +68,135 @@ namespace SystemWatch
             {
                 get
                 {
-                    if(this.DayDatas.Count <= 0)
+                    if(this.DayDatas.Last == null)
                     {
                         return 0;
                     }
+
+                    if(!CompareDay(this.DayDatas.Last.Value.Time, DateTime.Now))
+                    {
+                        return 0;
+                    }
+
                     return this.DayDatas.Last.Value.Value;
                 }
             }
 
             public void PushData(DateTime time, double value, double maxValue)
             {
-                this.MinuteDatas[this.MinuteDataIndex].Update(time, value, maxValue);
-                this.MinuteDataIndex++;
-                if (this.MinuteDataIndex >= 60)
+                lock (this)
                 {
-                    this.MinuteDataIndex = 0;
-                }
+                    Data lastMinuteData = this.MinuteDatas[this.MinuteDataIndex == 0 ? 59 : this.MinuteDataIndex - 1];
+                    if (!CompareMinute(lastMinuteData.Time, time))
+                    {
+                        this.MinuteDatas[this.MinuteDataIndex].Update(time, value, maxValue);
+                        this.MinuteDataIndex++;
+                        if (this.MinuteDataIndex >= 60)
+                        {
+                            this.MinuteDataIndex = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (this.CalcuAvg)
+                        {
+                            lastMinuteData.Value = (lastMinuteData.Value + value) / 2;
+                        }
+                        else
+                        {
+                            lastMinuteData.Value += value;
+                        }
+                        if (lastMinuteData.MaxValue < maxValue)
+                        {
+                            lastMinuteData.MaxValue = maxValue;
+                        }
+                    }
 
-                Data lastHourData = this.HourDatas[this.HourDataIndex == 0 ? 23 : this.HourDataIndex];
-                if (!CompareMinute(lastHourData.Time, time))
-                {
-                    this.HourDatas[this.HourDataIndex].Update(time, value, maxValue);
-                    this.HourDataIndex++;
-                    if (this.HourDataIndex >= 24)
+                    Data lastHourData = this.HourDatas[this.HourDataIndex == 0 ? 23 : this.HourDataIndex - 1];
+                    if (!CompareHour(lastHourData.Time, time))
                     {
-                        this.HourDataIndex = 0;
-                    }
-                }
-                else
-                {
-                    double hourCount = 0;
-                    double hourTotal = 0;
-                    double hourMaxValue = 0;
-                    for (int i = 0; i < 60; i++)
-                    {
-                        Data minuteData = this.MinuteDatas[(this.MinuteDataIndex + i) % 60];
-                        if (!CompareHour(lastHourData.Time, minuteData.Time))
+                        this.HourDatas[this.HourDataIndex].Update(time, value, maxValue);
+                        this.HourDataIndex++;
+                        if (this.HourDataIndex >= 24)
                         {
-                            continue;
-                        }
-                        hourCount++;
-                        hourTotal += minuteData.Value;
-                        if(hourMaxValue < minuteData.MaxValue)
-                        {
-                            hourMaxValue = minuteData.MaxValue;
+                            this.HourDataIndex = 0;
                         }
                     }
-                    lastHourData.Value = this.CalcuAvg ? hourTotal / hourCount : hourTotal;
-                    lastHourData.MaxValue = hourMaxValue;
-                }
+                    else
+                    {
+                        double hourCount = 0;
+                        double hourTotal = 0;
+                        double hourMaxValue = 0;
+                        for (int i = 0; i < 60; i++)
+                        {
+                            Data minuteData = this.MinuteDatas[(this.MinuteDataIndex + i) % 60];
+                            if (CompareHour(lastHourData.Time, minuteData.Time))
+                            {
+                                hourCount++;
+                                hourTotal += minuteData.Value;
+                                if (hourMaxValue < minuteData.MaxValue)
+                                {
+                                    hourMaxValue = minuteData.MaxValue;
+                                }
+                            }
+                        }
+                        lastHourData.Value = this.CalcuAvg ? hourTotal / hourCount : hourTotal;
+                        lastHourData.MaxValue = hourMaxValue;
+                    }
 
-                if (this.DayDatas.Last == null || !CompareDay(this.DayDatas.Last.Value.Time, time))
-                {
-                    this.DayDatas.AddLast(new Data(time, value));
-                }
-                else
-                {
-                    double dayCount = 0;
-                    double dayTotal = 0;
-                    double dayMaxValue = 0;
-                    for (int i = 0; i < 24; i++)
+                    if (this.DayDatas.Last == null || !CompareDay(this.DayDatas.Last.Value.Time, time))
                     {
-                        Data hourData = this.HourDatas[(this.HourDataIndex + i) % 24];
-                        if (!CompareHour(lastHourData.Time, hourData.Time))
-                        {
-                            continue;
-                        }
-                        dayCount++;
-                        dayTotal += hourData.Value;
-                        if(dayMaxValue < hourData.MaxValue)
-                        {
-                            dayMaxValue = hourData.MaxValue;
-                        }
+                        this.DayDatas.AddLast(new Data(time, value));
                     }
-                    this.DayDatas.Last.Value.Value = this.CalcuAvg ? dayTotal / dayCount : dayTotal;
-                    this.DayDatas.Last.Value.MaxValue = dayMaxValue;
+                    else
+                    {
+                        double dayCount = 0;
+                        double dayTotal = 0;
+                        double dayMaxValue = 0;
+                        for (int i = 0; i < 24; i++)
+                        {
+                            Data hourData = this.HourDatas[(this.HourDataIndex + i) % 24];
+                            if (CompareDay(lastHourData.Time, hourData.Time))
+                            {
+                                dayCount++;
+                                dayTotal += hourData.Value;
+                                if (dayMaxValue < hourData.MaxValue)
+                                {
+                                    dayMaxValue = hourData.MaxValue;
+                                }
+                            }
+                        }
+                        this.DayDatas.Last.Value.Value = this.CalcuAvg ? dayTotal / dayCount : dayTotal;
+                        this.DayDatas.Last.Value.MaxValue = dayMaxValue;
+                    }
                 }
             }
 
             public static bool CompareMinute(DateTime t1, DateTime t2)
             {
-                if (t1.Minute != t2.Minute || t1.Hour != t2.Hour || t1.Day != t2.Day || t1.Month != t2.Month || t1.Year != t2.Year)
+                if (t1.Minute == t2.Minute && t1.Hour == t2.Hour && t1.Day == t2.Day && t1.Month == t2.Month && t1.Year == t2.Year)
                 {
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
             }
 
             public static bool CompareHour(DateTime t1, DateTime t2)
             {
-                if (t1.Hour != t2.Hour || t1.Day != t2.Day || t1.Month != t2.Month || t1.Year != t2.Year)
+                if (t1.Hour == t2.Hour && t1.Day == t2.Day && t1.Month == t2.Month && t1.Year == t2.Year)
                 {
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
             }
 
             public static bool CompareDay(DateTime t1, DateTime t2)
             {
-                if (t1.Day != t2.Day || t1.Month != t2.Month || t1.Year != t2.Year)
+                if (t1.Day == t2.Day && t1.Month == t2.Month && t1.Year == t2.Year)
                 {
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
             }
         }
 
@@ -222,25 +248,27 @@ namespace SystemWatch
         public void Init()
         {
             this.Unserialize();
-
-            timer = new System.Timers.Timer(6 * 60 * 60 * 1000);
-            timer.Enabled = false;
-            timer.Elapsed += new ElapsedEventHandler(TimerEvent);
         }
 
         public void Start()
         {
+            this.timer = new Timer(6 * 60 * 60 * 1000);
+            this.timer.Enabled = false;
+            this.timer.Elapsed += new ElapsedEventHandler(TimerEvent);
             this.timer.Start();
         }
 
         public void Stop()
         {
             this.timer.Stop();
+            this.timer.Close();
             this.Serialize();
         }
 
         public void Close()
         {
+            this.timer.Stop();
+            this.timer.Close();
             this.Serialize();
         }
 
@@ -273,6 +301,7 @@ namespace SystemWatch
                             maxValue = data.Current;
                         }
                     }
+                    this.CpuDataGroup.Channels[0].PushData(time, total / count, maxValue);
                     break;
                 case 1:
                     foreach (Canvas.Data data in e.Channel.Datas)
@@ -295,6 +324,7 @@ namespace SystemWatch
                             maxValue = data.Current;
                         }
                     }
+                    this.MemoryDataGroup.Channels[0].PushData(time, total / count, maxValue);
                     break;
             }
         }
@@ -303,7 +333,6 @@ namespace SystemWatch
         {
             if (e.Channel.ChannelID > 0)
             {
-
                 DateTime time = e.Channel.Datas[0].Time;
                 double total = 0;
                 double maxValue = 0;
@@ -326,6 +355,7 @@ namespace SystemWatch
                         maxValue = data.Current;
                     }
                 }
+                this.DiskDataGroup.Channels[e.Channel.ChannelID - 1].PushData(time, total, maxValue);
             }
         }
 
@@ -356,6 +386,7 @@ namespace SystemWatch
                         maxValue = data.Current;
                     }
                 }
+                this.NetworkDataGroup.Channels[e.Channel.ChannelID - 1].PushData(time, total, maxValue);
             }
         }
 
@@ -363,8 +394,8 @@ namespace SystemWatch
         {
             this.Serialize();
         }
-
-            private void Serialize()
+        
+        private void Serialize()
         {
             DataStore d = new DataStore(this.CpuDataGroup, this.MemoryDataGroup, this.DiskDataGroup, this.NetworkDataGroup);
             try
@@ -386,6 +417,7 @@ namespace SystemWatch
                 return;
             }
         }
+
         private void Unserialize()
         {
             try

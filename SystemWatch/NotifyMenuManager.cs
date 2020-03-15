@@ -33,9 +33,9 @@ namespace SystemWatch
 
         public void Close()
         {
-            foreach (KeyValuePair<string, Form> item in this.windows)
+            foreach (Form form in this.windows.Values.ToArray<Form>())
             {
-                item.Value.Close();
+                form.Close();
             }
         }
 

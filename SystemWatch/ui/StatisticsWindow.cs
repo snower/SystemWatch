@@ -21,8 +21,8 @@ namespace SystemWatch.ui
 
             List<string> xDiskData = new List<string>() { "写", "读" };
             int unitIndex = 0;
-            double diskRead = statistics.DiskDataGroup.Channels[0].TodayTotal;
-            double diskWrite = statistics.DiskDataGroup.Channels[1].TodayTotal;
+            double diskWrite = Math.Max(statistics.DiskDataGroup.Channels[0].TodayTotal, 1);
+            double diskRead = Math.Max(statistics.DiskDataGroup.Channels[1].TodayTotal, 1);
             double rwMax = diskRead > diskWrite ? diskRead : diskWrite;
             while(rwMax >= 1024)
             {
@@ -37,8 +37,8 @@ namespace SystemWatch.ui
 
             List<string> xNetData = new List<string>() { "上传", "下载"};
             unitIndex = 0;
-            double netSent = statistics.NetworkDataGroup.Channels[0].TodayTotal;
-            double netRecv = statistics.NetworkDataGroup.Channels[1].TodayTotal;
+            double netSent = Math.Max(statistics.NetworkDataGroup.Channels[0].TodayTotal, 1);
+            double netRecv = Math.Max(statistics.NetworkDataGroup.Channels[1].TodayTotal, 1);
             double rsMax = netSent > netRecv ? netSent : netRecv;
             while (rsMax >= 1024)
             {
