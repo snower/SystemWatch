@@ -112,6 +112,14 @@ namespace SystemWatch
         private Dictionary<string, PerformanceCounterData> performanceCounters;
         private SystemInfo systemInfo;
 
+        public ulong PhysicalMemorySize
+        {
+            get
+            {
+                return this.systemInfo.PhysicalMemorySize;
+            }
+        }
+
         public DateTime Now
         {
             get

@@ -256,6 +256,10 @@ namespace SystemWatch
 
         public void Close()
         {
+            foreach(DataChannel channel in this.channels)
+            {
+                this.ResetDataUpdateEvent(this, channel.DataUpdateEventArgs);
+            }
         }
 
         protected void FormatMaxHeight(double maxHeight)

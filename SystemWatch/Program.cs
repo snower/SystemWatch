@@ -70,9 +70,9 @@ namespace SystemWatch
                     widgetManager.Resume();
                     break;
                 case PowerModes.Suspend:
+                    widgetManager.Suspend();
                     performance.Stop();
                     statistics.Stop();
-                    widgetManager.Suspend();
                     break;
             }
         }

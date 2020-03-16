@@ -282,8 +282,10 @@ namespace SystemWatch
             switch (e.Channel.ChannelID)
             {
                 case 0:
-                    foreach(Canvas.Data data in e.Channel.Datas)
+                    int len = e.Channel.CurrentIndex == 0 ? e.Channel.DataCount : e.Channel.CurrentIndex;
+                    for (int i = 0; i < len; i++)
                     {
+                        Canvas.Data data = e.Channel.Datas[i];
                         if(DataChannel.CompareMinute(time, data.Time))
                         {
                             count++;
@@ -304,8 +306,10 @@ namespace SystemWatch
                     this.CpuDataGroup.Channels[0].PushData(time, total / count, maxValue);
                     break;
                 case 1:
-                    foreach (Canvas.Data data in e.Channel.Datas)
+                    len = e.Channel.CurrentIndex == 0 ? e.Channel.DataCount : e.Channel.CurrentIndex;
+                    for (int i = 0; i < len; i++)
                     {
+                        Canvas.Data data = e.Channel.Datas[i];
                         if (DataChannel.CompareMinute(time, data.Time))
                         {
                             count++;
@@ -337,8 +341,10 @@ namespace SystemWatch
                 double total = 0;
                 double maxValue = 0;
 
-                foreach (Canvas.Data data in e.Channel.Datas)
+                int len = e.Channel.CurrentIndex == 0 ? e.Channel.DataCount : e.Channel.CurrentIndex;
+                for (int i = 0; i < len; i++)
                 {
+                    Canvas.Data data = e.Channel.Datas[i];
                     if (DataChannel.CompareMinute(time, data.Time))
                     {
                         total += data.Current;
@@ -368,8 +374,10 @@ namespace SystemWatch
                 double total = 0;
                 double maxValue = 0;
 
-                foreach (Canvas.Data data in e.Channel.Datas)
+                int len = e.Channel.CurrentIndex == 0 ? e.Channel.DataCount : e.Channel.CurrentIndex;
+                for (int i = 0; i < len; i++)
                 {
+                    Canvas.Data data = e.Channel.Datas[i];
                     if (DataChannel.CompareMinute(time, data.Time))
                     {
                         total += data.Current;
