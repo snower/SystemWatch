@@ -35,22 +35,22 @@ namespace SystemWatch.ui
                 maxMemBytes /= 1024;
             }
 
-            Dictionary<string, Statistics.Data> cpuDictDatas = this.ArrayToDict(statistics.CpuDataGroup.Channels[0].HourDatas, "HH:00");
-            Dictionary<string, Statistics.Data> memDictDatas = this.ArrayToDict(statistics.MemoryDataGroup.Channels[0].HourDatas, "HH:00");
-
             List<string> xcpuData = new List<string>();
             List<double> ycpuData = new List<double>();
             List<string> xmemData = new List<string>();
             List<double> ymemData = new List<double>();
 
-            for(int i = 0; i <= now.Hour; i++)
+            for(int i = 0; i < 60; i++)
             {
-                string dateKey = String.Format("{0:00}", i) + ":00";
-                xcpuData.Add(dateKey);
-                ycpuData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(cpuDictDatas[dateKey].Value, 2) : 0);
+                Statistics.DataChannel channel = statistics.CpuDataGroup.Channels[0];
+                Statistics.Data data = channel.MinuteDatas[(channel.MinuteDataIndex + i) % 60];
+                xcpuData.Add(data.Time.ToString("HH:mm"));
+                ycpuData.Add(Math.Round(data.Value, 2));
 
-                xmemData.Add(dateKey);
-                ymemData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(memDictDatas[dateKey].Value / memUintBytes, 2) : 0);
+                channel = statistics.MemoryDataGroup.Channels[0];
+                data = channel.MinuteDatas[(channel.MinuteDataIndex + i) % 60];
+                xmemData.Add(data.Time.ToString("HH:mm"));
+                ymemData.Add(Math.Round(data.Value / memUintBytes, 2));
             }
 
             this.todayCpuMemChart.Series[1].Points.DataBindXY(xcpuData, ycpuData);

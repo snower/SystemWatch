@@ -149,7 +149,7 @@
             legend4.Enabled = false;
             legend4.Name = "Legend1";
             this.todayCpuMemChart.Legends.Add(legend4);
-            this.todayCpuMemChart.Location = new System.Drawing.Point(0, 0);
+            this.todayCpuMemChart.Location = new System.Drawing.Point(0, 60);
             this.todayCpuMemChart.Name = "todayCpuMemChart";
             this.todayCpuMemChart.PaletteCustomColors = new System.Drawing.Color[] {
         System.Drawing.Color.Cyan,
@@ -167,7 +167,7 @@
             series4.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
             this.todayCpuMemChart.Series.Add(series3);
             this.todayCpuMemChart.Series.Add(series4);
-            this.todayCpuMemChart.Size = new System.Drawing.Size(480, 240);
+            this.todayCpuMemChart.Size = new System.Drawing.Size(480, 170);
             this.todayCpuMemChart.TabIndex = 4;
             this.todayCpuMemChart.Text = "chart3";
             // 
@@ -188,11 +188,11 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(198, 243);
+            this.label3.Location = new System.Drawing.Point(166, 243);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(91, 15);
+            this.label3.Size = new System.Drawing.Size(159, 15);
             this.label3.TabIndex = 6;
-            this.label3.Text = "今日CPU内存";
+            this.label3.Text = "过去1小时CPU内存使用";
             // 
             // cpuChart
             // 
@@ -330,7 +330,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(982, 593);
+            this.ClientSize = new System.Drawing.Size(1003, 593);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
