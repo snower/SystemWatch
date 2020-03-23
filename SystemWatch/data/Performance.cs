@@ -254,20 +254,21 @@ namespace SystemWatch
             {
                if(ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
                 {
-                    if(ni.OperationalStatus == OperationalStatus.Up)
+                    string networkInterface = ni.Description.Replace('(', '[').Replace(')', ']');
+                    if (Array.IndexOf(pcs, networkInterface) >= 0)
                     {
-                        string networkInterface = ni.Description.Replace('(', '[').Replace(')', ']');
-                        if(Array.IndexOf(pcs, networkInterface) >= 0)
-                        {
-                            this.systemInfo.NetworkAdapters.Add(networkInterface);
-                        }
+                        this.systemInfo.NetworkAdapters.Add(networkInterface);
                     }
                 }
             }
-            NetworkChange.NetworkAvailabilityChanged += new NetworkAvailabilityChangedEventHandler(this.NetworkAvailabilityChanged);
         }
 
         private void NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
+        {
+            this.UpdateNetworkAvailability();
+        }
+
+        public void UpdateNetworkAvailability()
         {
             this.GetSystemInfo();
             foreach (PerformanceCounterData pcd in this.performanceCounters.Values)
@@ -422,11 +423,13 @@ namespace SystemWatch
 
         public void Start()
         {
+            NetworkChange.NetworkAvailabilityChanged += this.NetworkAvailabilityChanged;
             this.timer.Start();
         }
 
         public void Stop()
         {
+            NetworkChange.NetworkAvailabilityChanged -= this.NetworkAvailabilityChanged;
             this.timer.Stop();
         }
 

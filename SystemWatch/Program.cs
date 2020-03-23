@@ -65,6 +65,7 @@ namespace SystemWatch
             switch (e.Mode)
             {
                 case PowerModes.Resume:
+                    performance.UpdateNetworkAvailability();
                     performance.Start();
                     statistics.Start();
                     widgetManager.Resume();
