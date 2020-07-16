@@ -70,6 +70,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.timePeriodComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.todayDiskChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.todayNetworkChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.todayCpuMemChart)).BeginInit();
@@ -241,12 +242,10 @@
             this.diskChart.Name = "diskChart";
             series7.BorderWidth = 4;
             series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series7.Legend = "Legend1";
             series7.Name = "Series1";
             series8.BorderWidth = 4;
             series8.ChartArea = "ChartArea1";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series8.Legend = "Legend1";
             series8.Name = "Series2";
             this.diskChart.Series.Add(series7);
@@ -266,12 +265,10 @@
             this.networkChart.Name = "networkChart";
             series9.BorderWidth = 4;
             series9.ChartArea = "ChartArea1";
-            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series9.Legend = "Legend1";
             series9.Name = "Series1";
             series10.BorderWidth = 4;
             series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series10.Legend = "Legend1";
             series10.Name = "Series2";
             this.networkChart.Series.Add(series9);
@@ -324,13 +321,37 @@
             this.label8.Size = new System.Drawing.Size(0, 15);
             this.label8.TabIndex = 15;
             // 
+            // timePeriodComboBox
+            // 
+            this.timePeriodComboBox.FormattingEnabled = true;
+            this.timePeriodComboBox.Items.AddRange(new object[] {
+            "过去一周",
+            "过去一月",
+            "过去一年",
+            "过去一天",
+            "过去两天",
+            "过去三天",
+            "过去五天",
+            "过去两周",
+            "过去三月",
+            "过去六月",
+            "过去九月"});
+            this.timePeriodComboBox.Location = new System.Drawing.Point(184, 280);
+            this.timePeriodComboBox.Name = "timePeriodComboBox";
+            this.timePeriodComboBox.Size = new System.Drawing.Size(121, 23);
+            this.timePeriodComboBox.TabIndex = 16;
+            this.timePeriodComboBox.Text = "过去一周";
+            this.timePeriodComboBox.Visible = false;
+            this.timePeriodComboBox.SelectedIndexChanged += new System.EventHandler(this.timePeriodComboBox_SelectedIndexChanged);
+            // 
             // StatisticsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1003, 593);
+            this.ClientSize = new System.Drawing.Size(1024, 593);
+            this.Controls.Add(this.timePeriodComboBox);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -385,5 +406,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox timePeriodComboBox;
     }
 }

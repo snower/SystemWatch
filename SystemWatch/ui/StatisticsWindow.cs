@@ -13,6 +13,7 @@ namespace SystemWatch.ui
     public partial class StatisticsWindow : Form
     {
         protected string[] ByteUnits = new String[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+        protected int TimePeriod = 7;
         public StatisticsWindow()
         {
             InitializeComponent();
@@ -109,11 +110,15 @@ namespace SystemWatch.ui
             List<string> xmemData = new List<string>();
             List<double> ymemData = new List<double>();
 
+            double totalDiskWriteData = 0;
+            double totalDiskReadData = 0;
             List<string> xdiskWriteData = new List<string>();
             List<double> ydiskWriteData = new List<double>();
             List<string> xdiskReadData = new List<string>();
             List<double> ydiskReadData = new List<double>();
 
+            double totalNetSentData = 0;
+            double totalNetRecvData = 0;
             List<string> xnetSentData = new List<string>();
             List<double> ynetSentData = new List<double>();
             List<string> xnetRecvData = new List<string>();
@@ -127,19 +132,23 @@ namespace SystemWatch.ui
                 ycpuData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(cpuDictDatas[dateKey].Value, 2) : 0);
 
                 xmemData.Add(dateKey);
-                ymemData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(memDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ymemData.Add(memDictDatas.ContainsKey(dateKey) ? Math.Round(memDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalDiskWriteData += diskWriteDictDatas.ContainsKey(dateKey) ? diskWriteDictDatas[dateKey].Value : 0;
                 xdiskWriteData.Add(dateKey);
-                ydiskWriteData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(diskWriteDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ydiskWriteData.Add(diskWriteDictDatas.ContainsKey(dateKey) ? Math.Round(diskWriteDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalDiskReadData += diskReadDictDatas.ContainsKey(dateKey) ? diskReadDictDatas[dateKey].Value : 0;
                 xdiskReadData.Add(dateKey);
-                ydiskReadData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(diskReadDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ydiskReadData.Add(diskReadDictDatas.ContainsKey(dateKey) ? Math.Round(diskReadDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalNetSentData += netSentDictDatas.ContainsKey(dateKey) ? netSentDictDatas[dateKey].Value : 0;
                 xnetSentData.Add(dateKey);
-                ynetSentData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(netSentDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ynetSentData.Add(netSentDictDatas.ContainsKey(dateKey) ? Math.Round(netSentDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalNetRecvData += netRecvDictDatas.ContainsKey(dateKey) ? netRecvDictDatas[dateKey].Value : 0;
                 xnetRecvData.Add(dateKey);
-                ynetRecvData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(netRecvDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ynetRecvData.Add(netRecvDictDatas.ContainsKey(dateKey) ? Math.Round(netRecvDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
             }
 
             this.cpuChart.Series[0].Points.DataBindXY(xcpuData, ycpuData);
@@ -154,6 +163,8 @@ namespace SystemWatch.ui
             this.networkChart.Series[0].ToolTip = "#VALX: 上传#VALMB";
             this.networkChart.Series[1].Points.DataBindXY(xnetRecvData, ynetRecvData);
             this.networkChart.Series[1].ToolTip = "#VALX: 下载#VALMB";
+            this.label6.Text = "磁盘写(" + this.FormatByteSize(5, totalDiskWriteData) + ")读(" + this.FormatByteSize(2, totalDiskReadData) + ")";
+            this.label7.Text = "网络上传(" + this.FormatByteSize(5, totalNetSentData) + ")下载(" + this.FormatByteSize(2, totalNetRecvData) + ")";
         }
 
         private void ShowHourChart()
@@ -174,11 +185,15 @@ namespace SystemWatch.ui
             List<string> xmemData = new List<string>();
             List<double> ymemData = new List<double>();
 
+            double totalDiskWriteData = 0;
+            double totalDiskReadData = 0;
             List<string> xdiskWriteData = new List<string>();
             List<double> ydiskWriteData = new List<double>();
             List<string> xdiskReadData = new List<string>();
             List<double> ydiskReadData = new List<double>();
 
+            double totalNetSentData = 0;
+            double totalNetRecvData = 0;
             List<string> xnetSentData = new List<string>();
             List<double> ynetSentData = new List<double>();
             List<string> xnetRecvData = new List<string>();
@@ -192,19 +207,23 @@ namespace SystemWatch.ui
                 ycpuData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(cpuDictDatas[dateKey].Value, 2) : 0);
 
                 xmemData.Add(dateKey);
-                ymemData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(memDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ymemData.Add(memDictDatas.ContainsKey(dateKey) ? Math.Round(memDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalDiskWriteData += diskWriteDictDatas.ContainsKey(dateKey) ? diskWriteDictDatas[dateKey].Value : 0;
                 xdiskWriteData.Add(dateKey);
-                ydiskWriteData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(diskWriteDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ydiskWriteData.Add(diskWriteDictDatas.ContainsKey(dateKey) ? Math.Round(diskWriteDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalDiskReadData += diskReadDictDatas.ContainsKey(dateKey) ? diskReadDictDatas[dateKey].Value : 0;
                 xdiskReadData.Add(dateKey);
-                ydiskReadData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(diskReadDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ydiskReadData.Add(diskReadDictDatas.ContainsKey(dateKey) ? Math.Round(diskReadDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalNetSentData += netSentDictDatas.ContainsKey(dateKey) ? netSentDictDatas[dateKey].Value : 0;
                 xnetSentData.Add(dateKey);
-                ynetSentData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(netSentDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ynetSentData.Add(netSentDictDatas.ContainsKey(dateKey) ? Math.Round(netSentDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
 
+                totalNetRecvData += netRecvDictDatas.ContainsKey(dateKey) ? netRecvDictDatas[dateKey].Value : 0;
                 xnetRecvData.Add(dateKey);
-                ynetRecvData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(netRecvDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                ynetRecvData.Add(netRecvDictDatas.ContainsKey(dateKey) ? Math.Round(netRecvDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
             }
 
             this.cpuChart.Series[0].Points.DataBindXY(xcpuData, ycpuData);
@@ -219,6 +238,8 @@ namespace SystemWatch.ui
             this.networkChart.Series[0].ToolTip = "#VALX: 上传#VALMB";
             this.networkChart.Series[1].Points.DataBindXY(xnetRecvData, ynetRecvData);
             this.networkChart.Series[1].ToolTip = "#VALX: 下载#VALMB";
+            this.label6.Text = "磁盘写(" + this.FormatByteSize(5, totalDiskWriteData) + ")读(" + this.FormatByteSize(2, totalDiskReadData) + ")";
+            this.label7.Text = "网络上传(" + this.FormatByteSize(5, totalNetSentData) + ")下载(" + this.FormatByteSize(2, totalNetRecvData) + ")";
         }
 
         private void ShowDayChart()
@@ -239,19 +260,23 @@ namespace SystemWatch.ui
             List<string> xmemData = new List<string>();
             List<double> ymemData = new List<double>();
 
+            double totalDiskWriteData = 0;
+            double totalDiskReadData = 0;
             List<string> xdiskWriteData = new List<string>();
             List<double> ydiskWriteData = new List<double>();
             List<string> xdiskReadData = new List<string>();
             List<double> ydiskReadData = new List<double>();
 
+            double totalNetSentData = 0;
+            double totalNetRecvData = 0;
             List<string> xnetSentData = new List<string>();
             List<double> ynetSentData = new List<double>();
             List<string> xnetRecvData = new List<string>();
             List<double> ynetRecvData = new List<double>();
 
-            for (int i = 0; i < 365; i++)
+            for (int i = 1; i <= this.TimePeriod; i++)
             {
-                string dateKey = now.AddDays(-(364 - i)).ToString("MM/dd");
+                string dateKey = now.AddDays(-(this.TimePeriod - i)).ToString("MM/dd");
 
                 if(ycpuData.Count > 0 || cpuDictDatas.ContainsKey(dateKey))
                 {
@@ -262,31 +287,35 @@ namespace SystemWatch.ui
                 if (ycpuData.Count > 0 || memDictDatas.ContainsKey(dateKey))
                 {
                     xmemData.Add(dateKey);
-                    ymemData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(memDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                    ymemData.Add(memDictDatas.ContainsKey(dateKey) ? Math.Round(memDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
                 }
 
                 if (ycpuData.Count > 0 || diskWriteDictDatas.ContainsKey(dateKey))
                 {
+                    totalDiskWriteData += diskWriteDictDatas.ContainsKey(dateKey) ? diskWriteDictDatas[dateKey].Value : 0;
                     xdiskWriteData.Add(dateKey);
-                    ydiskWriteData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(diskWriteDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                    ydiskWriteData.Add(diskWriteDictDatas.ContainsKey(dateKey) ? Math.Round(diskWriteDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
                 }
 
                 if (ycpuData.Count > 0 || diskReadDictDatas.ContainsKey(dateKey))
                 {
+                    totalDiskReadData += diskReadDictDatas.ContainsKey(dateKey) ? diskReadDictDatas[dateKey].Value : 0;
                     xdiskReadData.Add(dateKey);
-                    ydiskReadData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(diskReadDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                    ydiskReadData.Add(diskReadDictDatas.ContainsKey(dateKey) ? Math.Round(diskReadDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
                 }
 
                 if (ycpuData.Count > 0 || netSentDictDatas.ContainsKey(dateKey))
                 {
+                    totalNetSentData += netSentDictDatas.ContainsKey(dateKey) ? netSentDictDatas[dateKey].Value : 0;
                     xnetSentData.Add(dateKey);
-                    ynetSentData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(netSentDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                    ynetSentData.Add(netSentDictDatas.ContainsKey(dateKey) ? Math.Round(netSentDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
                 }
 
                 if (ycpuData.Count > 0 || netRecvDictDatas.ContainsKey(dateKey))
                 {
+                    totalNetRecvData += netRecvDictDatas.ContainsKey(dateKey) ? netRecvDictDatas[dateKey].Value : 0;
                     xnetRecvData.Add(dateKey);
-                    ynetRecvData.Add(cpuDictDatas.ContainsKey(dateKey) ? Math.Round(netRecvDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
+                    ynetRecvData.Add(netRecvDictDatas.ContainsKey(dateKey) ? Math.Round(netRecvDictDatas[dateKey].Value / 1024 / 1024, 2) : 0);
                 }
             }
 
@@ -302,6 +331,8 @@ namespace SystemWatch.ui
             this.networkChart.Series[0].ToolTip = "#VALX: 上传#VALMB";
             this.networkChart.Series[1].Points.DataBindXY(xnetRecvData, ynetRecvData);
             this.networkChart.Series[1].ToolTip = "#VALX: 下载#VALMB";
+            this.label6.Text = "磁盘写(" + this.FormatByteSize(5, totalDiskWriteData) + ")读(" + this.FormatByteSize(2, totalDiskReadData) + ")";
+            this.label7.Text = "网络上传(" + this.FormatByteSize(5, totalNetSentData) + ")下载(" + this.FormatByteSize(2, totalNetRecvData) + ")";
         }
 
         private Dictionary<string, Statistics.Data> ArrayToDict(Statistics.Data[] datas, string format)
@@ -331,15 +362,84 @@ namespace SystemWatch.ui
             switch (this.timeComboBox.SelectedIndex)
             {
                 case 0:
+                    this.timePeriodComboBox.Visible = false;
                     this.ShowMinuteChart();
                     break;
                 case 1:
+                    this.timePeriodComboBox.Visible = false;
                     this.ShowHourChart();
                     break;
                 case 2:
+                    this.timePeriodComboBox.Visible = true;
                     this.ShowDayChart();
                     break;
             }
+        }
+
+        private void timePeriodComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (this.timePeriodComboBox.SelectedIndex)
+            {
+                case 0:
+                    this.TimePeriod = 7;
+                    this.ShowDayChart();
+                    break;
+                case 1:
+                    this.TimePeriod = 30;
+                    this.ShowDayChart();
+                    break;
+                case 2:
+                    this.TimePeriod = 365;
+                    this.ShowDayChart();
+                    break;
+                case 3:
+                    this.TimePeriod = 1;
+                    this.ShowDayChart();
+                    break;
+                case 4:
+                    this.TimePeriod = 2;
+                    this.ShowDayChart();
+                    break;
+                case 5:
+                    this.TimePeriod = 3;
+                    this.ShowDayChart();
+                    break;
+                case 6:
+                    this.TimePeriod = 5;
+                    this.ShowDayChart();
+                    break;
+                case 7:
+                    this.TimePeriod = 14;
+                    this.ShowDayChart();
+                    break;
+                case 8:
+                    this.TimePeriod = 90;
+                    this.ShowDayChart();
+                    break;
+                case 9:
+                    this.TimePeriod = 180;
+                    this.ShowDayChart();
+                    break;
+                case 10:
+                    this.TimePeriod = 270;
+                    this.ShowDayChart();
+                    break;
+            }
+        }
+
+        protected String FormatByteSize(int len, double value, int type = 0)
+        {
+            for (int i = type, count = this.ByteUnits.Length; i < count; i++)
+            {
+                if (value < 1024)
+                {
+                    string result = Convert.ToString(value);
+                    len = len > result.Length ? result.Length : len;
+                    return result.Substring(0, len) + this.ByteUnits[i];
+                }
+                value /= 1024;
+            }
+            return "0B";
         }
     }
 }
