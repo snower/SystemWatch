@@ -114,17 +114,41 @@ namespace SystemWatch
 
         protected String FormatByteSize(int len, double value, int type = 0)
         {
+            if (value == 0)
+            {
+                string zero_result = "";
+                for (int i = 0; i < len - 3; i++)
+                {
+                    zero_result += " ";
+                }
+                return zero_result + "0.0B";
+            }
+
             for (int i = type, count = this.ByteUnits.Length; i < count; i++)
             {
                 if (value < 1024)
                 {
                     string result = Convert.ToString(value);
-                    len = len > result.Length ? result.Length : len;
-                    return result.Substring(0, len) + this.ByteUnits[i];
+                    if(len <= result.Length)
+                    {
+                        return result.Substring(0, len) + this.ByteUnits[i];
+                    }
+                    
+                    for(int j = 0; j < len - result.Length; j++)
+                    {
+                        result += "0";
+                    }
+                    return result + this.ByteUnits[i];
                 }
                 value /= 1024;
             }
-            return "0B";
+
+            string default_result = "";
+            for (int i = 0; i < len - 3; i++)
+            {
+                default_result += " ";
+            }
+            return default_result + "0.0B";
         }
     }
 }
