@@ -237,6 +237,8 @@ namespace SystemWatch
 
         private Timer timer;
 
+        private bool loaded = false;
+
         public Statistics()
         {
             this.CpuDataGroup = new DataGroup("CPU", new DataChannel[] { new DataChannel("CPU", true) });
@@ -405,52 +407,69 @@ namespace SystemWatch
         
         private void Serialize()
         {
-            DataStore d = new DataStore(this.CpuDataGroup, this.MemoryDataGroup, this.DiskDataGroup, this.NetworkDataGroup);
-            try
+            lock (this)
             {
-                FileStream fileStream = new FileStream("statistics.dat", FileMode.Create);
+                if (!this.loaded) return;
+
+                DataStore d = new DataStore(this.CpuDataGroup, this.MemoryDataGroup, this.DiskDataGroup, this.NetworkDataGroup);
+                string filename = System.Guid.NewGuid().ToString("N") + "-statistics.dat";
                 try
                 {
-                    BinaryFormatter b = new BinaryFormatter();
-                    b.Serialize(fileStream, d);
+                    FileStream fileStream = new FileStream(filename, FileMode.Create);
+                    try
+                    {
+                        BinaryFormatter b = new BinaryFormatter();
+                        b.Serialize(fileStream, d);
+                    }
+                    finally
+                    {
+                        fileStream.Close();
+                        (new FileInfo(filename)).Replace("statistics.dat", "backup-statistics.dat", true);
+                    }
                 }
-                finally
+                catch (Exception e)
                 {
-                    fileStream.Close();
+                    Console.WriteLine(e.ToString());
+                    return;
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                return;
             }
         }
 
         private void Unserialize()
         {
-            try
+            lock (this)
             {
-                FileStream fileStream = new FileStream("statistics.dat", FileMode.Open, FileAccess.Read, FileShare.Read);
+                if (!(new FileInfo("statistics.dat")).Exists)
+                {
+                    this.loaded = true;
+                    return;
+                }
 
                 try
                 {
-                    BinaryFormatter b = new BinaryFormatter();
-                    DataStore d = b.Deserialize(fileStream) as DataStore;
+                    FileStream fileStream = new FileStream("statistics.dat", FileMode.Open, FileAccess.Read, FileShare.Read);
 
-                    this.CpuDataGroup = d.CpuDataGroup;
-                    this.MemoryDataGroup = d.MemoryDataGroup;
-                    this.DiskDataGroup = d.DiskDataGroup;
-                    this.NetworkDataGroup = d.NetworkDataGroup;
+                    try
+                    {
+                        BinaryFormatter b = new BinaryFormatter();
+                        DataStore d = b.Deserialize(fileStream) as DataStore;
+
+                        this.CpuDataGroup = d.CpuDataGroup;
+                        this.MemoryDataGroup = d.MemoryDataGroup;
+                        this.DiskDataGroup = d.DiskDataGroup;
+                        this.NetworkDataGroup = d.NetworkDataGroup;
+                    }
+                    finally
+                    {
+                        fileStream.Close();
+                        this.loaded = true;
+                    }
                 }
-                finally
+                catch (Exception e)
                 {
-                    fileStream.Close();
+                    Console.WriteLine(e.ToString());
+                    return;
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                return;
             }
         }
     }

@@ -46,3 +46,14 @@ D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.csproj.Gener
 D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.exe
 D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.pdb
 D:\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.ui.StatisticsWindow.resources
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\bin\Debug\SystemWatch.exe.config
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\bin\Debug\SystemWatch.exe
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\bin\Debug\SystemWatch.pdb
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.csprojAssemblyReference.cache
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.ui.ConfigWindow.resources
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.ui.StatisticsWindow.resources
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.ui.WidgetWindow.resources
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.Properties.Resources.resources
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.csproj.GenerateResource.cache
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.exe
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.pdb
