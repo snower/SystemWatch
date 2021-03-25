@@ -77,11 +77,11 @@ namespace SystemWatch
 
         public LogicalDiakWidget(Point location, Size clientSize) : base(location, clientSize)
         {
-            this.writeReadText = "T: 0B/s";
-            this.readText = "R: 0B/s";
-            this.writeText = "W: 0B/s";
-            this.totalReadText = "TR: 0B/s";
-            this.totalWriteText = "TW: 0B/s";
+            this.writeReadText = "D: 0B/s";
+            this.readText = "↑: 0B/s";
+            this.writeText = "↓: 0B/s";
+            this.totalReadText = "R: 0B";
+            this.totalWriteText = "W: 0B";
 
             this.writeReadFont = new Font("微软雅黑", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.writeOrReadFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
@@ -144,22 +144,22 @@ namespace SystemWatch
             switch (e.Channel.ChannelID)
             {
                 case 0:
-                    this.writeReadText = "T: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.writeReadText = "D: " + this.FormatByteSize(5, data.Current) + "/s";
                     break;
                 case 1:
-                    this.writeText = "W: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.writeText = "↓: " + this.FormatByteSize(5, data.Current) + "/s";
                     if (data.Current != 0)
                     {
                         this.logicalDiskWriteTotal += data.Current;
-                        this.totalWriteText = "WT: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
+                        this.totalWriteText = "W: " + this.FormatByteSize(5, this.logicalDiskWriteTotal);
                     }
                     break;
                 case 2:
-                    this.readText = "R: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.readText = "↑: " + this.FormatByteSize(5, data.Current) + "/s";
                     if (data.Current != 0)
                     {
                         this.logicalDiskReadTotal += data.Current;
-                        this.totalReadText = "RT: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
+                        this.totalReadText = "R: " + this.FormatByteSize(5, this.logicalDiskReadTotal);
                     }
                     break;
             }

@@ -78,10 +78,10 @@ namespace SystemWatch
         public NetworkInterfaceWidget(Point location, Size clientSize) : base(location, clientSize)
         {
             this.sentReceivedText = "T: 0B/s";
-            this.receivedText = "R: 0B/s";
-            this.sentText = "S: 0B/s";
-            this.totalReceivedText = "TR: 0B/s";
-            this.totalSentText = "TS: 0B/s";
+            this.receivedText = "↓: 0B/s";
+            this.sentText = "↑: 0B/s";
+            this.totalReceivedText = "R: 0B";
+            this.totalSentText = "S: 0B";
 
             this.sentReceivedFont = new Font("微软雅黑", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
             this.sentOrReceivedFont = new Font("微软雅黑", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
@@ -144,22 +144,22 @@ namespace SystemWatch
             switch (e.Channel.ChannelID)
             {
                 case 0:
-                    this.sentReceivedText = "T: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.sentReceivedText = "N: " + this.FormatByteSize(5, data.Current) + "/s";
                     break;
                 case 1:
-                    this.sentText = "S: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.sentText = "↑: " + this.FormatByteSize(5, data.Current) + "/s";
                     if(data.Current != 0)
                     {
                         this.sentTotalBytes += data.Current;
-                        this.totalSentText = "ST: " + this.FormatByteSize(5, this.sentTotalBytes);
+                        this.totalSentText = "S: " + this.FormatByteSize(5, this.sentTotalBytes);
                     }
                     break;
                 case 2:
-                    this.receivedText = "R: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.receivedText = "↓: " + this.FormatByteSize(5, data.Current) + "/s";
                     if(data.Current != 0)
                     {
                         this.receivedTotalBytes += data.Current;
-                        this.totalReceivedText = "RT: " + this.FormatByteSize(5, this.receivedTotalBytes);
+                        this.totalReceivedText = "R: " + this.FormatByteSize(5, this.receivedTotalBytes);
                     }
                     break;
             }
