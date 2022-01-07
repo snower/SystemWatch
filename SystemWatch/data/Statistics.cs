@@ -424,7 +424,13 @@ namespace SystemWatch
                     finally
                     {
                         fileStream.Close();
-                        (new FileInfo(filename)).Replace("statistics.dat", "backup-statistics.dat", true);
+                        if (!(new FileInfo("statistics.dat")).Exists)
+                        {
+                            (new FileInfo(filename)).Replace("statistics.dat", "backup-statistics.dat", true);
+                        } else
+                        {
+                            (new FileInfo(filename)).MoveTo("statistics.dat");
+                        }
                     }
                 }
                 catch (Exception e)

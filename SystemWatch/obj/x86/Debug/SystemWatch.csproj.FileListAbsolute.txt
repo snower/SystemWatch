@@ -57,3 +57,4 @@ C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\S
 C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.csproj.GenerateResource.cache
 C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.exe
 C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.pdb
+C:\Users\snower\workspace\project\github\SystemWatch\SystemWatch\obj\x86\Debug\SystemWatch.csproj.CoreCompileInputs.cache

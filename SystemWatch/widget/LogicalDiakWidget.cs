@@ -78,8 +78,8 @@ namespace SystemWatch
         public LogicalDiakWidget(Point location, Size clientSize) : base(location, clientSize)
         {
             this.writeReadText = "D: 0B/s";
-            this.readText = "↑: 0B/s";
-            this.writeText = "↓: 0B/s";
+            this.readText = "↓: 0B/s";
+            this.writeText = "↑: 0B/s";
             this.totalReadText = "R: 0B";
             this.totalWriteText = "W: 0B";
 
@@ -147,7 +147,7 @@ namespace SystemWatch
                     this.writeReadText = "D: " + this.FormatByteSize(5, data.Current) + "/s";
                     break;
                 case 1:
-                    this.writeText = "↓: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.writeText = "↑: " + this.FormatByteSize(5, data.Current) + "/s";
                     if (data.Current != 0)
                     {
                         this.logicalDiskWriteTotal += data.Current;
@@ -155,7 +155,7 @@ namespace SystemWatch
                     }
                     break;
                 case 2:
-                    this.readText = "↑: " + this.FormatByteSize(5, data.Current) + "/s";
+                    this.readText = "↓: " + this.FormatByteSize(5, data.Current) + "/s";
                     if (data.Current != 0)
                     {
                         this.logicalDiskReadTotal += data.Current;
