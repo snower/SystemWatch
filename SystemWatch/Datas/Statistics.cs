@@ -16,20 +16,20 @@ namespace SystemWatch.Datas
         public class Data
         {
             [Key(0)]
-            public DateTime Time;
+            public DateTimeOffset Time;
             [Key(1)]
             public double Value;
             [Key(2)]
             public double MaxValue;
 
-            public Data(DateTime time, double value, double maxValue = 0)
+            public Data(DateTimeOffset time, double value, double maxValue = 0)
             {
                 this.Time = time;
                 this.Value = value;
                 this.MaxValue = maxValue;
             }
 
-            public void Update(DateTime time, double value, double maxValue = 0)
+            public void Update(DateTimeOffset time, double value, double maxValue = 0)
             {
                 this.Time = time;
                 this.Value = value;
@@ -72,12 +72,12 @@ namespace SystemWatch.Datas
 
                 for(int i = 0; i < 60; i++)
                 {
-                    this.MinuteDatas[i] = new Data(new DateTime(0), 0, 0);
+                    this.MinuteDatas[i] = new Data(DateTimeOffset.MinValue, 0, 0);
                 }
 
                 for (int i = 0; i < 24; i++)
                 {
-                    this.HourDatas[i] = new Data(new DateTime(0), 0, 0);
+                    this.HourDatas[i] = new Data(DateTimeOffset.MinValue, 0, 0);
                 }
             }
 
@@ -190,7 +190,7 @@ namespace SystemWatch.Datas
                 }
             }
 
-            public static bool CompareMinute(DateTime t1, DateTime t2)
+            public static bool CompareMinute(DateTimeOffset t1, DateTimeOffset t2)
             {
                 if (t1.Minute == t2.Minute && t1.Hour == t2.Hour && t1.Day == t2.Day && t1.Month == t2.Month && t1.Year == t2.Year)
                 {
@@ -199,7 +199,7 @@ namespace SystemWatch.Datas
                 return false;
             }
 
-            public static bool CompareHour(DateTime t1, DateTime t2)
+            public static bool CompareHour(DateTimeOffset t1, DateTimeOffset t2)
             {
                 if (t1.Hour == t2.Hour && t1.Day == t2.Day && t1.Month == t2.Month && t1.Year == t2.Year)
                 {
@@ -208,7 +208,7 @@ namespace SystemWatch.Datas
                 return false;
             }
 
-            public static bool CompareDay(DateTime t1, DateTime t2)
+            public static bool CompareDay(DateTimeOffset t1, DateTimeOffset t2)
             {
                 if (t1.Day == t2.Day && t1.Month == t2.Month && t1.Year == t2.Year)
                 {
