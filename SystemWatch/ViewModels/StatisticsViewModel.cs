@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -234,7 +235,7 @@ namespace SystemWatch.ViewModels
                 {
                     TextSize = 9,
                     MinLimit = 0,
-                    MaxLimit = Math.Max(maxValue, 5),
+                    MaxLimit = Math.Max(maxValue, 1) + 1,
                     ForceStepToMin = true,
                     MinStep = Math.Max(maxValue / 5, 1),
                     Labeler = value => Math.Round(value, 2) + unitLabel,
@@ -279,7 +280,7 @@ namespace SystemWatch.ViewModels
                 {
                     TextSize = 9,
                     MinLimit = 0,
-                    MaxLimit = Math.Max(maxValue, 5),
+                    MaxLimit = Math.Max(Math.Ceiling(maxValue + Math.Max(maxValue / 10, 0.1)), 1),
                     ForceStepToMin = true,
                     MinStep = Math.Max(maxValue / 5, 1),
                     Labeler = value => Math.Round(value, 2) + unitLabel,
@@ -328,7 +329,7 @@ namespace SystemWatch.ViewModels
                 {
                     TextSize = 9,
                     MinLimit = 0,
-                    MaxLimit = Math.Max(maxValue, 5),
+                    MaxLimit = Math.Max(Math.Ceiling(maxValue + Math.Max(maxValue / 10, 0.1)), 1),
                     ForceStepToMin = true,
                     MinStep = Math.Max(maxValue / 5, 1),
                     Labeler = value => Math.Round(value, 2) + unitLabel,
@@ -356,15 +357,15 @@ namespace SystemWatch.ViewModels
             double totalDiskWriteData, double totalDiskReadData, double totalNetSentData, double totalNetRecvData,
             double maxMemValue, double maxDiskValue, double maxNetValue)
         {
-            UpdateCpuData(xData.ToArray(), ycpuData.ToArray());
+            UpdateCpuData(xData.ToArray(), ycpuData.Select(val => Math.Round(val, 2)).ToArray());
             UpdateMemData(xData.ToArray(), Utils.FormatByteValues(ymemData.ToArray(), maxMemValue), 
-                Math.Round(maxMemValue / Utils.GetByteScale(maxMemValue)), Utils.GetByteUnitLabel(maxDiskValue));
+                Math.Ceiling(maxMemValue / Utils.GetByteScale(maxMemValue)), Utils.GetByteUnitLabel(maxDiskValue));
             UpdateDiskData(xData.ToArray(), Utils.FormatByteValues(ydiskWriteData.ToArray(), maxDiskValue), 
                 Utils.FormatByteValues(ydiskReadData.ToArray(), maxDiskValue), totalDiskWriteData, totalDiskReadData, 
-                Math.Round(maxDiskValue / Utils.GetByteScale(maxDiskValue)), Utils.GetByteUnitLabel(maxDiskValue));
+                Math.Ceiling(maxDiskValue / Utils.GetByteScale(maxDiskValue)), Utils.GetByteUnitLabel(maxDiskValue));
             UpdateNetworkData(xData.ToArray(), Utils.FormatByteValues(ynetSentData.ToArray(), maxNetValue), 
                 Utils.FormatByteValues(ynetRecvData.ToArray(), maxNetValue),totalNetSentData,totalNetRecvData,
-                Math.Round(maxNetValue / Utils.GetByteScale(maxNetValue)), Utils.GetByteUnitLabel(maxDiskValue));
+                Math.Ceiling(maxNetValue / Utils.GetByteScale(maxNetValue)), Utils.GetByteUnitLabel(maxDiskValue));
         }
     }
 }

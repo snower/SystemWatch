@@ -32,19 +32,14 @@ namespace SystemWatch.Repositorys
             Statistics? statistics = app?.Statistics;
             if (statistics == null) return;
             DateTime now = DateTime.Now;
+            double physicalMemorySize = app?.Performance?.PhysicalMemorySize ?? 0;
 
-            Dictionary<string, Statistics.Data> cpuDatas = statistics.CpuDataGroup.Channels[0].MinuteDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:mm"), val => val);
-            Dictionary<string, Statistics.Data> memDatas = statistics.MemoryDataGroup.Channels[0].MinuteDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:mm"), val => val);
-            Dictionary<string, Statistics.Data> diskWriteDatas = statistics.DiskDataGroup.Channels[0].MinuteDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:mm"), val => val);
-            Dictionary<string, Statistics.Data> diskReadDatas = statistics.DiskDataGroup.Channels[1].MinuteDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:mm"), val => val);
-            Dictionary<string, Statistics.Data> netSentDatas = statistics.NetworkDataGroup.Channels[0].MinuteDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:mm"), val => val);
-            Dictionary<string, Statistics.Data> netRecvDatas = statistics.NetworkDataGroup.Channels[1].MinuteDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:mm"), val => val);
+            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].MinuteDatas, "HH:mm");
+            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].MinuteDatas, "HH:mm");
+            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].MinuteDatas, "HH:mm");
+            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].MinuteDatas, "HH:mm");
+            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].MinuteDatas, "HH:mm");
+            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].MinuteDatas, "HH:mm");
         
             List<string> xData = new List<string>();
             List<double> ycpuData = new List<double>(), ymemData = new List<double>(), ydiskWriteData = new List<double>(),
@@ -68,7 +63,7 @@ namespace SystemWatch.Repositorys
         
             viewModel.UpdateData(xData, ycpuData, ymemData, ydiskWriteData, ydiskReadData, ynetSentData, ynetRecvData,
                 totalDiskWriteData, totalDiskReadData, totalNetSentData, totalNetRecvData, 
-                maxMemValue, maxDiskValue, maxNeValue);
+                Math.Max(physicalMemorySize, maxMemValue), maxDiskValue, maxNeValue);
         }
         
         public void LoadHourDatas(StatisticsViewModel viewModel)
@@ -77,19 +72,14 @@ namespace SystemWatch.Repositorys
             Statistics? statistics = app?.Statistics;
             if (statistics == null) return;
             DateTime now = DateTime.Now;
+            double physicalMemorySize = app?.Performance?.PhysicalMemorySize ?? 0;
 
-            Dictionary<string, Statistics.Data> cpuDatas = statistics.CpuDataGroup.Channels[0].HourDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:00"), val => val);
-            Dictionary<string, Statistics.Data> memDatas = statistics.MemoryDataGroup.Channels[0].HourDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:00"), val => val);
-            Dictionary<string, Statistics.Data> diskWriteDatas = statistics.DiskDataGroup.Channels[0].HourDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:00"), val => val);
-            Dictionary<string, Statistics.Data> diskReadDatas = statistics.DiskDataGroup.Channels[1].HourDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:00"), val => val);
-            Dictionary<string, Statistics.Data> netSentDatas = statistics.NetworkDataGroup.Channels[0].HourDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:00"), val => val);
-            Dictionary<string, Statistics.Data> netRecvDatas = statistics.NetworkDataGroup.Channels[1].HourDatas
-                .Where(val => val.Time > DateTime.MinValue).ToDictionary(val => val.Time.ToString("HH:00"), val => val);
+            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].HourDatas, "HH:00");
+            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].HourDatas, "HH:00");
+            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].HourDatas, "HH:00");
+            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].HourDatas, "HH:00");
+            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].HourDatas, "HH:00");
+            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].HourDatas, "HH:00");
         
             List<string> xData = new List<string>();
             List<double> ycpuData = new List<double>(), ymemData = new List<double>(), ydiskWriteData = new List<double>(),
@@ -113,7 +103,7 @@ namespace SystemWatch.Repositorys
         
             viewModel.UpdateData(xData, ycpuData, ymemData, ydiskWriteData, ydiskReadData, ynetSentData, ynetRecvData,
                 totalDiskWriteData, totalDiskReadData, totalNetSentData, totalNetRecvData, 
-                maxMemValue, maxDiskValue, maxNeValue);
+                Math.Max(physicalMemorySize, maxMemValue), maxDiskValue, maxNeValue);
         }
         
         public void LoadDayDatas(StatisticsViewModel viewModel)
@@ -122,19 +112,14 @@ namespace SystemWatch.Repositorys
             Statistics? statistics = app?.Statistics;
             if (statistics == null) return;
             DateTime now = DateTime.Now;
+            double physicalMemorySize = app?.Performance?.PhysicalMemorySize ?? 0;
 
-            Dictionary<string, Statistics.Data> cpuDatas = statistics.CpuDataGroup.Channels[0].DayDatas
-                .ToDictionary(val => val.Time.ToString("MM/dd"), val => val);
-            Dictionary<string, Statistics.Data> memDatas = statistics.MemoryDataGroup.Channels[0].DayDatas
-                .ToDictionary(val => val.Time.ToString("MM/dd"), val => val);
-            Dictionary<string, Statistics.Data> diskWriteDatas = statistics.DiskDataGroup.Channels[0].DayDatas
-                .ToDictionary(val => val.Time.ToString("MM/dd"), val => val);
-            Dictionary<string, Statistics.Data> diskReadDatas = statistics.DiskDataGroup.Channels[1].DayDatas
-                .ToDictionary(val => val.Time.ToString("MM/dd"), val => val);
-            Dictionary<string, Statistics.Data> netSentDatas = statistics.NetworkDataGroup.Channels[0].DayDatas
-                .ToDictionary(val => val.Time.ToString("MM/dd"), val => val);
-            Dictionary<string, Statistics.Data> netRecvDatas = statistics.NetworkDataGroup.Channels[1].DayDatas
-                .ToDictionary(val => val.Time.ToString("MM/dd"), val => val);
+            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].DayDatas, "MM/dd");
+            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].DayDatas, "MM/dd");
+            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].DayDatas, "MM/dd");
+            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].DayDatas, "MM/dd");
+            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].DayDatas, "MM/dd");
+            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].DayDatas, "MM/dd");
         
             List<string> xData = new List<string>();
             List<double> ycpuData = new List<double>(), ymemData = new List<double>(), ydiskWriteData = new List<double>(),
@@ -158,7 +143,7 @@ namespace SystemWatch.Repositorys
         
             viewModel.UpdateData(xData, ycpuData, ymemData, ydiskWriteData, ydiskReadData, ynetSentData, ynetRecvData,
                 totalDiskWriteData, totalDiskReadData, totalNetSentData, totalNetRecvData, 
-                maxMemValue, maxDiskValue, maxNeValue);
+                Math.Max(physicalMemorySize, maxMemValue), maxDiskValue, maxNeValue);
         }
 
         private double TryAddValue(Dictionary<string, Statistics.Data> datas, string key, List<double> values, double maxValue, ref double totalValue)
@@ -175,6 +160,28 @@ namespace SystemWatch.Repositorys
             }
             values.Add(0);
             return maxValue;
+        }
+
+        private Dictionary<string, Statistics.Data> ConvertDatasToDictionary(LinkedList<Statistics.Data> datas, string keyFormat)
+        {
+            Dictionary<string, Statistics.Data> result = new Dictionary<string, Statistics.Data>();
+            foreach (Statistics.Data data in datas)
+            {
+                if (data.Time <= DateTime.MinValue) continue;
+                result[data.Time.ToString(keyFormat)] = data;
+            }
+            return result;
+        }
+        
+        private Dictionary<string, Statistics.Data> ConvertDatasToDictionary(Statistics.Data[] datas, string keyFormat)
+        {
+            Dictionary<string, Statistics.Data> result = new Dictionary<string, Statistics.Data>();
+            foreach (Statistics.Data data in datas)
+            {
+                if (data.Time <= DateTime.MinValue) continue;
+                result[data.Time.ToString(keyFormat)] = data;
+            }
+            return result;
         }
     }
 }
