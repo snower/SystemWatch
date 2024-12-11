@@ -167,7 +167,7 @@ namespace SystemWatch.Repositorys
             Dictionary<string, Statistics.Data> result = new Dictionary<string, Statistics.Data>();
             foreach (Statistics.Data data in datas)
             {
-                if (data.Time <= DateTime.MinValue) continue;
+                if (data.Time <= DateTimeOffset.MinValue) continue;
                 result[data.Time.ToString(keyFormat)] = data;
             }
             return result;
@@ -178,7 +178,7 @@ namespace SystemWatch.Repositorys
             Dictionary<string, Statistics.Data> result = new Dictionary<string, Statistics.Data>();
             foreach (Statistics.Data data in datas)
             {
-                if (data.Time <= DateTime.MinValue) continue;
+                if (data.Time <= DateTimeOffset.MinValue) continue;
                 result[data.Time.ToString(keyFormat)] = data;
             }
             return result;
