@@ -359,13 +359,13 @@ namespace SystemWatch.ViewModels
         {
             UpdateCpuData(xData.ToArray(), ycpuData.Select(val => Math.Round(val, 2)).ToArray());
             UpdateMemData(xData.ToArray(), Utils.FormatByteValues(ymemData.ToArray(), maxMemValue), 
-                Math.Ceiling(maxMemValue / Utils.GetByteScale(maxMemValue)), Utils.GetByteUnitLabel(maxDiskValue));
+                Math.Ceiling(maxMemValue / Utils.GetByteScale(maxMemValue)), Utils.GetByteUnitLabel(maxMemValue));
             UpdateDiskData(xData.ToArray(), Utils.FormatByteValues(ydiskWriteData.ToArray(), maxDiskValue), 
                 Utils.FormatByteValues(ydiskReadData.ToArray(), maxDiskValue), totalDiskWriteData, totalDiskReadData, 
                 Math.Ceiling(maxDiskValue / Utils.GetByteScale(maxDiskValue)), Utils.GetByteUnitLabel(maxDiskValue));
             UpdateNetworkData(xData.ToArray(), Utils.FormatByteValues(ynetSentData.ToArray(), maxNetValue), 
-                Utils.FormatByteValues(ynetRecvData.ToArray(), maxNetValue),totalNetSentData,totalNetRecvData,
-                Math.Ceiling(maxNetValue / Utils.GetByteScale(maxNetValue)), Utils.GetByteUnitLabel(maxDiskValue));
+                Utils.FormatByteValues(ynetRecvData.ToArray(), maxNetValue), totalNetSentData, totalNetRecvData,
+                Math.Ceiling(maxNetValue / Utils.GetByteScale(maxNetValue)), Utils.GetByteUnitLabel(maxNetValue));
         }
     }
 }
