@@ -34,12 +34,12 @@ namespace SystemWatch.Repositorys
             DateTime now = DateTime.Now;
             double physicalMemorySize = app?.Performance?.PhysicalMemorySize ?? 0;
 
-            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].MinuteDatas, "HH:mm");
-            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].MinuteDatas, "HH:mm");
-            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].MinuteDatas, "HH:mm");
-            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].MinuteDatas, "HH:mm");
-            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].MinuteDatas, "HH:mm");
-            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].MinuteDatas, "HH:mm");
+            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].MinuteDatas, "yyyy/MM/dd HH:mm");
+            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].MinuteDatas, "yyyy/MM/dd HH:mm");
+            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].MinuteDatas, "yyyy/MM/dd HH:mm");
+            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].MinuteDatas, "yyyy/MM/dd HH:mm");
+            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].MinuteDatas, "yyyy/MM/dd HH:mm");
+            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].MinuteDatas, "yyyy/MM/dd HH:mm");
         
             List<string> xData = new List<string>();
             List<double> ycpuData = new List<double>(), ymemData = new List<double>(), ydiskWriteData = new List<double>(),
@@ -50,9 +50,11 @@ namespace SystemWatch.Repositorys
         
             for (int i = 0; i <= viewModel.TimePeriod; i++)
             {
-                string dateKey = now.AddMinutes(-(viewModel.TimePeriod - i)).ToString("HH:mm");
-                xData.Add(dateKey);
+
+                DateTime dataTime = now.AddMinutes(-(viewModel.TimePeriod - i));
+                xData.Add(dataTime.ToString("HH:mm"));
                 
+                string dateKey = dataTime.ToString("yyyy/MM/dd HH:mm");
                 TryAddValue(cpuDatas, dateKey, ycpuData, 0, ref total);
                 maxMemValue = TryAddValue(memDatas, dateKey, ymemData, maxMemValue, ref total);
                 maxDiskValue = TryAddValue(diskWriteDatas, dateKey, ydiskWriteData, maxDiskValue, ref totalDiskWriteData);
@@ -74,12 +76,12 @@ namespace SystemWatch.Repositorys
             DateTime now = DateTime.Now;
             double physicalMemorySize = app?.Performance?.PhysicalMemorySize ?? 0;
 
-            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].HourDatas, "HH:00");
-            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].HourDatas, "HH:00");
-            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].HourDatas, "HH:00");
-            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].HourDatas, "HH:00");
-            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].HourDatas, "HH:00");
-            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].HourDatas, "HH:00");
+            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].HourDatas, "yyyy/MM/dd HH:00");
+            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].HourDatas, "yyyy/MM/dd HH:00");
+            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].HourDatas, "yyyy/MM/dd HH:00");
+            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].HourDatas, "yyyy/MM/dd HH:00");
+            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].HourDatas, "yyyy/MM/dd HH:00");
+            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].HourDatas, "yyyy/MM/dd HH:00");
         
             List<string> xData = new List<string>();
             List<double> ycpuData = new List<double>(), ymemData = new List<double>(), ydiskWriteData = new List<double>(),
@@ -90,9 +92,10 @@ namespace SystemWatch.Repositorys
         
             for (int i = 0; i <= viewModel.TimePeriod; i++)
             {
-                string dateKey = now.AddHours(-(viewModel.TimePeriod - i)).ToString("HH:00");
-                xData.Add(dateKey);
+                DateTime dataTime = now.AddHours(-(viewModel.TimePeriod - i));
+                xData.Add(dataTime.ToString("HH:00"));
                 
+                string dateKey = dataTime.ToString("yyyy/MM/dd HH:00");
                 TryAddValue(cpuDatas, dateKey, ycpuData, 0, ref total);
                 maxMemValue = TryAddValue(memDatas, dateKey, ymemData, maxMemValue, ref total);
                 maxDiskValue = TryAddValue(diskWriteDatas, dateKey, ydiskWriteData, maxDiskValue, ref totalDiskWriteData);
@@ -114,12 +117,12 @@ namespace SystemWatch.Repositorys
             DateTime now = DateTime.Now;
             double physicalMemorySize = app?.Performance?.PhysicalMemorySize ?? 0;
 
-            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].DayDatas, "MM/dd");
-            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].DayDatas, "MM/dd");
-            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].DayDatas, "MM/dd");
-            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].DayDatas, "MM/dd");
-            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].DayDatas, "MM/dd");
-            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].DayDatas, "MM/dd");
+            Dictionary<string, Statistics.Data> cpuDatas = ConvertDatasToDictionary(statistics.CpuDataGroup.Channels[0].DayDatas, "yyyy/MM/dd");
+            Dictionary<string, Statistics.Data> memDatas = ConvertDatasToDictionary(statistics.MemoryDataGroup.Channels[0].DayDatas, "yyyy/MM/dd");
+            Dictionary<string, Statistics.Data> diskWriteDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[0].DayDatas, "yyyy/MM/dd");
+            Dictionary<string, Statistics.Data> diskReadDatas = ConvertDatasToDictionary(statistics.DiskDataGroup.Channels[1].DayDatas, "yyyy/MM/dd");
+            Dictionary<string, Statistics.Data> netSentDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[0].DayDatas, "yyyy/MM/dd");
+            Dictionary<string, Statistics.Data> netRecvDatas = ConvertDatasToDictionary(statistics.NetworkDataGroup.Channels[1].DayDatas, "yyyy/MM/dd");
         
             List<string> xData = new List<string>();
             List<double> ycpuData = new List<double>(), ymemData = new List<double>(), ydiskWriteData = new List<double>(),
@@ -130,9 +133,10 @@ namespace SystemWatch.Repositorys
         
             for (int i = 0; i <= viewModel.TimePeriod; i++)
             {
-                string dateKey = now.AddDays(-(viewModel.TimePeriod - i)).ToString("MM/dd");
-                xData.Add(dateKey);
+                DateTime dataTime = now.AddDays(-(viewModel.TimePeriod - i));
+                xData.Add(dataTime.ToString("MM/dd"));
                 
+                string dateKey = dataTime.ToString("yyyy/MM/dd");
                 TryAddValue(cpuDatas, dateKey, ycpuData, 0, ref total);
                 maxMemValue = TryAddValue(memDatas, dateKey, ymemData, maxMemValue, ref total);
                 maxDiskValue = TryAddValue(diskWriteDatas, dateKey, ydiskWriteData, maxDiskValue, ref totalDiskWriteData);
