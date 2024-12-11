@@ -2,8 +2,9 @@
 using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
+using SystemWatch.Datas;
 
-namespace SystemWatch
+namespace SystemWatch.Widgets
 {
     public class CpuMemoryWidget : Widget
     {

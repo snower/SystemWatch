@@ -7,7 +7,7 @@ using Avalonia.Rendering.SceneGraph;
 using Avalonia.Skia;
 using SkiaSharp;
 
-namespace SystemWatch
+namespace SystemWatch.Widgets
 {
     public class Canvas : IPushData
     {

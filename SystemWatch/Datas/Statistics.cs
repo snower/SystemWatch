@@ -4,9 +4,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Timers;
 using MessagePack;
+using SystemWatch.Widgets;
 using Timer = System.Timers.Timer;
 
-namespace SystemWatch
+namespace SystemWatch.Datas
 {
     public class Statistics
     {

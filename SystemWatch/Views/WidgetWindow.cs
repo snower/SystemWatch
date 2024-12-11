@@ -6,8 +6,9 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using SystemWatch.Widgets;
 
-namespace SystemWatch.ui
+namespace SystemWatch.Views
 {
     public class WidgetWindow : Window
     {

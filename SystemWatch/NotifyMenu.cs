@@ -5,7 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform;
-using SystemWatch.ui;
+using SystemWatch.Views;
 
 namespace SystemWatch
 {

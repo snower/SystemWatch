@@ -1,0 +1,97 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:SystemWatch.ViewModels"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+        Width="1200" Height="850"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="SystemWatch.Views.StatisticsWindow"
+        Icon="/Assets/Ico.ico"
+        Title="使用统计">
+        
+        <StackPanel Background="White"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Width="1200"
+                    Height="850">
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Width="1050" Height="30" Margin="0 10 0 0">
+                        <Border Height="32" >
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">选择查看时长：</TextBlock>
+                        </Border>
+                        <ComboBox x:Name="TimePeriodComboBox" Width="200" Height="30" SelectedIndex="2" SelectionChanged="TimePeriodComboBox_SelectionChanged">
+                                <ComboBoxItem Content="1小时" />
+                                <ComboBoxItem Content="1天" />
+                                <ComboBoxItem Content="1月" />
+                                <ComboBoxItem Content="3月" />
+                                <ComboBoxItem Content="6月" />
+                                <ComboBoxItem Content="1年" />
+                                <ComboBoxItem Content="2年" />
+                                <ComboBoxItem Content="3年" />
+                                <ComboBoxItem Content="5年" />
+                                <ComboBoxItem Content="10年" />
+                        </ComboBox>
+                </StackPanel>
+                
+                <lvc:CartesianChart
+                        x:Name="CpuChart"
+                        Series="{Binding CpuSeries, DataType=vm:StatisticsViewModel}"
+                        XAxes="{Binding CpuXAxes, DataType=vm:StatisticsViewModel}"
+                        YAxes="{Binding CpuYAxes, DataType=vm:StatisticsViewModel}"
+                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Width="1100"
+                        Height="180"
+                        Margin="0 0 0 0 ">
+                </lvc:CartesianChart>
+                <TextBlock HorizontalAlignment="Stretch"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding CpuTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+                
+                <lvc:CartesianChart
+                        x:Name="MemChart"
+                        Series="{Binding MemSeries, DataType=vm:StatisticsViewModel}"
+                        XAxes="{Binding MemXAxes, DataType=vm:StatisticsViewModel}"
+                        YAxes="{Binding MemYAxes, DataType=vm:StatisticsViewModel}"
+                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Width="1100"
+                        Height="180"
+                        Margin="0 0 0 0 ">
+                </lvc:CartesianChart>
+                <TextBlock HorizontalAlignment="Stretch"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding MemTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+                
+                <lvc:CartesianChart
+                        x:Name="DiskChart"
+                        Series="{Binding DiskSeries, DataType=vm:StatisticsViewModel}"
+                        XAxes="{Binding DiskXAxes, DataType=vm:StatisticsViewModel}"
+                        YAxes="{Binding DiskYAxes, DataType=vm:StatisticsViewModel}"
+                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Width="1100"
+                        Height="180"
+                        Margin="0 0 0 0 ">
+                </lvc:CartesianChart>
+                <TextBlock HorizontalAlignment="Stretch"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding DiskTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+                
+                <lvc:CartesianChart
+                        x:Name="NetworkChart"
+                        Series="{Binding NetworkSeries, DataType=vm:StatisticsViewModel}"
+                        XAxes="{Binding NetworkXAxes, DataType=vm:StatisticsViewModel}"
+                        YAxes="{Binding NetworkYAxes, DataType=vm:StatisticsViewModel}"
+                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Width="1100"
+                        Height="180"
+                        Margin="0 0 0 0 ">
+                </lvc:CartesianChart>
+                <TextBlock HorizontalAlignment="Stretch"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding NetworkTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+        </StackPanel>
+</Window>

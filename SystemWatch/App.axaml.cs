@@ -3,7 +3,8 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Win32;
-using SystemWatch.ui;
+using SystemWatch.Datas;
+using SystemWatch.Views;
 
 namespace SystemWatch;
 

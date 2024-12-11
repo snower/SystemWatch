@@ -4,7 +4,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
-namespace SystemWatch
+namespace SystemWatch.Widgets
 {
     public class Widget
     {

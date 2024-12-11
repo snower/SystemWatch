@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using Avalonia.Controls;
 
-namespace SystemWatch.ui
+namespace SystemWatch.Views
 {
     public class ConfigWindow : Window
     {

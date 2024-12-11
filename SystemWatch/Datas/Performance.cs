@@ -6,7 +6,7 @@ using System.Timers;
 using System.Diagnostics;
 using System.Management;
 
-namespace SystemWatch
+namespace SystemWatch.Datas
 {
     public class Performance
     {
@@ -251,7 +251,7 @@ namespace SystemWatch
             }
         }
 
-        private void NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
+        private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
             this.UpdateNetworkAvailability();
         }
