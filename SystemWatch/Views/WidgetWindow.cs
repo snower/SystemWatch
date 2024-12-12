@@ -24,9 +24,7 @@ namespace SystemWatch.Views
         private readonly List<Widget> _widgets = new List<Widget>();
         
         private readonly DispatcherTimer _timer;
-        
-        private IntPtr _descktopPtr;
-        private IntPtr _shellViewPtr;
+        private IntPtr _shellViewPtr = IntPtr.Zero;
         
         public int WidgetWidth { get; }
         public int WidgetHeight { get; }
@@ -60,25 +58,24 @@ namespace SystemWatch.Views
             this._timer.Interval = TimeSpan.FromSeconds(1);
             this._timer.IsEnabled = false;
             this._timer.Tick += TimerEvent;
+
+            Screens.Changed += OnScreenChanged;
+            this.Resized += OnScreenChanged;
+            this.ScalingChanged += OnScreenChanged;
+            this.Activated += OnActivated;
         }
 
         public override void Show()
         {
             base.Show();
-            if (this._descktopPtr == IntPtr.Zero)
-            {
-                this.FindDescktopWindow();
-                if (this._shellViewPtr != IntPtr.Zero)
-                {
-                    SetParent(TryGetPlatformHandle().Handle, this._shellViewPtr);
-                }
-            }
+            UpdateDesktopWindow();
             this._timer.Start();
         }
 
         public override void Hide()
         {
             base.Hide();
+            UpdateDesktopWindow();
             this._timer.Stop();
         }
 
@@ -103,6 +100,18 @@ namespace SystemWatch.Views
             InvalidateVisual();
         }
         
+        private void OnScreenChanged(object? sender, EventArgs e)
+        {
+            UpdateWindowPosition();
+        }
+        
+        private void OnActivated(object? sender, EventArgs e)
+        {
+            UpdateWindowPosition();
+            UpdateDesktopWindow();
+            this._timer.Start();
+        }
+        
         public void Resume()
         {
             this._timer.Start();
@@ -122,44 +131,55 @@ namespace SystemWatch.Views
             }
             return notice.Substring(0, notice.Length - 1);
         }
-        
-        private void FindDescktopWindow()
-        {
-            this._descktopPtr = GetDesktopWindow();
-            this._shellViewPtr = IntPtr.Zero;
 
-            IntPtr progmanPtr = FindWindowEx(this._descktopPtr, new IntPtr(0), "Progman", null);
+        private void UpdateWindowPosition()
+        {
+            this.Position = new PixelPoint(Screens.Primary.WorkingArea.Width - 250, 120);
+        }
+
+        private void UpdateDesktopWindow()
+        {
+            IntPtr shellViewPtr = this.FindDescktopWindow();
+            if (shellViewPtr != IntPtr.Zero && this._shellViewPtr != shellViewPtr)
+            {
+                SetParent(TryGetPlatformHandle().Handle, shellViewPtr);
+                this._shellViewPtr = shellViewPtr;
+            }
+        }
+        
+        private IntPtr FindDescktopWindow()
+        {
+            IntPtr descktopPtr = GetDesktopWindow();
+            IntPtr progmanPtr = FindWindowEx(descktopPtr, new IntPtr(0), "Progman", null);
             do
             {
-                this._shellViewPtr = FindWindowEx(progmanPtr, new IntPtr(0), "SHELLDLL_DefView", null);
-                if (this._shellViewPtr.ToInt64() != 0)
+                IntPtr shellViewPtr = FindWindowEx(progmanPtr, new IntPtr(0), "SHELLDLL_DefView", null);
+                if (shellViewPtr.ToInt64() != 0)
                 {
-                    return;
+                    return shellViewPtr;
                 }
-
-                progmanPtr = FindWindowEx(this._descktopPtr, progmanPtr, "WorkerW", null);
+                progmanPtr = FindWindowEx(descktopPtr, progmanPtr, "WorkerW", null);
                 if (progmanPtr.ToInt64() == 0)
                 {
                     break;
                 }
-
             } while (true);
 
-            IntPtr workerWPtr = FindWindowEx(this._descktopPtr, new IntPtr(0), "WorkerW", null);
+            IntPtr workerWPtr = FindWindowEx(descktopPtr, new IntPtr(0), "WorkerW", null);
             do
             {
-                this._shellViewPtr = FindWindowEx(workerWPtr, new IntPtr(0), "SHELLDLL_DefView", null);
-                if (this._shellViewPtr.ToInt64() != 0)
+                IntPtr shellViewPtr = FindWindowEx(workerWPtr, new IntPtr(0), "SHELLDLL_DefView", null);
+                if (shellViewPtr.ToInt64() != 0)
                 {
-                    return;
+                    return shellViewPtr;
                 }
-
-                workerWPtr = FindWindowEx(this._descktopPtr, workerWPtr, "WorkerW", null);
+                workerWPtr = FindWindowEx(descktopPtr, workerWPtr, "WorkerW", null);
                 if (workerWPtr.ToInt64() == 0)
                 {
                     break;
                 }
             } while (true);
+            return IntPtr.Zero;
         }
     }
 }

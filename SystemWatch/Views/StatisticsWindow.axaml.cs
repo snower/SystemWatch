@@ -80,10 +80,6 @@ namespace SystemWatch.Views
                     viewModel.TimePeriod = 30;
                 }
                 _statisticsRepository.LoadData(viewModel);
-                CpuChart.InvalidateMeasure();
-                MemChart.InvalidateMeasure();
-                DiskChart.InvalidateMeasure();
-                NetworkChart.InvalidateMeasure();
             }
         }
     }
