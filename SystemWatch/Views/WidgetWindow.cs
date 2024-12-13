@@ -28,7 +28,19 @@ namespace SystemWatch.Views
         
         public int WidgetWidth { get; }
         public int WidgetHeight { get; }
-        
+
+        public TimeSpan RefreshInterval
+        {
+            get
+            {
+                return _timer.Interval;
+            }
+            set
+            {
+                _timer.Interval = value;
+            }
+        }
+
         public WidgetWindow()
         {
             this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
@@ -81,6 +93,8 @@ namespace SystemWatch.Views
 
         public override void Render(DrawingContext context)
         {
+            base.Render(context);
+            
             foreach (var widget in _widgets)
             {
                 widget.Render(context);

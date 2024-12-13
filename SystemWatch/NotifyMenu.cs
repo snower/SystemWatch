@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,7 +13,7 @@ namespace SystemWatch
     {
         private readonly TrayIcon _icon;
         private NativeMenu _menus;
-        private readonly Dictionary<string, Window> _windows;
+        private readonly ConcurrentDictionary<string, Window> _windows;
 
         public NotifyMenu()
         {
@@ -21,10 +21,11 @@ namespace SystemWatch
             this._icon.ToolTipText = "SystemWatch";
             this._icon.Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://SystemWatch/Assets/Ico.ico")));
             // this.icon. += new MouseEventHandler(this.IconMenuMouseMove);
+            this._menus = new NativeMenu();
 
             this.InitMenus();
             this._icon.Menu = this._menus;
-            this._windows = new Dictionary<string, Window>();
+            this._windows = new ConcurrentDictionary<string, Window>();
         }
 
         public void Show()
@@ -47,8 +48,6 @@ namespace SystemWatch
 
         private void InitMenus()
         {
-            this._menus = new NativeMenu();
-
             NativeMenuItem statisticsMenu = new NativeMenuItem
             {
                 Header = "统计"
@@ -103,22 +102,24 @@ namespace SystemWatch
         {
             WidgetWindow widgetWindow = (WidgetWindow) ((IClassicDesktopStyleApplicationLifetime) Application.Current.ApplicationLifetime).MainWindow;
             widgetWindow?.Close();
+            string[] windowNames = this._windows.Keys.ToArray();
+            foreach (var windowName in windowNames)
+            {
+                if (this._windows.TryRemove(windowName, out var window))
+                {
+                    window?.Close();
+                }
+            }
         }
 
         private void ConfigWindowClosedEvent(object? sender, EventArgs e)
         {
-            if (this._windows.ContainsKey("config"))
-            {
-                this._windows.Remove("config");
-            }
+            this._windows.TryRemove("config", out var _);
         }
 
         private void StatisticsWindowClosedEvent(object? sender, EventArgs e)
         {
-            if (this._windows.ContainsKey("statistics"))
-            {
-                this._windows.Remove("statistics");
-            }
+            this._windows.TryRemove("statistics", out var _);
         }
     }
 }

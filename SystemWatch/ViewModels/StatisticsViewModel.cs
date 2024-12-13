@@ -235,9 +235,9 @@ namespace SystemWatch.ViewModels
                 {
                     TextSize = 9,
                     MinLimit = 0,
-                    MaxLimit = Math.Max(maxValue, 1) + 1,
+                    MaxLimit = Math.Max(maxValue, 1),
                     ForceStepToMin = true,
-                    MinStep = Math.Max(maxValue / 5, 1),
+                    MinStep = Math.Max(maxValue / 5, 0.2),
                     Labeler = value => Math.Round(value, 2) + unitLabel,
                 }
             ];
@@ -280,9 +280,9 @@ namespace SystemWatch.ViewModels
                 {
                     TextSize = 9,
                     MinLimit = 0,
-                    MaxLimit = Math.Max(Math.Ceiling(maxValue + Math.Max(maxValue / 10, 0.1)), 1),
+                    MaxLimit = Math.Max(maxValue, 1),
                     ForceStepToMin = true,
-                    MinStep = Math.Max(maxValue / 5, 1),
+                    MinStep = Math.Max(maxValue / 5, 0.2),
                     Labeler = value => Math.Round(value, 2) + unitLabel,
                 }
             ];
@@ -329,9 +329,9 @@ namespace SystemWatch.ViewModels
                 {
                     TextSize = 9,
                     MinLimit = 0,
-                    MaxLimit = Math.Max(Math.Ceiling(maxValue + Math.Max(maxValue / 10, 0.1)), 1),
+                    MaxLimit = Math.Max(maxValue, 1),
                     ForceStepToMin = true,
-                    MinStep = Math.Max(maxValue / 5, 1),
+                    MinStep = Math.Max(maxValue / 5, 0.2),
                     Labeler = value => Math.Round(value, 2) + unitLabel,
                 }
             ];
@@ -362,10 +362,10 @@ namespace SystemWatch.ViewModels
                 Math.Ceiling(maxMemValue / Utils.GetByteScale(maxMemValue)), Utils.GetByteUnitLabel(maxMemValue));
             UpdateDiskData(xData.ToArray(), Utils.FormatByteValues(ydiskWriteData.ToArray(), maxDiskValue), 
                 Utils.FormatByteValues(ydiskReadData.ToArray(), maxDiskValue), totalDiskWriteData, totalDiskReadData, 
-                Math.Ceiling(maxDiskValue / Utils.GetByteScale(maxDiskValue)), Utils.GetByteUnitLabel(maxDiskValue));
+                Utils.CeilingByteValue(maxDiskValue / Utils.GetByteScale(maxDiskValue)), Utils.GetByteUnitLabel(maxDiskValue));
             UpdateNetworkData(xData.ToArray(), Utils.FormatByteValues(ynetSentData.ToArray(), maxNetValue), 
                 Utils.FormatByteValues(ynetRecvData.ToArray(), maxNetValue), totalNetSentData, totalNetRecvData,
-                Math.Ceiling(maxNetValue / Utils.GetByteScale(maxNetValue)), Utils.GetByteUnitLabel(maxNetValue));
+                Utils.CeilingByteValue(maxNetValue / Utils.GetByteScale(maxNetValue)), Utils.GetByteUnitLabel(maxNetValue));
         }
     }
 }

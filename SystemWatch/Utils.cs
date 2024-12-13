@@ -54,4 +54,18 @@ public class Utils
         }
         return values;
     }
+
+    public static double CeilingByteValue(double value)
+    {
+        if (value < 10)
+        {
+            value = Math.Round(Math.Ceiling(value * 10 + value) / 10, 1);
+            if (value >= 10)
+            {
+                return Math.Ceiling(value);
+            }
+            return value;
+        }
+        return Math.Ceiling(value + value / 10);
+    }
 }

@@ -49,16 +49,17 @@ public partial class App : Application
         _statistics?.Close();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            WidgetWindow? widgetWindow = (WidgetWindow)((IClassicDesktopStyleApplicationLifetime)ApplicationLifetime).MainWindow!;
+            WidgetWindow? widgetWindow = (WidgetWindow)desktop.MainWindow!;
             widgetWindow?.CloseWidgets();
         }
+        _notifyMenu = null;
     }
     
     private void PowerModeChanged(object sender, PowerModeChangedEventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            WidgetWindow? widgetWindow = (WidgetWindow)((IClassicDesktopStyleApplicationLifetime)ApplicationLifetime).MainWindow!;
+            WidgetWindow? widgetWindow = (WidgetWindow)desktop.MainWindow!;
             switch (e.Mode)
             {
                 case PowerModes.Resume:
