@@ -85,6 +85,7 @@ namespace SystemWatch.Widgets
         private readonly Size _clientSize;
         private readonly DataChannel[] _channels;
         private readonly Pen[] _channelPens;
+        private readonly StreamGeometry[] _channelGeometries;
         private readonly int _dataCount;
 
         private int _cx, _cy, _cw, _ch;
@@ -96,18 +97,18 @@ namespace SystemWatch.Widgets
         private Brush _maxHeightBrush;
         private Point _maxHeightPoint;
         private readonly CultureInfo _cultureInfo;
-        private readonly StreamGeometry _geometry;
 
         public event EventHandler<DataUpdateEventArgs> DataUpdateEvent;
         public event EventHandler<DataUpdateEventArgs> ResetDataUpdateEvent;
 
         public Canvas(Point location, Size clientSize, int dataCount, DataChannel[] channels, Color maxHeightColor)
         {
-            this._channelPens = new Pen[channels.Length];
             this._location = location;
             this._clientSize = clientSize;
             this._dataCount = dataCount;
             this._channels = channels;
+            this._channelPens = new Pen[channels.Length];
+            this._channelGeometries = new StreamGeometry[channels.Length];
             this._maxHeightFont = new Typeface("微软雅黑");
             this._maxHeightColor = maxHeightColor;
             this._maxHeight = 0;
@@ -120,7 +121,6 @@ namespace SystemWatch.Widgets
             this._maxHeightBrush = new SolidColorBrush(this._maxHeightColor);
             this._maxHeightPoint = new Point(this._cx + 2, this._cy);
             this._cultureInfo = CultureInfo.CurrentCulture;
-            this._geometry = new StreamGeometry();
 
             for (int i=0; i<this._channels.Length; i++)
             {
@@ -129,6 +129,7 @@ namespace SystemWatch.Widgets
                 {
                     LineJoin = PenLineJoin.Bevel // 或 PenLineJoin.Round
                 };
+                this._channelGeometries[i] = new StreamGeometry();
             }
         }
 
@@ -150,7 +151,7 @@ namespace SystemWatch.Widgets
         {
             for (int i = 0; i < this._channels.Length; i++)
             {
-                this.PaintData(dc, this._channels[i], this._channelPens[i]);
+                this.PaintData(dc, this._channels[i], this._channelPens[i], this._channelGeometries[i]);
             }
             if(this._maxHeight > 0)
             {
@@ -160,7 +161,7 @@ namespace SystemWatch.Widgets
             }
         }
 
-        private void PaintData(DrawingContext dc, DataChannel channel, Pen pen)
+        private void PaintData(DrawingContext dc, DataChannel channel, Pen pen, StreamGeometry geometry)
         {
             Data[] datas = channel.Datas;
             int index = channel.CurrentIndex;
@@ -193,12 +194,12 @@ namespace SystemWatch.Widgets
                 }
             }
 
-            using (var ctx = _geometry.Open())
+            using (var ctx = geometry.Open())
             {
                 ctx.BeginFigure(paintPoints[0], isFilled: false, isClosed: false);
                 ctx.PolyLineTo(new ArraySegment<Point>(paintPoints, 1, paintPoints.Length - 1), isStroked: true, isSmoothJoin: false);
             }
-            dc.DrawGeometry(null, pen, _geometry);
+            dc.DrawGeometry(null, pen, geometry);
         }
 
         public void PushData(DateTime now, double total, double current, double percent, object[] param)
