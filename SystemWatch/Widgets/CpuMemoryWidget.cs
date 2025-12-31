@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using Avalonia;
-using Avalonia.Media;
+using System.Windows;
+using System.Windows.Media;
 using SystemWatch.Datas;
 
 namespace SystemWatch.Widgets
@@ -73,12 +73,18 @@ namespace SystemWatch.Widgets
         {
             base.Paint(dc);
 
-            dc.DrawText(new FormattedText(this._cpuText, this.CultureInfo, FlowDirection.LeftToRight, this._cpuFont,
-                12F, this._cpuBrush), this._cpuLocation);
-            dc.DrawText(new FormattedText(this._memText, this.CultureInfo, FlowDirection.LeftToRight, this._memFont, 
-                9F, this._memBrush), this._memLocation);
-            dc.DrawText(new FormattedText(this._totalMemText, this.CultureInfo, FlowDirection.LeftToRight, this._memFont, 
-                9F, this._memBrush), this._totalMemLocation);
+            var cpuFormattedText = new FormattedText(this._cpuText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._cpuFont, 12, this._cpuBrush, 1.25);
+            dc.DrawText(cpuFormattedText, this._cpuLocation);
+            
+            var memFormattedText = new FormattedText(this._memText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._memFont, 9, this._memBrush, 1.25);
+            dc.DrawText(memFormattedText, this._memLocation);
+            
+            var totalMemFormattedText = new FormattedText(this._totalMemText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._memFont, 9, this._memBrush, 1.25);
+            dc.DrawText(totalMemFormattedText, this._totalMemLocation);
+            
             this._canvasView.Paint(dc);
         }
 

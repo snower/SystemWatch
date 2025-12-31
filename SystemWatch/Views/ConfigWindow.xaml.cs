@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+﻿using System.Windows;
 
 namespace SystemWatch.Views
 {

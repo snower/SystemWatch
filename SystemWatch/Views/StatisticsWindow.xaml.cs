@@ -1,11 +1,10 @@
-﻿using Avalonia.Controls;
+﻿using System.Windows.Controls;
+using System.Windows;
 using SystemWatch.Repositorys;
 using SystemWatch.ViewModels;
 
 namespace SystemWatch.Views
 {
-    
-    
     public partial class StatisticsWindow : Window
     {
         private readonly StatisticsRepository _statisticsRepository = new();
@@ -23,7 +22,7 @@ namespace SystemWatch.Views
             if (TimePeriodComboBox == null) return;
             if (TimePeriodComboBox.SelectedItem is ComboBoxItem selectedItem && DataContext is StatisticsViewModel viewModel)
             {
-                string? selectedContent = selectedItem.Content?.ToString();
+                string selectedContent = selectedItem.Content?.ToString();
                 if (!string.IsNullOrEmpty(selectedContent))
                 {
                     switch (selectedContent)

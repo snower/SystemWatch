@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Platform;
-using Avalonia.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Threading;
 using SystemWatch.Widgets;
 
 namespace SystemWatch.Views
 {
-    public class WidgetWindow : Window
+    public partial class WidgetWindow : Window
     {
         [DllImport("user32.dll", EntryPoint = "GetDesktopWindow", CharSet = CharSet.Auto, SetLastError = true)]
         static extern IntPtr GetDesktopWindow();
@@ -25,6 +25,7 @@ namespace SystemWatch.Views
         
         private readonly DispatcherTimer _timer;
         private IntPtr _shellViewPtr = IntPtr.Zero;
+        private DrawingVisual _drawingVisual;
         
         public int WidgetWidth { get; }
         public int WidgetHeight { get; }
@@ -43,18 +44,16 @@ namespace SystemWatch.Views
 
         public WidgetWindow()
         {
-            this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
-            this.ExtendClientAreaToDecorationsHint = false;
-            this.SystemDecorations = SystemDecorations.None;
-            this.ExtendClientAreaTitleBarHeightHint = -1;
-            this.TransparencyLevelHint = [WindowTransparencyLevel.Transparent];
-            this.ShowInTaskbar = false;
-            this.Background = Brushes.Transparent;
-
+            InitializeComponent();
+            
             this.WidgetWidth = 146;
             this.WidgetHeight = 120;
-            this.Position = new PixelPoint(Screens.Primary.WorkingArea.Width - 250, 120);
-            this.ClientSize = new Size(this.WidgetWidth + 10, this.WidgetHeight * 3 + 110);
+            
+            UpdateWindowPosition();
+            this.Width = this.WidgetWidth + 10;
+            this.Height = this.WidgetHeight * 3 + 110;
+            this.Left = SystemParameters.PrimaryScreenWidth - 250;
+            this.Top = 120;
             
 
             CpuMemoryWidget cpuMemoryLoader= new CpuMemoryWidget(new Point(5, 5), new Size(this.WidgetWidth, this.WidgetHeight));
@@ -71,34 +70,40 @@ namespace SystemWatch.Views
             this._timer.IsEnabled = false;
             this._timer.Tick += TimerEvent;
 
-            Screens.Changed += OnScreenChanged;
-            this.Resized += OnScreenChanged;
-            this.ScalingChanged += OnScreenChanged;
             this.Activated += OnActivated;
+            
+            InitializeDrawing();
+            
+            this.Loaded += (s, e) => OnScreenChanged(null, null);
         }
 
-        public override void Show()
+        private void InitializeDrawing()
+        {
+            _drawingVisual = new DrawingVisual();
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+            
+            foreach (var widget in _widgets)
+            {
+                widget.Render(drawingContext);
+            }
+        }
+
+        public new void Show()
         {
             base.Show();
             UpdateDesktopWindow();
             this._timer.Start();
         }
 
-        public override void Hide()
+        public new void Hide()
         {
             base.Hide();
             UpdateDesktopWindow();
             this._timer.Stop();
-        }
-
-        public override void Render(DrawingContext context)
-        {
-            base.Render(context);
-            
-            foreach (var widget in _widgets)
-            {
-                widget.Render(context);
-            }
         }
 
         public void CloseWidgets()
@@ -111,7 +116,7 @@ namespace SystemWatch.Views
         
         private void TimerEvent(object? o, EventArgs e)
         {
-            InvalidateVisual();
+            this.InvalidateVisual();
         }
         
         private void OnScreenChanged(object? sender, EventArgs e)
@@ -148,7 +153,8 @@ namespace SystemWatch.Views
 
         private void UpdateWindowPosition()
         {
-            this.Position = new PixelPoint(Screens.Primary.WorkingArea.Width - 250, 120);
+            this.Left = SystemParameters.PrimaryScreenWidth - 250;
+            this.Top = 120;
         }
 
         private void UpdateDesktopWindow()
@@ -156,7 +162,8 @@ namespace SystemWatch.Views
             IntPtr shellViewPtr = this.FindDescktopWindow();
             if (shellViewPtr != IntPtr.Zero && this._shellViewPtr != shellViewPtr)
             {
-                SetParent(TryGetPlatformHandle().Handle, shellViewPtr);
+                var windowInteropHelper = new WindowInteropHelper(this);
+                SetParent(windowInteropHelper.Handle, shellViewPtr);
                 this._shellViewPtr = shellViewPtr;
             }
         }
@@ -164,10 +171,10 @@ namespace SystemWatch.Views
         private IntPtr FindDescktopWindow()
         {
             IntPtr descktopPtr = GetDesktopWindow();
-            IntPtr progmanPtr = FindWindowEx(descktopPtr, new IntPtr(0), "Progman", null);
+            IntPtr progmanPtr = FindWindowEx(descktopPtr, IntPtr.Zero, "Progman", null);
             do
             {
-                IntPtr shellViewPtr = FindWindowEx(progmanPtr, new IntPtr(0), "SHELLDLL_DefView", null);
+                IntPtr shellViewPtr = FindWindowEx(progmanPtr, IntPtr.Zero, "SHELLDLL_DefView", null);
                 if (shellViewPtr.ToInt64() != 0)
                 {
                     return shellViewPtr;
@@ -179,10 +186,10 @@ namespace SystemWatch.Views
                 }
             } while (true);
 
-            IntPtr workerWPtr = FindWindowEx(descktopPtr, new IntPtr(0), "WorkerW", null);
+            IntPtr workerWPtr = FindWindowEx(descktopPtr, IntPtr.Zero, "WorkerW", null);
             do
             {
-                IntPtr shellViewPtr = FindWindowEx(workerWPtr, new IntPtr(0), "SHELLDLL_DefView", null);
+                IntPtr shellViewPtr = FindWindowEx(workerWPtr, IntPtr.Zero, "SHELLDLL_DefView", null);
                 if (shellViewPtr.ToInt64() != 0)
                 {
                     return shellViewPtr;

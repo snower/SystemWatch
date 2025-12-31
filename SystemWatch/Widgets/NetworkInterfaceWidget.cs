@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
-using Avalonia;
-using Avalonia.Media;
+using System.Windows;
+using System.Windows.Media;
 using SystemWatch.Datas;
 
 namespace SystemWatch.Widgets
@@ -91,16 +91,26 @@ namespace SystemWatch.Widgets
         {
             base.Paint(dc);
 
-            dc.DrawText(new FormattedText(this._sentReceivedText, this.CultureInfo, FlowDirection.LeftToRight, this._sentReceivedFont, 
-                12F, this._sentReceivedBrush), this._sentReceivedLocation);
-            dc.DrawText(new FormattedText(this._receivedText, this.CultureInfo, FlowDirection.LeftToRight, this._sentOrReceivedFont, 
-                9F, this._receivedBrush), this._receivedLocation);
-            dc.DrawText(new FormattedText(this._sentText, this.CultureInfo, FlowDirection.LeftToRight, this._sentOrReceivedFont, 
-                9F, this._sentBrush), this._sentLoction);
-            dc.DrawText(new FormattedText(this._totalReceivedText, this.CultureInfo, FlowDirection.LeftToRight, this._totalNetFont, 
-                9F, this._receivedBrush), this._totalReceivedLocation);
-            dc.DrawText(new FormattedText(this._totalSentText, this.CultureInfo, FlowDirection.LeftToRight, this._totalNetFont, 
-                9F, this._sentBrush), this._totalSentLocation);
+            var sentReceivedFormattedText = new FormattedText(this._sentReceivedText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._sentReceivedFont, 12, this._sentReceivedBrush, 1.25);
+            dc.DrawText(sentReceivedFormattedText, this._sentReceivedLocation);
+            
+            var receivedFormattedText = new FormattedText(this._receivedText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._sentOrReceivedFont, 9, this._receivedBrush, 1.25);
+            dc.DrawText(receivedFormattedText, this._receivedLocation);
+            
+            var sentFormattedText = new FormattedText(this._sentText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._sentOrReceivedFont, 9, this._sentBrush, 1.25);
+            dc.DrawText(sentFormattedText, this._sentLoction);
+            
+            var totalReceivedFormattedText = new FormattedText(this._totalReceivedText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._totalNetFont, 9, this._receivedBrush, 1.25);
+            dc.DrawText(totalReceivedFormattedText, this._totalReceivedLocation);
+            
+            var totalSentFormattedText = new FormattedText(this._totalSentText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._totalNetFont, 9, this._sentBrush, 1.25);
+            dc.DrawText(totalSentFormattedText, this._totalSentLocation);
+            
             this._canvasView.Paint(dc);
         }
         

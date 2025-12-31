@@ -1,0 +1,13 @@
+<Window x:Class="SystemWatch.Views.WidgetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        WindowStartupLocation="Manual"
+        Icon="/Assets/Ico.ico">
+    <Grid x:Name="DrawingGrid">
+    </Grid>
+</Window>

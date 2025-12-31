@@ -31,21 +31,21 @@ namespace SystemWatch.ViewModels
         };
 
         private string _cpuTitle = "";
-        private ObservableCollection<Axis> _cpuXAxes = [];
-        private ObservableCollection<Axis> _cpuYAxes = [];
-        private ObservableCollection<ISeries> _cpuSeries = [];
+        private ObservableCollection<Axis> _cpuXAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<Axis> _cpuYAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<ISeries> _cpuSeries = new ObservableCollection<ISeries>();
         private string _memTitle = "";
-        private ObservableCollection<Axis> _memXAxes = [];
-        private ObservableCollection<Axis> _memYAxes = [];
-        private ObservableCollection<ISeries> _memSeries = [];
+        private ObservableCollection<Axis> _memXAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<Axis> _memYAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<ISeries> _memSeries = new ObservableCollection<ISeries>();
         private string _diskTitle = "";
-        private ObservableCollection<Axis> _diskXAxes = [];
-        private ObservableCollection<Axis> _diskYAxes = [];
-        private ObservableCollection<ISeries> _diskSeries = [];
+        private ObservableCollection<Axis> _diskXAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<Axis> _diskYAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<ISeries> _diskSeries = new ObservableCollection<ISeries>();
         private string _networkTitle = "";
-        private ObservableCollection<Axis> _networkXAxes = [];
-        private ObservableCollection<Axis> _networkYAxes = [];
-        private ObservableCollection<ISeries> _networkSeries = [];
+        private ObservableCollection<Axis> _networkXAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<Axis> _networkYAxes = new ObservableCollection<Axis>();
+        private ObservableCollection<ISeries> _networkSeries = new ObservableCollection<ISeries>();
         
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -171,87 +171,75 @@ namespace SystemWatch.ViewModels
         public void UpdateCpuData(string[] xcpuData, double[] ycpuData)
         {
             CpuTitle = "CPU使用率";
-            CpuXAxes =
-            [
-                new Axis
-                {
-                    TextSize = 9,
-                    Labels = xcpuData,
-                    LabelsRotation = 0,
-                    SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
-                    SeparatorsAtCenter = false,
-                    TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
-                    TicksAtCenter = true,
-                    ForceStepToMin = false,
-                    MinStep = 1
-                }
-            ];
-            CpuYAxes =
-            [
-                new Axis
-                {
-                    MinLimit = 0,
-                    MaxLimit = 100,
-                    TextSize = 9,
-                    ForceStepToMin = true,
-                    MinStep = 20,
-                    Labeler = value => Math.Round(value, 2) + "%",
-                }
-            ];
-            CpuSeries =
-            [
-                new LineSeries<double>
-                {
-                    Name = "使用率",
-                    Values = ycpuData,
-                    Fill = null,
-                    GeometrySize = 2,
-                    YToolTipLabelFormatter = point => point.AsDataLabel + "%",
-                }
-            ];
+            CpuXAxes.Clear();
+            CpuXAxes.Add(new Axis
+            {
+                TextSize = 9,
+                Labels = xcpuData,
+                LabelsRotation = 0,
+                SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
+                SeparatorsAtCenter = false,
+                TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
+                TicksAtCenter = true,
+                ForceStepToMin = false,
+                MinStep = 1
+            });
+            CpuYAxes.Clear();
+            CpuYAxes.Add(new Axis
+            {
+                MinLimit = 0,
+                MaxLimit = 100,
+                TextSize = 9,
+                ForceStepToMin = true,
+                MinStep = 20,
+                Labeler = value => Math.Round(value, 2) + "%",
+            });
+            CpuSeries.Clear();
+            CpuSeries.Add(new LineSeries<double>
+            {
+                Name = "使用率",
+                Values = ycpuData,
+                Fill = null,
+                GeometrySize = 2,
+                YToolTipLabelFormatter = point => point.AsDataLabel + "%",
+            });
         }
 
         public void UpdateMemData(string[] xmemData, double[] ymemData, double maxValue, string unitLabel)
         {
             MemTitle = "内存使用量";
-            MemXAxes =
-            [
-                new Axis
-                {
-                    TextSize = 9,
-                    Labels = xmemData,
-                    LabelsRotation = 0,
-                    SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
-                    SeparatorsAtCenter = false,
-                    TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
-                    TicksAtCenter = true,
-                    ForceStepToMin = false,
-                    MinStep = 1
-                }
-            ];
-            MemYAxes =
-            [
-                new Axis
-                {
-                    TextSize = 9,
-                    MinLimit = 0,
-                    MaxLimit = Math.Max(maxValue, 1),
-                    ForceStepToMin = true,
-                    MinStep = Math.Max(maxValue / 5, 0.2),
-                    Labeler = value => Math.Round(value, 2) + unitLabel,
-                }
-            ];
-            MemSeries =
-            [
-                new LineSeries<double>
-                {
-                    Name = "使用量",
-                    Values = ymemData,
-                    Fill = null,
-                    GeometrySize = 2,
-                    YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
-                }
-            ];
+            MemXAxes.Clear();
+            MemXAxes.Add(new Axis
+            {
+                TextSize = 9,
+                Labels = xmemData,
+                LabelsRotation = 0,
+                SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
+                SeparatorsAtCenter = false,
+                TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
+                TicksAtCenter = true,
+                ForceStepToMin = false,
+                MinStep = 1
+            });
+            MemYAxes.Clear();
+            MemYAxes.Add(new Axis
+            {
+                TextSize = 9,
+                MinLimit = 0,
+                MaxLimit = Math.Max(maxValue, 1),
+                ForceStepToMin = true,
+                MinStep = Math.Max(maxValue / 5, 0.2),
+                Labeler = value => Math.Round(value, 2) + unitLabel,
+            });
+            MemSeries.Clear();
+            MemSeries.Add(new LineSeries<double>
+            {
+                Name = "使用量",
+                Values = ymemData,
+                Fill = null,
+                GeometrySize = 2,
+                YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
+            });
         }
 
         public void UpdateDiskData(string[] xdiskData, double[] ydiskWriteData, double[] ydiskReadData,
@@ -259,48 +247,42 @@ namespace SystemWatch.ViewModels
         {
             DiskTitle = "磁盘读写(读：" + Utils.FormatByteSize(5, totalDiskWriteData) + ", 写：" +
                         Utils.FormatByteSize(5, totalDiskReadData) + ")";
-            DiskXAxes =
-            [
-                new Axis
-                {
-                    TextSize = 9,
-                    Labels = xdiskData,
-                    LabelsRotation = 0,
-                    SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
-                    SeparatorsAtCenter = false,
-                    TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
-                    TicksAtCenter = true,
-                    ForceStepToMin = false,
-                    MinStep = 1
-                }
-            ];
-            DiskYAxes =
-            [
-                new Axis
-                {
-                    TextSize = 9,
-                    MinLimit = 0,
-                    MaxLimit = Math.Max(maxValue, 1),
-                    ForceStepToMin = true,
-                    MinStep = Math.Max(maxValue / 5, 0.2),
-                    Labeler = value => Math.Round(value, 2) + unitLabel,
-                }
-            ];
-            DiskSeries =
-            [
-                new ColumnSeries<double>
-                {
-                    Name = "读",
-                    Values = ydiskReadData,
-                    YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
-                },
-                new ColumnSeries<double>
-                {
-                    Name = "写",
-                    Values = ydiskWriteData,
-                    YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
-                }
-            ];
+            DiskXAxes.Clear();
+            DiskXAxes.Add(new Axis
+            {
+                TextSize = 9,
+                Labels = xdiskData,
+                LabelsRotation = 0,
+                SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
+                SeparatorsAtCenter = false,
+                TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
+                TicksAtCenter = true,
+                ForceStepToMin = false,
+                MinStep = 1
+            });
+            DiskYAxes.Clear();
+            DiskYAxes.Add(new Axis
+            {
+                TextSize = 9,
+                MinLimit = 0,
+                MaxLimit = Math.Max(maxValue, 1),
+                ForceStepToMin = true,
+                MinStep = Math.Max(maxValue / 5, 0.2),
+                Labeler = value => Math.Round(value, 2) + unitLabel,
+            });
+            DiskSeries.Clear();
+            DiskSeries.Add(new ColumnSeries<double>
+            {
+                Name = "读",
+                Values = ydiskReadData,
+                YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
+            });
+            DiskSeries.Add(new ColumnSeries<double>
+            {
+                Name = "写",
+                Values = ydiskWriteData,
+                YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
+            });
         }
 
         public void UpdateNetworkData(string[] xnetData, double[] ynetSentData, double[] ynetRecvData,
@@ -308,48 +290,42 @@ namespace SystemWatch.ViewModels
         {
             NetworkTitle = "网络传输(上传：" + Utils.FormatByteSize(5, totalNetSentData) + ", 下载：" +
                            Utils.FormatByteSize(5, totalNetRecvData) + ")";
-            NetworkXAxes =
-            [
-                new Axis
-                {
-                    TextSize = 9,
-                    Labels = xnetData,
-                    LabelsRotation = 0,
-                    SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
-                    SeparatorsAtCenter = false,
-                    TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
-                    TicksAtCenter = true,
-                    ForceStepToMin = false,
-                    MinStep = 1
-                }
-            ];
-            NetworkYAxes =
-            [
-                new Axis
-                {
-                    TextSize = 9,
-                    MinLimit = 0,
-                    MaxLimit = Math.Max(maxValue, 1),
-                    ForceStepToMin = true,
-                    MinStep = Math.Max(maxValue / 5, 0.2),
-                    Labeler = value => Math.Round(value, 2) + unitLabel,
-                }
-            ];
-            NetworkSeries =
-            [
-                new ColumnSeries<double>
-                {
-                    Name = "上传",
-                    Values = ynetSentData,
-                    YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
-                },
-                new ColumnSeries<double>
-                {
-                    Name = "下载",
-                    Values = ynetRecvData,
-                    YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
-                }
-            ];
+            NetworkXAxes.Clear();
+            NetworkXAxes.Add(new Axis
+            {
+                TextSize = 9,
+                Labels = xnetData,
+                LabelsRotation = 0,
+                SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
+                SeparatorsAtCenter = false,
+                TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
+                TicksAtCenter = true,
+                ForceStepToMin = false,
+                MinStep = 1
+            });
+            NetworkYAxes.Clear();
+            NetworkYAxes.Add(new Axis
+            {
+                TextSize = 9,
+                MinLimit = 0,
+                MaxLimit = Math.Max(maxValue, 1),
+                ForceStepToMin = true,
+                MinStep = Math.Max(maxValue / 5, 0.2),
+                Labeler = value => Math.Round(value, 2) + unitLabel,
+            });
+            NetworkSeries.Clear();
+            NetworkSeries.Add(new ColumnSeries<double>
+            {
+                Name = "上传",
+                Values = ynetSentData,
+                YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
+            });
+            NetworkSeries.Add(new ColumnSeries<double>
+            {
+                Name = "下载",
+                Values = ynetRecvData,
+                YToolTipLabelFormatter = point => point.AsDataLabel + unitLabel,
+            });
         }
 
         public void UpdateData(List<string> xData, List<double> ycpuData, List<double> ymemData, 

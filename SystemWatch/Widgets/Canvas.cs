@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using Avalonia;
-using Avalonia.Media;
-using Avalonia.Media.Immutable;
-using Avalonia.Rendering.SceneGraph;
-using Avalonia.Skia;
-using SkiaSharp;
+using System.Windows;
+using System.Windows.Media;
 
 namespace SystemWatch.Widgets
 {
@@ -52,7 +48,7 @@ namespace SystemWatch.Widgets
             public int DataCount;
             public int CurrentIndex;
             public Color PaintColor;
-            public PointsDrawOperation PointsDrawOperation;
+            public Point[] Points;
             public readonly bool CalcuMaxHeight;
             public double DataSum;
             public Data LatestDdata;
@@ -76,22 +72,10 @@ namespace SystemWatch.Widgets
                 }
                 this.CurrentIndex = 0;
                 this.LatestDdata = this.Datas[0];
-                this.PointsDrawOperation = new PointsDrawOperation()
-                {
-                    PaintPen = new ImmutablePen(new ImmutableSolidColorBrush(this.PaintColor), 1.5F),
-                    Paint = new SKPaint()
-                    {
-                        Color = new SKColor(this.PaintColor.ToUInt32()),
-                        StrokeWidth = 1.5f,
-                        IsAntialias = true,
-                        Style = SKPaintStyle.Stroke
-                    },
-                    Points = new SKPoint[paintCount],
-                    Bounds = clientBounds,
-                };
+                this.Points = new Point[paintCount];
                 for (int i = 0; i < paintCount; i++)
                 {
-                    this.PointsDrawOperation.Points[i] = new SKPoint(0, 0);
+                    this.Points[i] = new Point(0, 0);
                 }
                 this.DataUpdateEventArgs = new DataUpdateEventArgs(this);
             }
@@ -143,15 +127,15 @@ namespace SystemWatch.Widgets
 
         public void BackgroundPaint(DrawingContext dc)
         {
-            dc.FillRectangle(new SolidColorBrush(Color.FromRgb(175, 175, 175)), 
+            dc.DrawRectangle(new SolidColorBrush(Color.FromRgb(175, 175, 175)), null, 
                 new Rect(this._cx -1, this._cy - 1, this._cw + 1, this._ch + 1));
-            Pen pen = new Pen(new SolidColorBrush(Color.FromRgb(155, 155, 155)), 1F);
+            Pen pen = new Pen(new SolidColorBrush(Color.FromRgb(155, 155, 155)), 1);
             for(int i=1, count = this._cw / 10; i < count; i++){
-                dc.DrawLine(pen, new(this._cx + i * 10, this._cy), new(this._cx + i * 10, this._cy + this._ch));
+                dc.DrawLine(pen, new Point(this._cx + i * 10, this._cy), new Point(this._cx + i * 10, this._cy + this._ch));
             }
             for (int i = 1, count = this._ch / 10; i < count; i++)
             {
-                dc.DrawLine(pen, new(this._cx, this._cy + i * 10), new(this._cx + this._cw , this._cy + i * 10));
+                dc.DrawLine(pen, new Point(this._cx, this._cy + i * 10), new Point(this._cx + this._cw , this._cy + i * 10));
             }
         }
 
@@ -163,8 +147,9 @@ namespace SystemWatch.Widgets
             }
             if(this._maxHeight > 0)
             {
-                dc.DrawText(new FormattedText(this._maxHeightText, this._cultureInfo, FlowDirection.LeftToRight, this._maxHeightFont, 
-                        7F, this._maxHeightBrush), this._maxHeightPoint);
+                var formattedText = new FormattedText(this._maxHeightText, this._cultureInfo, FlowDirection.LeftToRight, 
+                    this._maxHeightFont, 7, this._maxHeightBrush, 1.25);
+                dc.DrawText(formattedText, this._maxHeightPoint);
             }
         }
 
@@ -172,14 +157,13 @@ namespace SystemWatch.Widgets
         {
             Data[] datas = channel.Datas;
             int index = channel.CurrentIndex;
-            SKPoint[] paintPoints = channel.PointsDrawOperation.Points;
+            Point[] paintPoints = channel.Points;
 
             if(!channel.CalcuMaxHeight)
             {
                 double y = 0;
                 for (int i = 0; i < this._cw; i++)
                 {
-                    //Data data = datas[(index + (int)Math.Round((float)i / this.ix, 0, MidpointRounding.AwayFromZero)) % this.dataCount];
                     Data data = datas[(index + i) % this._dataCount];
                     paintPoints[i].X = this._cx + i;
                     y = data.Total <= 0 ? this._cy + this._ch : this._cy + this._ch * (1D - data.Current / data.Total);
@@ -195,14 +179,18 @@ namespace SystemWatch.Widgets
                 double y = 0;
                 for (int i = 0; i < this._cw; i++)
                 {
-                    //Data data = datas[(index + (int)Math.Round((float)i / this.ix, 0, MidpointRounding.AwayFromZero)) % this.dataCount];
                     Data data = datas[(index + i) % this._dataCount];
                     paintPoints[i].X = this._cx + i;
                     y = this._cy + this._ch * (1D - data.Current / this._maxHeight);
                     paintPoints[i].Y = y % 1 >= 0.5 ? (int)y + 1 : (int)y;
                 }
             }
-            dc.Custom(channel.PointsDrawOperation);
+            
+            Pen pen = new Pen(new SolidColorBrush(channel.PaintColor), 1.5);
+            for (int i = 1, count = paintPoints.Length; i < count; i++)
+            {
+                dc.DrawLine(pen, paintPoints[i - 1], paintPoints[i]);
+            }
         }
 
         public void PushData(DateTime now, double total, double current, double percent, object[] param)
@@ -278,48 +266,6 @@ namespace SystemWatch.Widgets
                 maxHeight /= 1024;
             }
             this._maxHeightText = "0B";
-        }
-        
-        public class PointsDrawOperation : ICustomDrawOperation
-        {
-            public ImmutablePen PaintPen;
-            public SKPaint Paint;
-            public SKPoint[] Points;
-            public Rect Bounds { set; get; }
-            
-            public bool HitTest(Point p)
-            {
-                return false;
-            }
-
-            public void Render(ImmediateDrawingContext context)
-            {
-                var skiaFeature = context.TryGetFeature(typeof(ISkiaSharpApiLeaseFeature));
-                if (skiaFeature != null)
-                {
-                    using (var lease = ((ISkiaSharpApiLeaseFeature) skiaFeature).Lease())
-                    {
-                        lease.SkCanvas.DrawPoints(SKPointMode.Polygon, Points, Paint);
-                        return;
-                    }
-                }
-                
-                SKPoint[] points = this.Points;
-                for (int i = 1, count = points.Length; i < count; i++)
-                {
-                    int j = i - 1;
-                    context.DrawLine(this.PaintPen, new Point(points[j].X, points[j].Y), new Point(points[i].X, points[i].Y));
-                }
-            }
-            
-            public bool Equals(ICustomDrawOperation? other)
-            {
-                return this == other;
-            }
-
-            public void Dispose()
-            {
-            }
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using Avalonia;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
+using System.Windows;
+using System.Windows.Media;
 
 namespace SystemWatch.Widgets
 {
@@ -12,7 +11,6 @@ namespace SystemWatch.Widgets
         private readonly Size _clientSize;
         private readonly Rect _clientRect;
         private readonly Typeface _titleFont;
-        private RenderTargetBitmap? _backgroundCache;
         protected readonly CultureInfo CultureInfo;
 
         protected readonly string[] ByteUnits = new String[] { "B", "K", "M", "G", "T", "P", "E" };
@@ -35,8 +33,8 @@ namespace SystemWatch.Widgets
 
         protected virtual void BackgroundPaint(DrawingContext dc)
         {
-            dc.FillRectangle(Brushes.Black, new Rect(0, 0, this._clientSize.Width - 2, this._clientSize.Height - 1), 5);
-            dc.DrawRectangle(new Pen(Brushes.Gray), new Rect(2, 2, this._clientSize.Width - 6, this._clientSize.Height - 5), 5);
+            dc.DrawRectangle(Brushes.Black, new Pen(Brushes.Gray, 1), 
+                new Rect(0, 0, this._clientSize.Width - 2, this._clientSize.Height - 1));
         }
 
         protected virtual void Paint(DrawingContext dc)
@@ -46,24 +44,14 @@ namespace SystemWatch.Widgets
 
         public virtual void Render(DrawingContext context)
         {
-            if (_backgroundCache == null)
-            {
-                _backgroundCache = new RenderTargetBitmap(new PixelSize((int)_clientSize.Width, (int)_clientSize.Height), new Vector(96, 96));
-                using (var backgroundContext = _backgroundCache.CreateDrawingContext(false))
-                {
-                    this.BackgroundPaint(backgroundContext);
-                }
-            }
-            using  (context.PushTransform(Matrix.CreateTranslation(_location.X, _location.Y))) {
-                context.DrawImage(_backgroundCache, _clientRect, _clientRect);
-                this.Paint(context);
-            }
+            context.PushTransform(new TranslateTransform(_location.X, _location.Y));
+            this.BackgroundPaint(context);
+            this.Paint(context);
+            context.Pop();
         }
 
         public virtual void Close()
         {
-            _backgroundCache?.Dispose();
-            _backgroundCache = null;
         }
         
         public virtual string GetShortNoticce()
@@ -73,10 +61,9 @@ namespace SystemWatch.Widgets
 
         protected void PaintTitle(DrawingContext dc, string title)
         {
-
-            dc.DrawText(new FormattedText(title, this.CultureInfo, FlowDirection.LeftToRight, _titleFont, 
-                    12F, Brushes.White),
-                new Point(12, 6));
+            var formattedText = new FormattedText(title, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._titleFont, 12, Brushes.White, 1.25);
+            dc.DrawText(formattedText, new Point(12, 6));
         }
 
         protected String FormatByteSize(int len, double value, int type = 0)

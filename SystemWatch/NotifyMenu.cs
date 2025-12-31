@@ -1,36 +1,35 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Platform;
+using System.Windows;
+using System.Windows.Controls;
+using Hardcodet.Wpf.TaskbarNotification;
 using SystemWatch.Views;
 
 namespace SystemWatch
 {
     class NotifyMenu
     {
-        private readonly TrayIcon _icon;
-        private NativeMenu _menus;
+        private readonly TaskbarIcon _icon;
+        private ContextMenu _menu;
         private readonly ConcurrentDictionary<string, Window> _windows;
 
         public NotifyMenu()
         {
-            this._icon = new TrayIcon();
+            this._icon = new TaskbarIcon();
             this._icon.ToolTipText = "SystemWatch";
-            this._icon.Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://SystemWatch/Assets/Ico.ico")));
-            // this.icon. += new MouseEventHandler(this.IconMenuMouseMove);
-            this._menus = new NativeMenu();
+            this._icon.Icon = new System.Drawing.Icon(AppDomain.CurrentDomain.BaseDirectory + "Assets\\Ico.ico");
+            
+            this._menu = new ContextMenu();
 
             this.InitMenus();
-            this._icon.Menu = this._menus;
+            this._icon.ContextMenu = this._menu;
             this._windows = new ConcurrentDictionary<string, Window>();
         }
 
         public void Show()
         {
-            this._icon.IsVisible = true;
+            this._icon.Visibility = Visibility.Visible;
         }
 
         public void Close()
@@ -39,6 +38,7 @@ namespace SystemWatch
             {
                 window.Close();
             }
+            this._icon.Dispose();
         }
 
         public void UpdateIconText(string text)
@@ -48,29 +48,29 @@ namespace SystemWatch
 
         private void InitMenus()
         {
-            NativeMenuItem statisticsMenu = new NativeMenuItem
+            MenuItem statisticsMenu = new MenuItem
             {
                 Header = "统计"
             };
             statisticsMenu.Click += this.StatisticsMenuMenuClick;
-            this._menus.Add(statisticsMenu);
+            this._menu.Items.Add(statisticsMenu);
 
-            NativeMenuItem configMenu = new NativeMenuItem
+            MenuItem configMenu = new MenuItem
             {
                 Header = "设置"
             };
             configMenu.Click += this.ConfigMenuClick;
-            this._menus.Add(configMenu);
+            this._menu.Items.Add(configMenu);
 
-            NativeMenuItem exitMenu = new NativeMenuItem
+            MenuItem exitMenu = new MenuItem
             {
                 Header = "退出"
             };
             exitMenu.Click += this.ExitMenuClick;
-            this._menus.Add(exitMenu);
+            this._menu.Items.Add(exitMenu);
         }
 
-        private void ConfigMenuClick(object? sender, EventArgs e)
+        private void ConfigMenuClick(object sender, RoutedEventArgs e)
         {
             if(this._windows.ContainsKey("config"))
             {
@@ -84,7 +84,7 @@ namespace SystemWatch
             configWindow.Show();
         }
 
-        private void StatisticsMenuMenuClick(object? sender, EventArgs e)
+        private void StatisticsMenuMenuClick(object sender, RoutedEventArgs e)
         {
             if (this._windows.ContainsKey("statistics"))
             {
@@ -98,9 +98,9 @@ namespace SystemWatch
             statisticsWindow.Show();
         }
 
-        private void ExitMenuClick(object? sender, EventArgs e)
+        private void ExitMenuClick(object sender, RoutedEventArgs e)
         {
-            WidgetWindow widgetWindow = (WidgetWindow) ((IClassicDesktopStyleApplicationLifetime) Application.Current.ApplicationLifetime).MainWindow;
+            WidgetWindow widgetWindow = Application.Current.MainWindow as WidgetWindow;
             widgetWindow?.Close();
             string[] windowNames = this._windows.Keys.ToArray();
             foreach (var windowName in windowNames)
@@ -110,6 +110,7 @@ namespace SystemWatch
                     window?.Close();
                 }
             }
+            Application.Current.Shutdown();
         }
 
         private void ConfigWindowClosedEvent(object? sender, EventArgs e)

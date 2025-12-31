@@ -1,23 +1,20 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+﻿<Window x:Class="SystemWatch.Views.StatisticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
         xmlns:vm="clr-namespace:SystemWatch.ViewModels"
-        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
         Width="900" Height="680"
         WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="680"
-        x:Class="SystemWatch.Views.StatisticsWindow"
         Icon="/Assets/Ico.ico"
         Title="使用统计"
-        CanResize="False">
+        ResizeMode="NoResize">
         
         <StackPanel Background="White"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Width="900"
                     Height="680">
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Width="820" Height="28" Margin="0 4 0 0">
+                <StackPanel Orientation="Horizontal" Width="820" Height="28" Margin="0 4 0 0">
                         <Border Height="28" >
                                 <TextBlock TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">选择查看时长：</TextBlock>
                         </Border>
@@ -38,67 +35,63 @@
                 </StackPanel>
                 
                 <lvc:CartesianChart
-                        x:Name="CpuChart"
-                        Series="{Binding CpuSeries, DataType=vm:StatisticsViewModel}"
-                        XAxes="{Binding CpuXAxes, DataType=vm:StatisticsViewModel}"
-                        YAxes="{Binding CpuYAxes, DataType=vm:StatisticsViewModel}"
-                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Series="{Binding CpuSeries}"
+                        XAxes="{Binding CpuXAxes}"
+                        YAxes="{Binding CpuYAxes}"
+                        TooltipTextPaint="{Binding TextPaint}"
                         Width="840"
                         Height="140"
-                        Margin="0 0 0 0 ">
+                        Margin="0 0 0 0">
                 </lvc:CartesianChart>
                 <TextBlock HorizontalAlignment="Stretch"
                            TextAlignment="Center"
                            VerticalAlignment="Center"
                            FontSize="12"
-                           Text="{Binding CpuTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+                           Text="{Binding CpuTitle}"></TextBlock>
                 
                 <lvc:CartesianChart
-                        x:Name="MemChart"
-                        Series="{Binding MemSeries, DataType=vm:StatisticsViewModel}"
-                        XAxes="{Binding MemXAxes, DataType=vm:StatisticsViewModel}"
-                        YAxes="{Binding MemYAxes, DataType=vm:StatisticsViewModel}"
-                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Series="{Binding MemSeries}"
+                        XAxes="{Binding MemXAxes}"
+                        YAxes="{Binding MemYAxes}"
+                        TooltipTextPaint="{Binding TextPaint}"
                         Width="840"
                         Height="140"
-                        Margin="0 0 0 0 ">
+                        Margin="0 0 0 0">
                 </lvc:CartesianChart>
                 <TextBlock HorizontalAlignment="Stretch"
                            TextAlignment="Center"
                            VerticalAlignment="Center"
                            FontSize="12"
-                           Text="{Binding MemTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+                           Text="{Binding MemTitle}"></TextBlock>
                 
                 <lvc:CartesianChart
-                        x:Name="DiskChart"
-                        Series="{Binding DiskSeries, DataType=vm:StatisticsViewModel}"
-                        XAxes="{Binding DiskXAxes, DataType=vm:StatisticsViewModel}"
-                        YAxes="{Binding DiskYAxes, DataType=vm:StatisticsViewModel}"
-                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Series="{Binding DiskSeries}"
+                        XAxes="{Binding DiskXAxes}"
+                        YAxes="{Binding DiskYAxes}"
+                        TooltipTextPaint="{Binding TextPaint}"
                         Width="840"
                         Height="140"
-                        Margin="0 0 0 0 ">
+                        Margin="0 0 0 0">
                 </lvc:CartesianChart>
                 <TextBlock HorizontalAlignment="Stretch"
                            TextAlignment="Center"
                            VerticalAlignment="Center"
                            FontSize="12"
-                           Text="{Binding DiskTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+                           Text="{Binding DiskTitle}"></TextBlock>
                 
                 <lvc:CartesianChart
-                        x:Name="NetworkChart"
-                        Series="{Binding NetworkSeries, DataType=vm:StatisticsViewModel}"
-                        XAxes="{Binding NetworkXAxes, DataType=vm:StatisticsViewModel}"
-                        YAxes="{Binding NetworkYAxes, DataType=vm:StatisticsViewModel}"
-                        TooltipTextPaint="{Binding TextPaint, DataType=vm:StatisticsViewModel}"
+                        Series="{Binding NetworkSeries}"
+                        XAxes="{Binding NetworkXAxes}"
+                        YAxes="{Binding NetworkYAxes}"
+                        TooltipTextPaint="{Binding TextPaint}"
                         Width="840"
                         Height="140"
-                        Margin="0 0 0 0 ">
+                        Margin="0 0 0 0">
                 </lvc:CartesianChart>
                 <TextBlock HorizontalAlignment="Stretch"
                            TextAlignment="Center"
                            VerticalAlignment="Center"
                            FontSize="12"
-                           Text="{Binding NetworkTitle, DataType=vm:StatisticsViewModel}"></TextBlock>
+                           Text="{Binding NetworkTitle}"></TextBlock>
         </StackPanel>
 </Window>

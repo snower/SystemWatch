@@ -1,7 +1,5 @@
 using System;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
+using System.Windows;
 using Microsoft.Win32;
 using SystemWatch.Datas;
 using SystemWatch.Views;
@@ -17,49 +15,40 @@ public partial class App : Application
     public Performance?  Performance => _performance;
     public Statistics? Statistics => _statistics;
     
-    public override void Initialize()
+    private void Application_Startup(object sender, StartupEventArgs e)
     {
-        AvaloniaXamlLoader.Load(this);
-    }
+        _performance = new Performance();
+        _statistics = new Statistics();
+        _statistics.Init();
+        
+        MainWindow = new WidgetWindow();
+        _notifyMenu = new NotifyMenu();
+        _notifyMenu.Show();
+        
+        _statistics.Start();
+        _performance.Start();
+        MainWindow.Show();
 
-    public override void OnFrameworkInitializationCompleted()
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            _performance = new Performance();
-            _statistics = new Statistics();
-            _statistics.Init();
-            
-            desktop.MainWindow = new WidgetWindow();
-            _notifyMenu = new NotifyMenu();
-            
-            _statistics.Start();
-            _performance.Start();
-
-            SystemEvents.PowerModeChanged += PowerModeChanged;
-            desktop.Exit += ApplicationExitEvent;
-        }
-
-        base.OnFrameworkInitializationCompleted();
+        SystemEvents.PowerModeChanged += PowerModeChanged;
     }
     
-    private void ApplicationExitEvent(object? sender, EventArgs e)
+    private void Application_Exit(object sender, ExitEventArgs e)
     {
         _performance?.Close();
         _statistics?.Close();
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        
+        if (MainWindow is WidgetWindow widgetWindow)
         {
-            WidgetWindow? widgetWindow = (WidgetWindow)desktop.MainWindow!;
             widgetWindow?.CloseWidgets();
         }
+        _notifyMenu?.Close();
         _notifyMenu = null;
     }
     
     private void PowerModeChanged(object sender, PowerModeChangedEventArgs e)
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (MainWindow is WidgetWindow widgetWindow)
         {
-            WidgetWindow? widgetWindow = (WidgetWindow)desktop.MainWindow!;
             switch (e.Mode)
             {
                 case PowerModes.Resume:

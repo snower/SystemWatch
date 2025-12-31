@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
-using Avalonia;
-using Avalonia.Media;
+using System.Windows;
+using System.Windows.Media;
 using SystemWatch.Datas;
 
 namespace SystemWatch.Widgets
@@ -90,16 +90,26 @@ namespace SystemWatch.Widgets
         {
             base.Paint(dc);
 
-            dc.DrawText(new FormattedText(this._writeReadText, this.CultureInfo, FlowDirection.LeftToRight, this._writeReadFont, 
-                12F, this._writeReadBrush), this._writeReadLocation);
-            dc.DrawText(new FormattedText(this._readText, this.CultureInfo, FlowDirection.LeftToRight, this._writeOrReadFont, 
-                9F, this._readBrush), this._readLocation);
-            dc.DrawText(new FormattedText(this._writeText, this.CultureInfo, FlowDirection.LeftToRight, this._writeOrReadFont, 
-                9F, this._writeBrush), this._writeLoction);
-            dc.DrawText(new FormattedText(this._totalReadText, this.CultureInfo, FlowDirection.LeftToRight, this._totalRwFont, 
-                9F, this._readBrush), this._totalReadLocation);
-            dc.DrawText(new FormattedText(this._totalWriteText, this.CultureInfo, FlowDirection.LeftToRight, this._totalRwFont, 
-                9F, this._writeBrush), this._totalWriteLocation);
+            var writeReadFormattedText = new FormattedText(this._writeReadText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._writeReadFont, 12, this._writeReadBrush, 1.25);
+            dc.DrawText(writeReadFormattedText, this._writeReadLocation);
+            
+            var readFormattedText = new FormattedText(this._readText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._writeOrReadFont, 9, this._readBrush, 1.25);
+            dc.DrawText(readFormattedText, this._readLocation);
+            
+            var writeFormattedText = new FormattedText(this._writeText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._writeOrReadFont, 9, this._writeBrush, 1.25);
+            dc.DrawText(writeFormattedText, this._writeLoction);
+            
+            var totalReadFormattedText = new FormattedText(this._totalReadText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._totalRwFont, 9, this._readBrush, 1.25);
+            dc.DrawText(totalReadFormattedText, this._totalReadLocation);
+            
+            var totalWriteFormattedText = new FormattedText(this._totalWriteText, this.CultureInfo, FlowDirection.LeftToRight, 
+                this._totalRwFont, 9, this._writeBrush, 1.25);
+            dc.DrawText(totalWriteFormattedText, this._totalWriteLocation);
+            
             this._canvasView.Paint(dc);
         }
         
