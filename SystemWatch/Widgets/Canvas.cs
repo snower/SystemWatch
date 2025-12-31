@@ -96,7 +96,7 @@ namespace SystemWatch.Widgets
         private Brush _maxHeightBrush;
         private Point _maxHeightPoint;
         private readonly CultureInfo _cultureInfo;
-        
+        private readonly StreamGeometry _geometry;
 
         public event EventHandler<DataUpdateEventArgs> DataUpdateEvent;
         public event EventHandler<DataUpdateEventArgs> ResetDataUpdateEvent;
@@ -120,7 +120,8 @@ namespace SystemWatch.Widgets
             this._maxHeightBrush = new SolidColorBrush(this._maxHeightColor);
             this._maxHeightPoint = new Point(this._cx + 2, this._cy);
             this._cultureInfo = CultureInfo.CurrentCulture;
-            
+            this._geometry = new StreamGeometry();
+
             for (int i=0; i<this._channels.Length; i++)
             {
                 this._channels[i].Init(this._dataCount, this._cw, new Rect(this._clientSize));
@@ -192,14 +193,12 @@ namespace SystemWatch.Widgets
                 }
             }
 
-            var geometry = new StreamGeometry();
-            using (var ctx = geometry.Open())
+            using (var ctx = _geometry.Open())
             {
                 ctx.BeginFigure(paintPoints[0], isFilled: false, isClosed: false);
                 ctx.PolyLineTo(new ArraySegment<Point>(paintPoints, 1, paintPoints.Length - 1), isStroked: true, isSmoothJoin: false);
             }
-            geometry.Freeze();
-            dc.DrawGeometry(null, pen, geometry);
+            dc.DrawGeometry(null, pen, _geometry);
         }
 
         public void PushData(DateTime now, double total, double current, double percent, object[] param)

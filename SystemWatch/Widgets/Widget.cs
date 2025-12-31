@@ -57,6 +57,7 @@ namespace SystemWatch.Widgets
                     this.BackgroundPaint(backgroundContext);
                 }
                 _backgroundCache.Render(visual);
+                _backgroundCache.Freeze();
             }
             context.PushTransform(_translateTransform);
             context.DrawImage(_backgroundCache, _clientRect);
