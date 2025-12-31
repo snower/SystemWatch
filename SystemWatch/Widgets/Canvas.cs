@@ -84,6 +84,7 @@ namespace SystemWatch.Widgets
         private readonly Point _location;
         private readonly Size _clientSize;
         private readonly DataChannel[] _channels;
+        private readonly Pen[] _channelPens;
         private readonly int _dataCount;
 
         private int _cx, _cy, _cw, _ch;
@@ -102,6 +103,7 @@ namespace SystemWatch.Widgets
 
         public Canvas(Point location, Size clientSize, int dataCount, DataChannel[] channels, Color maxHeightColor)
         {
+            this._channelPens = new Pen[channels.Length];
             this._location = location;
             this._clientSize = clientSize;
             this._dataCount = dataCount;
@@ -119,9 +121,13 @@ namespace SystemWatch.Widgets
             this._maxHeightPoint = new Point(this._cx + 2, this._cy);
             this._cultureInfo = CultureInfo.CurrentCulture;
             
-            foreach (DataChannel channel in this._channels)
+            for (int i=0; i<this._channels.Length; i++)
             {
-                channel.Init(this._dataCount, this._cw, new Rect(this._clientSize));
+                this._channels[i].Init(this._dataCount, this._cw, new Rect(this._clientSize));
+                this._channelPens[i] = new Pen(new SolidColorBrush(this._channels[i].PaintColor), 1.5)
+                {
+                    LineJoin = PenLineJoin.Bevel // 或 PenLineJoin.Round
+                };
             }
         }
 
@@ -141,9 +147,9 @@ namespace SystemWatch.Widgets
 
         public void Paint(DrawingContext dc)
         {
-            foreach(DataChannel channel in this._channels)
+            for (int i = 0; i < this._channels.Length; i++)
             {
-                this.PaintData(dc, channel);
+                this.PaintData(dc, this._channels[i], this._channelPens[i]);
             }
             if(this._maxHeight > 0)
             {
@@ -153,7 +159,7 @@ namespace SystemWatch.Widgets
             }
         }
 
-        private void PaintData(DrawingContext dc, DataChannel channel)
+        private void PaintData(DrawingContext dc, DataChannel channel, Pen pen)
         {
             Data[] datas = channel.Datas;
             int index = channel.CurrentIndex;
@@ -185,12 +191,15 @@ namespace SystemWatch.Widgets
                     paintPoints[i].Y = y % 1 >= 0.5 ? (int)y + 1 : (int)y;
                 }
             }
-            
-            Pen pen = new Pen(new SolidColorBrush(channel.PaintColor), 1.5);
-            for (int i = 1, count = paintPoints.Length; i < count; i++)
+
+            var geometry = new StreamGeometry();
+            using (var ctx = geometry.Open())
             {
-                dc.DrawLine(pen, paintPoints[i - 1], paintPoints[i]);
+                ctx.BeginFigure(paintPoints[0], isFilled: false, isClosed: false);
+                ctx.PolyLineTo(new ArraySegment<Point>(paintPoints, 1, paintPoints.Length - 1), isStroked: true, isSmoothJoin: false);
             }
+            geometry.Freeze();
+            dc.DrawGeometry(null, pen, geometry);
         }
 
         public void PushData(DateTime now, double total, double current, double percent, object[] param)

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace SystemWatch.Widgets
 {
@@ -11,6 +12,8 @@ namespace SystemWatch.Widgets
         private readonly Size _clientSize;
         private readonly Rect _clientRect;
         private readonly Typeface _titleFont;
+        private RenderTargetBitmap? _backgroundCache;
+        private readonly TranslateTransform _translateTransform;
         protected readonly CultureInfo CultureInfo;
 
         protected readonly string[] ByteUnits = new String[] { "B", "K", "M", "G", "T", "P", "E" };
@@ -28,13 +31,14 @@ namespace SystemWatch.Widgets
             this._clientSize = clientSize;
             this._clientRect = new Rect(clientSize);
             this._titleFont = new Typeface("微软雅黑");
+            this._translateTransform = new TranslateTransform(_location.X, _location.Y);
             this.CultureInfo = CultureInfo.CurrentCulture;
         }
 
         protected virtual void BackgroundPaint(DrawingContext dc)
         {
-            dc.DrawRectangle(Brushes.Black, new Pen(Brushes.Gray, 1), 
-                new Rect(0, 0, this._clientSize.Width - 2, this._clientSize.Height - 1));
+            dc.DrawRoundedRectangle(Brushes.Black, new Pen(Brushes.Gray, 1), 
+                new Rect(0, 0, this._clientSize.Width - 2, this._clientSize.Height - 1), 5, 5);
         }
 
         protected virtual void Paint(DrawingContext dc)
@@ -44,14 +48,25 @@ namespace SystemWatch.Widgets
 
         public virtual void Render(DrawingContext context)
         {
-            context.PushTransform(new TranslateTransform(_location.X, _location.Y));
-            this.BackgroundPaint(context);
+            if (_backgroundCache == null)
+            {
+                _backgroundCache = new RenderTargetBitmap((int)_clientSize.Width, (int)_clientSize.Height, 96, 96, PixelFormats.Pbgra32); 
+                var visual = new DrawingVisual();
+                using (var backgroundContext = visual.RenderOpen())
+                {
+                    this.BackgroundPaint(backgroundContext);
+                }
+                _backgroundCache.Render(visual);
+            }
+            context.PushTransform(_translateTransform);
+            context.DrawImage(_backgroundCache, _clientRect);
             this.Paint(context);
             context.Pop();
         }
 
         public virtual void Close()
         {
+            _backgroundCache = null;
         }
         
         public virtual string GetShortNoticce()
