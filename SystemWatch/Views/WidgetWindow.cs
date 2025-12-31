@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -77,19 +76,32 @@ namespace SystemWatch.Views
             this.Loaded += (s, e) => OnScreenChanged(null, null);
         }
 
+        protected override int VisualChildrenCount => 1;
+        protected override Visual GetVisualChild(int index) => _drawingVisual;
+
         private void InitializeDrawing()
         {
             _drawingVisual = new DrawingVisual();
+            AddVisualChild(_drawingVisual);
+            AddLogicalChild(_drawingVisual);
+        }
+
+        private void DoRender()
+        {
+            using (var drawingContext = _drawingVisual.RenderOpen())
+            {
+                foreach (var widget in _widgets)
+                {
+                    widget.Render(drawingContext);
+                }
+            }
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            
-            foreach (var widget in _widgets)
-            {
-                widget.Render(drawingContext);
-            }
+
+            DoRender();
         }
 
         public new void Show()
@@ -116,7 +128,7 @@ namespace SystemWatch.Views
         
         private void TimerEvent(object? o, EventArgs e)
         {
-            this.InvalidateVisual();
+            DoRender();
         }
         
         private void OnScreenChanged(object? sender, EventArgs e)
