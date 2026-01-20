@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Timers;
@@ -55,7 +54,7 @@ namespace SystemWatch.Datas
         public class SystemInfo
         {
             public ulong PhysicalMemorySize;
-            public ArrayList NetworkAdapters;
+            public List<string> NetworkAdapters = [];
         };
 
         public class PerformanceCounterData
@@ -83,7 +82,7 @@ namespace SystemWatch.Datas
 
             public void DoCountHandle()
             {
-                this.CountHandle(this, null);
+                this.CountHandle.Invoke(this, null);
             }
 
             public void UpdatePerformanceCounters(PerformanceCounter[] performanceCounters)
@@ -101,7 +100,7 @@ namespace SystemWatch.Datas
                 {
                     pc.Close();
                 }
-                this.PerformanceCounters = new PerformanceCounter[0];
+                this.PerformanceCounters = [];
             }
         };
 
@@ -119,7 +118,7 @@ namespace SystemWatch.Datas
         public Performance(){
             this._updating = false;
             this._views = new Dictionary<IPushData, List<ViewType>>();
-            this._performanceCounters = new Dictionary<string, PerformanceCounterData>();
+            this._performanceCounters = [];
             this._systemInfo = new SystemInfo();
             this.GetSystemInfo();
 
@@ -160,6 +159,7 @@ namespace SystemWatch.Datas
 
         private void AvaiableCounterHandler(object? o, EventArgs e)
         {
+            if (o == null) return;
             PerformanceCounterData pcd = (PerformanceCounterData)o;
             double available = 0;
             foreach (PerformanceCounter pc in pcd.PerformanceCounters)
@@ -181,6 +181,7 @@ namespace SystemWatch.Datas
 
         private void PercentCounterHandler(object? o, EventArgs e)
         {
+            if (o == null) return;
             PerformanceCounterData pcd = (PerformanceCounterData)o;
             double percent = 0;
             foreach (PerformanceCounter pc in pcd.PerformanceCounters)
@@ -202,6 +203,7 @@ namespace SystemWatch.Datas
 
         private void CurrentLoadCounterHandler(object? o, EventArgs e)
         {
+            if (o == null) return;
             PerformanceCounterData pcd = (PerformanceCounterData)o;
             double total = 0;
             foreach (PerformanceCounter pc in pcd.PerformanceCounters)
@@ -237,7 +239,7 @@ namespace SystemWatch.Datas
             string[] pcs = pcc.GetInstanceNames();
 
             NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-            this._systemInfo.NetworkAdapters = new ArrayList();
+            this._systemInfo.NetworkAdapters = [];
             foreach(NetworkInterface ni in networkInterfaces)
             {
                 if(ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
@@ -294,58 +296,54 @@ namespace SystemWatch.Datas
             }
         }
 
-        private PerformanceCounterData CreatePercentCounterData(DataType type,string instanceName)
+        private PerformanceCounterData? CreatePercentCounterData(DataType type,string instanceName)
         {
             string key = type.ToString() + instanceName;
+            PerformanceCounterData? pcd;
             switch (type)
             {
                 case DataType.ProcessorLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
-                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("Processor", "% Processor Time", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
+                        pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("Processor", "% Processor Time", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
                         pcd.CountHandle += this.PercentCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 case DataType.MemoryLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
-                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[]{new PerformanceCounter("Memory", "Available KBytes")}, type, GetDataType.Available, instanceName, new object[]{this._systemInfo.PhysicalMemorySize, 1024D});
+                        pcd = new PerformanceCounterData(new PerformanceCounter[]{new PerformanceCounter("Memory", "Available KBytes")}, type, GetDataType.Available, instanceName, new object[]{this._systemInfo.PhysicalMemorySize, 1024D});
                         pcd.CountHandle += this.AvaiableCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 case DataType.LogicalDiskLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
-                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("LogicalDisk", "Disk Bytes/sec", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
+                        pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("LogicalDisk", "Disk Bytes/sec", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
                         pcd.CountHandle += this.CurrentLoadCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 case DataType.LogicalDiskReadLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
-                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("LogicalDisk", "Disk Read Bytes/sec", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
+                        pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("LogicalDisk", "Disk Read Bytes/sec", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
                         pcd.CountHandle += this.CurrentLoadCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 case DataType.LogicalDiskWriteLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
-                        PerformanceCounterData pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("LogicalDisk", "Disk Write Bytes/sec", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
+                        pcd = new PerformanceCounterData(new PerformanceCounter[] { new PerformanceCounter("LogicalDisk", "Disk Write Bytes/sec", instanceName) }, type, GetDataType.Percent, instanceName, new object[] { 100 });
                         pcd.CountHandle += this.CurrentLoadCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 case DataType.NetworkInterfaceLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
                         PerformanceCounter[] performanceCounters;
                         if (instanceName == "")
@@ -358,14 +356,13 @@ namespace SystemWatch.Datas
                         } else {
                             performanceCounters = new PerformanceCounter[] { new PerformanceCounter("Network Interface", "Bytes Total/sec", instanceName) };
                         }
-                        PerformanceCounterData pcd = new PerformanceCounterData(performanceCounters, type, GetDataType.Percent, instanceName, new object[] { 100 });
+                        pcd = new PerformanceCounterData(performanceCounters, type, GetDataType.Percent, instanceName, new object[] { 100 });
                         pcd.CountHandle += this.CurrentLoadCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 case DataType.NetworkInterfaceReceivedLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
                         PerformanceCounter[] performanceCounters;
                         if (instanceName == "")
@@ -378,14 +375,13 @@ namespace SystemWatch.Datas
                         } else {
                             performanceCounters = new PerformanceCounter[] { new PerformanceCounter("Network Interface", "Bytes Received/sec", instanceName) };
                         }
-                        PerformanceCounterData pcd = new PerformanceCounterData(performanceCounters, type, GetDataType.Percent, instanceName, new object[] { 100 });
+                        pcd = new PerformanceCounterData(performanceCounters, type, GetDataType.Percent, instanceName, new object[] { 100 });
                         pcd.CountHandle += this.CurrentLoadCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 case DataType.NetworkInterfaceSentLoadPercent:
-                    if (!this._performanceCounters.ContainsKey(key))
+                    if (this._performanceCounters.TryGetValue(key, out pcd) || pcd == null)
                     {
                         PerformanceCounter[] performanceCounters;
                         if (instanceName == "")
@@ -398,12 +394,11 @@ namespace SystemWatch.Datas
                         } else {
                             performanceCounters = new PerformanceCounter[] { new PerformanceCounter("Network Interface", "Bytes Sent/sec", instanceName) };
                         }
-                        PerformanceCounterData pcd = new PerformanceCounterData(performanceCounters, type, GetDataType.Percent, instanceName, new object[] { 100 });
+                        pcd = new PerformanceCounterData(performanceCounters, type, GetDataType.Percent, instanceName, new object[] { 100 });
                         pcd.CountHandle += this.CurrentLoadCounterHandler;
                         this._performanceCounters.Add(key, pcd);
-                        return pcd;
                     }
-                    return this._performanceCounters[key];
+                    return pcd;
                 default:
                     return null;
             }
@@ -434,12 +429,14 @@ namespace SystemWatch.Datas
         public void SetDataToView(DataType type, IPushData view, string instanceName="_Total", object[] viewParams=null)
         {
 
-            PerformanceCounterData pcd = this.CreatePercentCounterData(type, instanceName);
-            if (!this._views.ContainsKey(view))
+            PerformanceCounterData? pcd = this.CreatePercentCounterData(type, instanceName);
+            if (pcd == null) return;
+            if (!this._views.TryGetValue(view, out List<ViewType>? value))
             {
-                this._views.Add(view, new List<ViewType>());
+                value = ([]);
+                this._views.Add(view, value);
             }
-            this._views[view].Add(new ViewType(view, viewParams, type, pcd, instanceName));
+            value.Add(new ViewType(view, viewParams, type, pcd, instanceName));
         }
     }
 }

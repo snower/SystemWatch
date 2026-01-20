@@ -169,13 +169,11 @@ namespace SystemWatch.Widgets
 
             if(!channel.CalcuMaxHeight)
             {
-                double y = 0;
                 for (int i = 0; i < this._cw; i++)
                 {
                     Data data = datas[(index + i) % this._dataCount];
                     paintPoints[i].X = this._cx + i;
-                    y = data.Total <= 0 ? this._cy + this._ch : this._cy + this._ch * (1D - data.Current / data.Total);
-                    paintPoints[i].Y = y % 1 >= 0.5 ? (int)y + 1 : (int)y;
+                    paintPoints[i].Y = (int)(this._cy + this._ch * (1D - data.Current / data.Total) + 0.5);
                 }
             } else if (this._maxHeight <= 0) {
                 for (int i = 0; i < this._cw; i++)
@@ -184,13 +182,11 @@ namespace SystemWatch.Widgets
                     paintPoints[i].Y = this._cy + this._ch;
                 }
             } else {
-                double y = 0;
                 for (int i = 0; i < this._cw; i++)
                 {
                     Data data = datas[(index + i) % this._dataCount];
                     paintPoints[i].X = this._cx + i;
-                    y = this._cy + this._ch * (1D - data.Current / this._maxHeight);
-                    paintPoints[i].Y = y % 1 >= 0.5 ? (int)y + 1 : (int)y;
+                    paintPoints[i].Y = (int)(this._cy + this._ch * (1D - data.Current / this._maxHeight) + 0.5);
                 }
             }
 
@@ -242,11 +238,11 @@ namespace SystemWatch.Widgets
             if(channel.CurrentIndex >= this._dataCount)
             {
                 channel.CurrentIndex = 0;
-                this.DataUpdateEvent(this, channel.DataUpdateEventArgs);
-                this.ResetDataUpdateEvent(this, channel.DataUpdateEventArgs);
+                this.DataUpdateEvent.Invoke(this, channel.DataUpdateEventArgs);
+                this.ResetDataUpdateEvent.Invoke(this, channel.DataUpdateEventArgs);
             } else
             {
-                this.DataUpdateEvent(this, channel.DataUpdateEventArgs);
+                this.DataUpdateEvent.Invoke(this, channel.DataUpdateEventArgs);
             }
         }
 
@@ -254,7 +250,7 @@ namespace SystemWatch.Widgets
         {
             foreach(DataChannel channel in this._channels)
             {
-                this.ResetDataUpdateEvent(this, channel.DataUpdateEventArgs);
+                this.ResetDataUpdateEvent.Invoke(this, channel.DataUpdateEventArgs);
             }
         }
 
