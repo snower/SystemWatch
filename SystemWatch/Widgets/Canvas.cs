@@ -173,7 +173,7 @@ namespace SystemWatch.Widgets
                 {
                     Data data = datas[(index + i) % this._dataCount];
                     paintPoints[i].X = this._cx + i;
-                    paintPoints[i].Y = (int)(this._cy + this._ch * (1D - data.Current / data.Total) + 0.5);
+                    paintPoints[i].Y = (int)((data.Total <= 0 ? this._cy + this._ch : this._cy + this._ch * (1D - data.Current / data.Total)) + 0.5);
                 }
             } else if (this._maxHeight <= 0) {
                 for (int i = 0; i < this._cw; i++)
