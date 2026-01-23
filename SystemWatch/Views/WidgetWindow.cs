@@ -61,6 +61,8 @@ namespace SystemWatch.Views
         private readonly DispatcherTimer _timer;
         private IntPtr _shellViewPtr = IntPtr.Zero;
         private DrawingVisual _drawingVisual;
+
+        private double _primaryScreenWidth = 0;
         
         public int WidgetWidth { get; }
         public int WidgetHeight { get; }
@@ -213,6 +215,8 @@ namespace SystemWatch.Views
 
         private void UpdateWindowPosition()
         {
+            if (this._primaryScreenWidth == SystemParameters.PrimaryScreenWidth) return;
+            this._primaryScreenWidth = SystemParameters.PrimaryScreenWidth;
             if (this._shellViewPtr != IntPtr.Zero)
             {
                 var windowInteropHelper = new WindowInteropHelper(this);
@@ -230,7 +234,7 @@ namespace SystemWatch.Views
                             int screenWidth = monitorInfo.rcMonitor.Right - monitorInfo.rcMonitor.Left;
                             double screenRatio = ((double)screenWidth) / SystemParameters.PrimaryScreenWidth;
                             // 计算相对父窗口的坐标
-                            int targetX = (int) (screenWidth - 250 * screenRatio);
+                            int targetX = (int) (screenWidth - 250 * (1.0 / screenRatio));
                             int targetY = (int) (120 * screenRatio);
 
                             SetWindowPos(hWnd, IntPtr.Zero, targetX, targetY, 0, 0,
@@ -252,6 +256,7 @@ namespace SystemWatch.Views
                var windowInteropHelper = new WindowInteropHelper(this);
                SetParent(windowInteropHelper.Handle, shellViewPtr);
                this._shellViewPtr = shellViewPtr;
+               UpdateWindowPosition();
             }
         }
         
