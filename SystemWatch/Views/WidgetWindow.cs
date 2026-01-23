@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -73,7 +74,7 @@ namespace SystemWatch.Views
             
             InitializeDrawing();
             
-            this.Loaded += (s, e) => OnScreenChanged(null, null);
+            this.Loaded += OnLoaded;
         }
 
         protected override int VisualChildrenCount => 1;
@@ -134,6 +135,18 @@ namespace SystemWatch.Views
         private void OnScreenChanged(object? sender, EventArgs e)
         {
             UpdateWindowPosition();
+        }
+
+        private void OnLoaded(object? sender, EventArgs e)
+        {
+            SystemEvents.DisplaySettingsChanged += OnScreenChanged;
+            OnScreenChanged(null, null);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            SystemEvents.DisplaySettingsChanged -= OnScreenChanged;
+            base.OnClosed(e);
         }
         
         private void OnActivated(object? sender, EventArgs e)
