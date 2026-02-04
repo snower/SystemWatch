@@ -21,48 +21,12 @@ namespace SystemWatch.Views
 
         [DllImport("user32.dll", EntryPoint = "SetParent")]
         static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr MonitorFromWindow(IntPtr hWnd, uint dwFlags);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MONITORINFO
-        {
-            public uint cbSize;
-            public RECT rcMonitor;
-            public RECT rcWork;
-            public uint dwFlags;
-        }
-
-        private const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
-
-        private const uint SWP_NOZORDER = 0x0004;
-        private const uint SWP_NOACTIVATE = 0x0010;
-        private const uint SWP_SHOWWINDOW = 0x0040;
-        private const uint SWP_NOSIZE = 0x0001;
         
         private readonly List<Widget> _widgets = new List<Widget>();
         
         private readonly DispatcherTimer _timer;
         private IntPtr _shellViewPtr = IntPtr.Zero;
         private DrawingVisual _drawingVisual;
-
-        private double _primaryScreenWidth = 0;
         
         public int WidgetWidth { get; }
         public int WidgetHeight { get; }
@@ -89,8 +53,7 @@ namespace SystemWatch.Views
             UpdateWindowPosition();
             this.Width = this.WidgetWidth + 10;
             this.Height = this.WidgetHeight * 3 + 110;
-            this.Left = SystemParameters.PrimaryScreenWidth - 250;
-            this.Top = 120;
+            UpdateWindowPosition();
             
 
             CpuMemoryWidget cpuMemoryLoader= new CpuMemoryWidget(new Point(5, 5), new Size(this.WidgetWidth, this.WidgetHeight));
@@ -173,6 +136,10 @@ namespace SystemWatch.Views
         {
             await Task.Delay(2000);
             UpdateWindowPosition();
+            await Task.Delay(3000);
+            UpdateWindowPosition();
+            await Task.Delay(3000);
+            UpdateWindowPosition();
         }
 
         private void OnLoaded(object? sender, EventArgs e)
@@ -215,35 +182,6 @@ namespace SystemWatch.Views
 
         private void UpdateWindowPosition()
         {
-            if (this._primaryScreenWidth == SystemParameters.PrimaryScreenWidth) return;
-            this._primaryScreenWidth = SystemParameters.PrimaryScreenWidth;
-            if (this._shellViewPtr != IntPtr.Zero)
-            {
-                var windowInteropHelper = new WindowInteropHelper(this);
-                IntPtr hWnd = windowInteropHelper.Handle;
-                if (hWnd != IntPtr.Zero)
-                {
-                    // 获取物理屏幕尺寸
-                    IntPtr monitor = MonitorFromWindow(this._shellViewPtr, MONITOR_DEFAULTTONEAREST);
-                    if (monitor != IntPtr.Zero)
-                    {
-                        MONITORINFO monitorInfo = new MONITORINFO();
-                        monitorInfo.cbSize = (uint)Marshal.SizeOf(typeof(MONITORINFO));
-                        if (GetMonitorInfo(monitor, ref monitorInfo))
-                        {
-                            int screenWidth = monitorInfo.rcMonitor.Right - monitorInfo.rcMonitor.Left;
-                            double screenRatio = ((double)screenWidth) / SystemParameters.PrimaryScreenWidth;
-                            // 计算相对父窗口的坐标
-                            int targetX = (int) (screenWidth - 250 * (1.0 / screenRatio));
-                            int targetY = (int) (120 * screenRatio);
-
-                            SetWindowPos(hWnd, IntPtr.Zero, targetX, targetY, 0, 0,
-                                SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
-                            return;
-                        }
-                    }
-                }
-            }
             this.Left = SystemParameters.PrimaryScreenWidth - 250;
             this.Top = 120;
         }
@@ -253,10 +191,10 @@ namespace SystemWatch.Views
             IntPtr shellViewPtr = this.FindDescktopWindow();
             if (shellViewPtr != IntPtr.Zero && this._shellViewPtr != shellViewPtr)
             {
-               var windowInteropHelper = new WindowInteropHelper(this);
-               SetParent(windowInteropHelper.Handle, shellViewPtr);
-               this._shellViewPtr = shellViewPtr;
-               UpdateWindowPosition();
+                var windowInteropHelper = new WindowInteropHelper(this);
+                SetParent(windowInteropHelper.Handle, shellViewPtr);
+                this._shellViewPtr = shellViewPtr;
+                UpdateWindowPosition();
             }
         }
         
